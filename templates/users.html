@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    {% for user in users %}
+        <div style="margin:0.5%; padding: 0.5%;">
+            <div class="card text-white bg-light mb-3 " style="max-width: 20rem; ">
+                <div class="card-header" style="color: black">{{user.id}}</div>
+                <div class="card-body">
+                <h5 class="card-title" style="color: black">{{user.email}}</h5>
+                <p class="card-text" style="color: black">{{user.password}}</p>
+                </div>
+            </div>
+
+            <a href="{{url_for('update')}}">update</a>
+        </div>
+
+    {% endfor %}
+
+{% endblock %}
+
