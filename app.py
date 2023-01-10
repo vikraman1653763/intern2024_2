@@ -1,15 +1,11 @@
 from flask import Flask,  render_template , request , flash , redirect , url_for
-from datetime import datetime
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField , PasswordField , BooleanField, ValidationError
-from wtforms.validators import DataRequired , Email , EqualTo,  Length
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-from wtforms import validators
 from werkzeug.security import generate_password_hash, check_password_hash
-import psycopg2
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
+from webforms import loginForm, registerForm
+from datetime import datetime
+
 
 app = Flask(__name__)
 
@@ -40,20 +36,6 @@ class User(db.Model , UserMixin):
 
     def __repr__(self):
         return '<Name %%r>' % self.name
-
-class loginForm(FlaskForm):
-
-    email = StringField("Email" , [ validators.DataRequired() , validators.Email()])
-    password = PasswordField("Password" , validators=[DataRequired()])
-    submit = SubmitField("Login")
-
-
-class registerForm(FlaskForm):
-
-    email = StringField("Email" , [ validators.DataRequired() , validators.Email()])
-    password = PasswordField("Password" , validators=[DataRequired() , EqualTo('password2' , message="Passwords Must Match ")])  
-    password2 = PasswordField("Confirm Password" , validators=[DataRequired()])
-    submit = SubmitField("Register")
 
 
 @app.route('/')
@@ -155,10 +137,12 @@ def update(id):
     if RegisterForm.validate_on_submit():
 
         name_to_update.email =  RegisterForm.email.data
-        name_to_update.password =  RegisterForm.name.data
+        hashed_pw = generate_password_hash(RegisterForm.password.data  , "sha256")
+
+        name_to_update.password = hashed_pw
 
         RegisterForm.email.data = ''
-        RegisterForm.name.data = ''
+        RegisterForm.password.data = ''
 
         try:
 

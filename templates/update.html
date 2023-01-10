@@ -4,8 +4,6 @@
 
 {% block body %}
 
-
-
 <section class="vh-100">
     <div class="container-fluid">
       <div class="row">
@@ -27,14 +25,21 @@
   
               <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example18">Email address</label>
-                {{RegisterForm.email( type="email" , id="form2Example18", class="form-control form-control-lg")}}
+                {{RegisterForm.email( type="email" , id="form2Example18", class="form-control form-control-lg" , value=user.email)}}
               </div>
-  
+              
               <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example28">Password</label>
                 {{RegisterForm.password( id="form2Example28" , class="form-control form-control-lg" )}}
               </div>
-  
+
+              <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example28">Confirm Password</label>
+                {{RegisterForm.password2( id="form2Example28" , class="form-control form-control-lg" )}}
+              </div>
+              
+              
+
               <div class="pt-1 mb-4">
                 {{RegisterForm.submit(class="btn btn-dark btn-lg btn-block")}}
                 
