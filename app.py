@@ -1,4 +1,4 @@
-from flask import Flask,  render_template 
+from flask import Flask,  render_template , request , flash
 from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -76,7 +76,7 @@ def register():
         RegisterForm.name.data = ''
         RegisterForm.email.data = ''
 
-    return render_template("register.html" , LoginForm=RegisterForm )
+    return render_template("register.html" , RegisterForm=RegisterForm )
 
 
 @app.route('/login' , methods=('GET' , 'POST'))
@@ -106,12 +106,34 @@ def users():
     return render_template('users.html', users=users)
 
 
-@app.route('/update')
-def update():
+@app.route('/update/<int:id>' , methods=('GET','POST'))
+def update(id):
 
-    users = User.query.order_by(User.email).all()
-    return render_template('users.html', users=users)
+    RegisterForm = registerForm()
+    name_to_update = User.query.get_or_404(id)
 
+    if RegisterForm.validate_on_submit():
+
+        name_to_update.email =  RegisterForm.email.data
+        name_to_update.passsword =  RegisterForm.name.data
+
+        RegisterForm.name.data = ''
+        RegisterForm.email.data = ''
+
+        try:
+            db.session.commit()
+            flash("user update successfully")
+
+    
+            return render_template('update.html', RegisterForm=RegisterForm , user=name_to_update)
+
+        except:
+            
+            flash(" ERROR !!! ")
+            return render_template('update.html',RegisterForm=RegisterForm, user=name_to_update)
+
+    else:
+        return render_template('update.html',RegisterForm=RegisterForm, user=name_to_update)
 
 
 if __name__ == "__main__":
