@@ -1,12 +1,15 @@
-from flask import Flask,  render_template , request , flash
+from flask import Flask,  render_template , request , flash , redirect , url_for
 from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired , Email
+from wtforms import StringField, SubmitField , PasswordField , BooleanField, ValidationError
+from wtforms.validators import DataRequired , Email , EqualTo,  Length
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from wtforms import validators
+from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
@@ -16,12 +19,23 @@ app.config['SECRET_KEY'] = "SECRET KEY"
 
 
 db = SQLAlchemy(app)
+migrate = Migrate(app , db)
 
-class User(db.Model):
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+class User(db.Model , UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(200), nullable=False , unique=True)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
@@ -30,14 +44,15 @@ class User(db.Model):
 class loginForm(FlaskForm):
 
     email = StringField("Email" , [ validators.DataRequired() , validators.Email()])
-    name = StringField("Name" , validators=[DataRequired()])
+    password = PasswordField("Password" , validators=[DataRequired()])
     submit = SubmitField("Login")
 
 
 class registerForm(FlaskForm):
 
     email = StringField("Email" , [ validators.DataRequired() , validators.Email()])
-    name = StringField("Name" , validators=[DataRequired()])
+    password = PasswordField("Password" , validators=[DataRequired() , EqualTo('password2' , message="Passwords Must Match ")])  
+    password2 = PasswordField("Confirm Password" , validators=[DataRequired()])
     submit = SubmitField("Register")
 
 
@@ -49,60 +64,85 @@ def index():
 @app.route('/register' , methods=('GET' , 'POST'))
 def register():
 
-    name = None
     email = None
+    password = None
     RegisterForm = registerForm()
 
     if RegisterForm.validate_on_submit():
 
         user = User.query.filter_by(email=RegisterForm.email.data).first()
 
-        
-        print("EMAIL : ", email)
-        print("NAME : ", name)
-        
         if user is None:
-
+            
             email = RegisterForm.email.data
-            psw = RegisterForm.name.data
+            psw = RegisterForm.password.data
 
-            user = User(email=email , password=psw)
+            hashed_pw = generate_password_hash(psw  , "sha256")
+            
+            user = User(email=email , password=hashed_pw)
             db.session.add(user)
             db.session.commit()
-
-        print("EMAIL : ", email)
-        print("NAME : ", name)
         
-        RegisterForm.name.data = ''
         RegisterForm.email.data = ''
+        RegisterForm.password.data = ''
 
     return render_template("register.html" , RegisterForm=RegisterForm )
+
+@app.route('/logout' , methods=('GET' , 'POST'))
+@login_required
+def logout():
+    logout_user()
+    flash(" Loged Out Succesfully !! ")
+    return redirect(url_for('login'))
+
 
 
 @app.route('/login' , methods=('GET' , 'POST'))
 def login():
 
-    name = None
     email = None
+    password = None
     LoginForm = loginForm()
 
     if LoginForm.validate_on_submit():
 
         email = LoginForm.email.data
-        name = LoginForm.name.data
+        password = LoginForm.password.data
 
-        print("EMAIL : ", email)
-        print("NAME : ", name)
-        
-        LoginForm.name.data = ''
         LoginForm.email.data = ''
+        LoginForm.password.data = ''
+
+        user = User.query.filter_by(email=email).first()
+
+        if user is not None:
+            
+            if check_password_hash(user.password, password):
+                
+                login_user(user)
+                flash(" Loged in Succesfully !! ")
+                return redirect(url_for('dashboard'))
+            
+            else:
+                flash("Wrong password !! ")
+        
+        else:
+            flash(" Email doesn't exist !! ")
+        
 
     return render_template("login.html" , LoginForm=LoginForm)
+
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template("dashboard.html")
+
 
 @app.route('/users')
 def users():
 
-    users = User.query.order_by(User.email).all()
+    users = User.query.order_by(User.date_added).all()
+
     return render_template('users.html', users=users)
 
 
@@ -115,26 +155,40 @@ def update(id):
     if RegisterForm.validate_on_submit():
 
         name_to_update.email =  RegisterForm.email.data
-        name_to_update.passsword =  RegisterForm.name.data
+        name_to_update.password =  RegisterForm.name.data
 
-        RegisterForm.name.data = ''
         RegisterForm.email.data = ''
+        RegisterForm.name.data = ''
 
         try:
-            db.session.commit()
-            flash("user update successfully")
 
-    
-            return render_template('update.html', RegisterForm=RegisterForm , user=name_to_update)
+            db.session.commit()
+            flash("User updated successfully")
+
+            return redirect(url_for('users'))
 
         except:
             
             flash(" ERROR !!! ")
-            return render_template('update.html',RegisterForm=RegisterForm, user=name_to_update)
+            return render_template('users.html',RegisterForm=RegisterForm, user=name_to_update)
 
     else:
         return render_template('update.html',RegisterForm=RegisterForm, user=name_to_update)
 
+
+@app.route('/delete/<int:id>' , methods=('GET','POST'))
+def delete(id):
+
+    user_to_delete = User.query.get_or_404(id)
+    print("USER TO DELETE: " , user_to_delete.email , user_to_delete.id)
+    try:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+        flash("User Deleted successfully")
+        return redirect(url_for('users'))
+
+    except:
+        return redirect(url_for('users'))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)
