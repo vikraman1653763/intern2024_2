@@ -24,6 +24,11 @@
             <form method="post" style="width: 23rem;">
               {{RegisterForm.hidden_tag()}}   
               <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Add User</h3>
+              
+              <div class="form-outline mb-4">
+                <label class="form-label" for="form2Example18">Username</label>
+                {{RegisterForm.username( type="text" , id="form2Example18", class="form-control form-control-lg")}}
+              </div>
   
               <div class="form-outline mb-4">
                 <label class="form-label" for="form2Example18">Email address</label>

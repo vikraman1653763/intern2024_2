@@ -1,11 +1,19 @@
-from flask import Flask,  render_template , request , flash , redirect , url_for
+from flask import Flask,  render_template , request , flash , redirect , url_for , abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 from webforms import loginForm, registerForm
 from datetime import datetime
+from geoserver.catalog import Catalog
+import folium
+from folium.raster_layers import WmsTileLayer
 
+
+# id 7 Admin hariharan141200@gmail.com 
+cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
+
+ADMIN = 2
 
 app = Flask(__name__)
 
@@ -30,7 +38,8 @@ def load_user(user_id):
 class User(db.Model , UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(200), nullable=False , unique=True)
+    email = db.Column(db.String(100), nullable=False , unique=True)
+    username = db.Column(db.String(100), nullable=False , unique=True)
     password = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -44,31 +53,44 @@ def index():
 
 
 @app.route('/register' , methods=('GET' , 'POST'))
+@login_required
 def register():
 
-    email = None
-    password = None
-    RegisterForm = registerForm()
+    if current_user.id == ADMIN :
 
-    if RegisterForm.validate_on_submit():
+        email = None
+        psw = None
+        username = None
 
-        user = User.query.filter_by(email=RegisterForm.email.data).first()
+        RegisterForm = registerForm()
 
-        if user is None:
-            
-            email = RegisterForm.email.data
-            psw = RegisterForm.password.data
+        if RegisterForm.validate_on_submit():
 
-            hashed_pw = generate_password_hash(psw  , "sha256")
-            
-            user = User(email=email , password=hashed_pw)
-            db.session.add(user)
-            db.session.commit()
-        
-        RegisterForm.email.data = ''
-        RegisterForm.password.data = ''
+            user = User.query.filter_by(email=RegisterForm.email.data).first()
 
-    return render_template("register.html" , RegisterForm=RegisterForm )
+            if user is None:
+                
+                email = RegisterForm.email.data
+                username = RegisterForm.username.data
+                psw = RegisterForm.password.data
+
+                hashed_pw = generate_password_hash(psw  , "sha256")
+                
+                user = User(email=email , username=username , password=hashed_pw)
+                db.session.add(user)
+                db.session.commit()
+
+                cat.create_workspace(username, username)
+
+            RegisterForm.email.data = ''
+            RegisterForm.username.data = ''
+            RegisterForm.password.data = ''
+
+        return render_template("register.html" , RegisterForm=RegisterForm )
+
+    else:
+
+        abort(403)
 
 @app.route('/logout' , methods=('GET' , 'POST'))
 @login_required
@@ -119,8 +141,44 @@ def login():
 def dashboard():
     return render_template("dashboard.html")
 
+@app.route('/dashboard/project')
+@login_required
+def project():
 
+    layers = cat.get_layers()
+    workspace = current_user.username
+    lay = {}
+
+    for layer in layers:
+        if workspace in layer.name :
+
+            lay[layer.name] = layer.name.split(":")[1]
+
+    map = folium.Map(location=[ 13.0827 , 80.2707], zoom_start=3)
+
+    for i in lay.items():
+
+        print(i[0] , i [1])
+        WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+                        layers= i[0],
+                        name=i[1],
+                        fmt='image/png',
+                        overlay=True,
+                        transparent=True,
+                        control=True
+
+                        ).add_to(map)
+
+    folium.LayerControl().add_to(map)
+
+    map.save('templates/map.html')
+
+    return render_template("layout.html")
+    # return render_template("project.html" , lay=lay)
+
+    
 @app.route('/users')
+@login_required
 def users():
 
     users = User.query.order_by(User.date_added).all()
@@ -129,6 +187,7 @@ def users():
 
 
 @app.route('/update/<int:id>' , methods=('GET','POST'))
+@login_required
 def update(id):
 
     RegisterForm = registerForm()
@@ -161,6 +220,7 @@ def update(id):
 
 
 @app.route('/delete/<int:id>' , methods=('GET','POST'))
+@login_required
 def delete(id):
 
     user_to_delete = User.query.get_or_404(id)

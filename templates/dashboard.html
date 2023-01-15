@@ -4,8 +4,10 @@
 {% block body %}
 
 
-<h1> WELCOME {{ current_user.email }} </h1>
+<h1> WELCOME {{ current_user.username }} </h1>
 
-<a href="{{url_for('logout')}}"> Logout </a>
+
+<a href="{{url_for('project')}}" class="btn btn-primary" > PROJECT </a>
+
 
 {% endblock %}
