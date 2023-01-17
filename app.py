@@ -42,9 +42,22 @@ class User(db.Model , UserMixin):
     username = db.Column(db.String(100), nullable=False , unique=True)
     password = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    layer = db.relationship('Layer', backref='layer')
 
     def __repr__(self):
         return '<Name %%r>' % self.name
+
+class Layer(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    project_no = db.Column(db.Integer, nullable=False)
+    
+    layer_name = db.Column(db.String(200), nullable=False , unique=True) #unique layer 
+
+    layer_owner = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
 
 
 @app.route('/')
@@ -100,7 +113,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-
 @app.route('/login' , methods=('GET' , 'POST'))
 def login():
 
@@ -141,6 +153,33 @@ def login():
 def dashboard():
     return render_template("dashboard.html")
 
+
+@app.route('/status/<int:id>')
+@login_required
+def status(id):
+
+    if current_user.id == ADMIN:
+
+        user = User.query.get_or_404(id)
+
+        layers = cat.get_layers()
+    
+        workspace = user.username
+
+        lay = {}
+
+        for layer in layers:
+            if workspace in layer.name :
+
+                lay[layer.name] = layer.name.split(":")[1]
+
+            
+        return render_template("status.html" , user=user , lay=lay)
+
+    else:
+        abort(403)
+
+
 @app.route('/dashboard/project')
 @login_required
 def project():
@@ -154,11 +193,11 @@ def project():
 
             lay[layer.name] = layer.name.split(":")[1]
 
-    map = folium.Map(location=[ 13.0827 , 80.2707], zoom_start=3)
+    map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
+
 
     for i in lay.items():
 
-        print(i[0] , i [1])
         WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
                         layers= i[0],
                         name=i[1],
@@ -174,7 +213,6 @@ def project():
     map.save('templates/map.html')
 
     return render_template("layout.html")
-    # return render_template("project.html" , lay=lay)
 
     
 @app.route('/users')

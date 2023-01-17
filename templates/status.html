@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+
+<div class="card w-90 bg-light" style="margin:1%; padding: 0.5%; ; ">
+    <div class="card-body">
+      <h5 class="card-title"> {{user.username}} </h5>
+      <p class="card-text">{{user.email}}</p>
+
+      <p> Number of Projects : </p>
+
+      {% if user.layer.project_id %}
+        <h1> HELLO WORLD! </h1>
+        
+      {% else %}
+        
+          <h1> BYE WORLD!</h1>
+
+
+      {% endif %}
+
+      {% for i in lay.items() %}
+
+      <p> {{i[0]}}  {{ i[1]}} </p>
+      
+      {% endfor %}
+      
+      
+      
+
+
+      <a href="#" class="btn btn-primary">Button</a>
+    </div>
+  </div>
+  
+
+
+
+{% endblock %}

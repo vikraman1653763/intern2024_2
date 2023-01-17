@@ -4,18 +4,20 @@
 
     {% for user in users %}
 
-        <div class="card" style="margin:1%; padding: 0.5%;">
+        <div class="card bg-light" style="margin:1%; padding: 0.5%; width:100%; ">
             <h5 class="card-header" >{{user.username}}</h5>
             <div class="card-body">
 
-            <h5 class="card-title"style="margin:0.5%; padding: 0.5%; padding-bottom:1%">{{user.email}}
-            <a href="#" class="btn btn-primary" >Go somewhere</a>
-            <a href="{{url_for('update' , id=user.id)}}" class="btn btn-danger" >Change Password</a>
-            </h5>
+            <h5 class="card-title"style="margin:0.5%; padding: 0.5%; padding-bottom:1%">{{user.email}}</h5>
+            
+                <div>
+                    
+                    <a href="{{url_for('status' , id=user.id)}}" class="btn btn-outline-primary" style="text-align: right;"> STATUS </a>                    
+                    
+                </div>
             </div>
 
         </div>
-
 
     {% endfor %}
 
