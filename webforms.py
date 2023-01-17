@@ -20,3 +20,9 @@ class registerForm(FlaskForm):
     password = PasswordField("Password" , validators=[DataRequired() , EqualTo('password2' , message="Passwords Must Match ")])  
     password2 = PasswordField("Confirm Password" , validators=[DataRequired()])
     submit = SubmitField("Register")
+
+
+class projectName(FlaskForm):
+
+    name = StringField("Project Name" , [ validators.DataRequired()])
+    submit = SubmitField("Add Project")

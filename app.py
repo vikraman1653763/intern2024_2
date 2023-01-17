@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
-from webforms import loginForm, registerForm
+from webforms import loginForm, registerForm, projectName
 from datetime import datetime
 from geoserver.catalog import Catalog
 import folium
@@ -43,20 +43,25 @@ class User(db.Model , UserMixin):
     password = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     
-    layer = db.relationship('Layer', backref='layer')
+    project = db.relationship('Project', backref='user')
 
     def __repr__(self):
         return '<Name %%r>' % self.name
 
-class Layer(db.Model):
+
+class Project(db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    data = db.relationship('Data', backref='project') 
+
+class Data(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    project_no = db.Column(db.Integer, nullable=False)
-    
-    layer_name = db.Column(db.String(200), nullable=False , unique=True) #unique layer 
-
-    layer_owner = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+    name = db.Column(db.String)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
 
 
@@ -153,34 +158,61 @@ def login():
 def dashboard():
     return render_template("dashboard.html")
 
-
-@app.route('/status/<int:id>')
+@app.route('/status/<int:id>' , methods=('GET' , 'POST'))
 @login_required
 def status(id):
 
     if current_user.id == ADMIN:
 
+        name_of_project = None
+        ProjectName = projectName()
+
         user = User.query.get_or_404(id)
+        projects = user.project
 
-        layers = cat.get_layers()
-    
-        workspace = user.username
-
-        lay = {}
-
-        for layer in layers:
-            if workspace in layer.name :
-
-                lay[layer.name] = layer.name.split(":")[1]
-
+        if ProjectName.validate_on_submit():
             
-        return render_template("status.html" , user=user , lay=lay)
+            name_of_project = ProjectName.name.data
+            ProjectName.name.data = ''
+
+
+            p = Project(name=name_of_project, user_id=user.id)
+            db.session.add(p)
+            db.session.commit()
+            
+            flash(" New Project Added ")
+
+            return redirect(url_for("status" , id=user.id))
+
+        else:
+
+            return render_template("status.html" , user=user , projects=projects , ProjectName=ProjectName)
 
     else:
         abort(403)
 
+@app.route('/status/add_project/<int:id>')
+@login_required
+def add_layer(id):
+    
+    user = User.query.get_or_404(id)
 
-@app.route('/dashboard/project')
+    layers = cat.get_layers()
+
+    workspace = user.username
+
+    lay = {}
+
+    for layer in layers:
+        if workspace in layer.name :
+
+            lay[layer.name] = layer.name.split(":")[1]
+
+        
+    return render_template("add_layer.html" , user=user , lay=lay)
+    
+
+@app.route('/dashboard/application')
 @login_required
 def project():
 
@@ -262,7 +294,9 @@ def update(id):
 def delete(id):
 
     user_to_delete = User.query.get_or_404(id)
+    
     print("USER TO DELETE: " , user_to_delete.email , user_to_delete.id)
+
     try:
         db.session.delete(user_to_delete)
         db.session.commit()
@@ -270,7 +304,25 @@ def delete(id):
         return redirect(url_for('users'))
 
     except:
-        return redirect(url_for('users'))
+        return "User Not Found"
+
+
+@app.route('/delete/project/<int:id>', methods=('GET','POST') )
+@login_required
+def delete_project(id):
+
+    project = Project.query.get_or_404(id)
+
+    if project:
+        db.session.delete(project)
+        db.session.commit()
+        flash("Project Deleted")
+
+        return redirect(request.referrer)
+    
+    else:
+        flash("Project Not Found")
+        return "Project Not Found"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)
