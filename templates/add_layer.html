@@ -13,8 +13,42 @@
     </div>
   </div>
   
+  
+  <div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
+    <h2> Already Exists </h2>
+    <div class="card-body">
+
+        <div class="table-responsive">
+          
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+
+                  </tr>
+              </thead>
+              <tbody>
+
+                  {% for record in exisiting %}
+                  <tr>
+                      <td> {{ record.name }} </td>
+                  </tr>
+                  {% endfor %}
+
+              </tbody>
+          </table>
+        
+        </div>
+      
+    </div>
+  </div>
+  
+
+
 
   <div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
+    <h2> Add Layer </h2>
+
     <div class="card-body">
 
       <form method="POST" action="">

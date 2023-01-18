@@ -63,7 +63,6 @@ class Data(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
 
-
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -155,7 +154,9 @@ def login():
 @app.route('/dashboard')
 @login_required
 def dashboard():
+
     return render_template("dashboard.html")
+
 
 @app.route('/status/<int:id>' , methods=('GET' , 'POST'))
 @login_required
@@ -204,7 +205,6 @@ def add_layer(id):
         if workspace in layer.name :
             lay[layer.name] = layer.name.split(":")[1]
 
-    print(pro , pro.name , pro.user.username)
 
     if request.method == 'POST':
         selected_ids = request.form.getlist('checkbox')
@@ -216,43 +216,42 @@ def add_layer(id):
         flash(" Layer Added to the Project ")
         return redirect(request.referrer)
     
-    return render_template("add_layer.html" , user=pro.user , lay=lay)
+    return render_template("add_layer.html" , user=pro.user , lay=lay , exisiting=pro.data)
     
 
-@app.route('/dashboard/application')
+@app.route('/dashboard/application/<int:id>')
 @login_required
-def project():
-
-    layers = cat.get_layers()
+def project(id):
+  
     workspace = current_user.username
-    lay = {}
+    
+    lay = Project.query.get_or_404(id)
 
-    for layer in layers:
-        if workspace in layer.name :
+    if lay.user.username == current_user.username:     
 
-            lay[layer.name] = layer.name.split(":")[1]
+        map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
 
-    map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
+        for i in lay.data:
 
+            WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+                            layers= workspace+':'+i.name,
+                            name=i.name,
+                            fmt='image/png',
+                            overlay=True,
+                            transparent=True,
+                            control=True
 
-    for i in lay.items():
+                            ).add_to(map)
 
-        WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-                        layers= i[0],
-                        name=i[1],
-                        fmt='image/png',
-                        overlay=True,
-                        transparent=True,
-                        control=True
+        folium.LayerControl().add_to(map)
 
-                        ).add_to(map)
+        map.save('templates/map.html')
 
-    folium.LayerControl().add_to(map)
+        return render_template("layout.html")
 
-    map.save('templates/map.html')
+    else:
 
-    return render_template("layout.html")
-
+        abort(403)
     
 @app.route('/users')
 @login_required
@@ -318,18 +317,23 @@ def delete(id):
 @login_required
 def delete_project(id):
 
-    project = Project.query.get_or_404(id)
+    if current_user.id == ADMIN:
+        project = Project.query.get_or_404(id)
 
-    if project:
-        db.session.delete(project)
-        db.session.commit()
-        flash("Project Deleted")
+        if project:
+            db.session.delete(project)
+            db.session.commit()
+            flash("Project Deleted")
 
-        return redirect(request.referrer)
-    
+            return redirect(request.referrer)
+        
+        else:
+            flash("Project Not Found")
+            return "Project Not Found"
+
     else:
-        flash("Project Not Found")
-        return "Project Not Found"
+        abort(403)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)

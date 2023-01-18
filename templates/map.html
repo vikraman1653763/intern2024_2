@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_aeb98cd1d96e9e12dd596398a42ecf49 {
+                #map_4b139bc92928c69d57725b63a7c75e8d {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -39,14 +39,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_aeb98cd1d96e9e12dd596398a42ecf49" ></div>
+            <div class="folium-map" id="map_4b139bc92928c69d57725b63a7c75e8d" ></div>
         
 </body>
 <script>
     
     
-            var map_aeb98cd1d96e9e12dd596398a42ecf49 = L.map(
-                "map_aeb98cd1d96e9e12dd596398a42ecf49",
+            var map_4b139bc92928c69d57725b63a7c75e8d = L.map(
+                "map_4b139bc92928c69d57725b63a7c75e8d",
                 {
                     center: [22.9734, 78.6569],
                     crs: L.CRS.EPSG3857,
@@ -60,24 +60,38 @@
 
         
     
-            var tile_layer_06a6be09cd4ca7488dfb403aec28d35d = L.tileLayer(
+            var tile_layer_50be35b1776f10e097f228194e026fe9 = L.tileLayer(
                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "Data by \u0026copy; \u003ca target=\"_blank\" href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
-            ).addTo(map_aeb98cd1d96e9e12dd596398a42ecf49);
+            ).addTo(map_4b139bc92928c69d57725b63a7c75e8d);
         
     
-            var layer_control_36ef278bcc799f596785f750d698effa = {
+            var macro_element_a3fa19245bfeadb1dcfa9539bf583bbf = L.tileLayer.wms(
+                "http://127.0.0.1:8080/geoserver/drone/wms",
+                {"attribution": "", "format": "image/png", "layers": "drone:2011_dist", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_4b139bc92928c69d57725b63a7c75e8d);
+        
+    
+            var macro_element_87220a06b1cb3578085733ccb7d58d76 = L.tileLayer.wms(
+                "http://127.0.0.1:8080/geoserver/drone/wms",
+                {"attribution": "", "format": "image/png", "layers": "drone:admin2", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_4b139bc92928c69d57725b63a7c75e8d);
+        
+    
+            var layer_control_b6f88e0ffcde337637959f15e4bbc1e4 = {
                 base_layers : {
-                    "openstreetmap" : tile_layer_06a6be09cd4ca7488dfb403aec28d35d,
+                    "openstreetmap" : tile_layer_50be35b1776f10e097f228194e026fe9,
                 },
                 overlays :  {
+                    "2011_dist" : macro_element_a3fa19245bfeadb1dcfa9539bf583bbf,
+                    "admin2" : macro_element_87220a06b1cb3578085733ccb7d58d76,
                 },
             };
             L.control.layers(
-                layer_control_36ef278bcc799f596785f750d698effa.base_layers,
-                layer_control_36ef278bcc799f596785f750d698effa.overlays,
+                layer_control_b6f88e0ffcde337637959f15e4bbc1e4.base_layers,
+                layer_control_b6f88e0ffcde337637959f15e4bbc1e4.overlays,
                 {"autoZIndex": true, "collapsed": true, "position": "topright"}
-            ).addTo(map_aeb98cd1d96e9e12dd596398a42ecf49);
+            ).addTo(map_4b139bc92928c69d57725b63a7c75e8d);
         
 </script>
 </html>
