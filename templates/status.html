@@ -16,7 +16,7 @@
 
         <div class="input-group mb-3">
             {{ ProjectName.name(type="text" , class="form-control" , placeholder="Project Name" ) }}
-
+ 
             <div class="input-group-append">
                 
                 {{ProjectName.submit(class="btn btn-outline-primary")}}
@@ -31,17 +31,15 @@
 
     <div  style="margin:1%; padding: 0.5%;">
 
-        <div class="card">
+        <div class="card  text-white bg-info mb-3">
             <div class="card-body d-flex justify-content-center align-items-center">
                 <img src="/static/images/folder.png" class="img-fluid" style=" width: 100px; height: 100px;">
             </div>
             
             <div class="card-footer d-flex justify-content-between">
-                <b>{{ pro.name }}</b>
+                <h4><b> {{ pro.name }} </b></h4>
 
-                <!-- <b>{{ pro }}</b> -->
-                
-                <button class="btn btn-primary"> goto </button>
+                    <a class="btn btn-primary" href="{{url_for('add_layer', id=pro.id)}}"> Add Layer </a>
                 <div class="ml-auto">
                     <a class="btn btn-danger" href="{{url_for('delete_project', id=pro.id)}}" > delete </a>
                 

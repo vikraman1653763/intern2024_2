@@ -53,7 +53,6 @@ class Project(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     data = db.relationship('Data', backref='project') 
 
@@ -191,25 +190,33 @@ def status(id):
     else:
         abort(403)
 
-@app.route('/status/add_project/<int:id>')
+@app.route('/status/project/<int:id>' , methods=('GET' , 'POST'))
 @login_required
 def add_layer(id):
     
-    user = User.query.get_or_404(id)
-
+    pro = Project.query.get_or_404(id)
+    
     layers = cat.get_layers()
-
-    workspace = user.username
+    workspace = pro.user.username
 
     lay = {}
-
     for layer in layers:
         if workspace in layer.name :
-
             lay[layer.name] = layer.name.split(":")[1]
 
+    print(pro , pro.name , pro.user.username)
+
+    if request.method == 'POST':
+        selected_ids = request.form.getlist('checkbox')
+
+        data = [Data(name=item , project_id=pro.id) for item in selected_ids]
+        db.session.add_all(data)
+        db.session.commit()
         
-    return render_template("add_layer.html" , user=user , lay=lay)
+        flash(" Layer Added to the Project ")
+        return redirect(request.referrer)
+    
+    return render_template("add_layer.html" , user=pro.user , lay=lay)
     
 
 @app.route('/dashboard/application')
