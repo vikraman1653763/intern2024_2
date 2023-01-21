@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %} Users - Nevar-Systems {% endblock %}
+
+
+
 {% block body %}
 
     {% for user in users %}
@@ -13,6 +17,7 @@
                 <div>
                     
                     <a href="{{url_for('status' , id=user.id)}}" class="btn btn-outline-primary" style="text-align: right;"> Dashboard </a>                    
+                    <!-- <a href="{{url_for('delete' , id=user.id)}}" class="btn btn-outline-danger ml-auto" style="text-align: right;"> Delete user </a>                     -->
                     
                 </div>
             </div>

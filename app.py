@@ -5,12 +5,14 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_migrate import Migrate
 from webforms import loginForm, registerForm, projectName
 from datetime import datetime
+from functools import wraps
+
 from geoserver.catalog import Catalog
 import folium
 from folium.raster_layers import WmsTileLayer
 
 
-# id 7 Admin hariharan141200@gmail.com 
+# id 2 Admin hariharan141200@gmail.com 
 cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
 
 ADMIN = 2
@@ -35,11 +37,13 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+
 class User(db.Model , UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), nullable=False , unique=True)
     username = db.Column(db.String(100), nullable=False , unique=True)
+    role = db.Column(db.String(100))
     password = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -63,6 +67,14 @@ class Data(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
 
+def admin_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if current_user.role != 'admin':
+            abort(403)
+        return func(*args, **kwargs)
+    return decorated_view
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -70,49 +82,45 @@ def index():
 
 @app.route('/register' , methods=('GET' , 'POST'))
 @login_required
+@admin_required
 def register():
 
-    if current_user.id == ADMIN :
+    email = None
+    psw = None
+    username = None
 
-        email = None
-        psw = None
-        username = None
+    RegisterForm = registerForm()
 
-        RegisterForm = registerForm()
+    if RegisterForm.validate_on_submit():
 
-        if RegisterForm.validate_on_submit():
+        user = User.query.filter_by(email=RegisterForm.email.data).first()
 
-            user = User.query.filter_by(email=RegisterForm.email.data).first()
+        if user is None:
+            
+            email = RegisterForm.email.data
+            username = RegisterForm.username.data
+            psw = RegisterForm.password.data
 
-            if user is None:
-                
-                email = RegisterForm.email.data
-                username = RegisterForm.username.data
-                psw = RegisterForm.password.data
+            hashed_pw = generate_password_hash(psw  , "sha256")
+            
+            user = User(email=email , username=username , password=hashed_pw)
+            db.session.add(user)
+            db.session.commit()
 
-                hashed_pw = generate_password_hash(psw  , "sha256")
-                
-                user = User(email=email , username=username , password=hashed_pw)
-                db.session.add(user)
-                db.session.commit()
+            cat.create_workspace(username, username)
 
-                cat.create_workspace(username, username)
+        RegisterForm.email.data = ''
+        RegisterForm.username.data = ''
+        RegisterForm.password.data = ''
 
-            RegisterForm.email.data = ''
-            RegisterForm.username.data = ''
-            RegisterForm.password.data = ''
+    return render_template("register.html" , RegisterForm=RegisterForm )
 
-        return render_template("register.html" , RegisterForm=RegisterForm )
-
-    else:
-
-        abort(403)
 
 @app.route('/logout' , methods=('GET' , 'POST'))
 @login_required
 def logout():
     logout_user()
-    flash(" Loged Out Succesfully !! ")
+    flash(" Loged Out Succesfully !! " , "info")
     return redirect(url_for('login'))
 
 
@@ -138,14 +146,14 @@ def login():
             if check_password_hash(user.password, password):
                 
                 login_user(user)
-                flash(" Loged in Succesfully !! ")
+                flash(" logged in successfully !! ", "success")
                 return redirect(url_for('dashboard'))
             
             else:
-                flash("Wrong password !! ")
+                flash(" Invalid Email/Password !! " , "error_msg")
         
         else:
-            flash(" Email doesn't exist !! ")
+            flash(" Invalid Email/Password !! " , "error_msg")            
         
 
     return render_template("login.html" , LoginForm=LoginForm)
@@ -160,39 +168,35 @@ def dashboard():
 
 @app.route('/status/<int:id>' , methods=('GET' , 'POST'))
 @login_required
+@admin_required
 def status(id):
 
-    if current_user.id == ADMIN:
+    name_of_project = None
+    ProjectName = projectName()
 
-        name_of_project = None
-        ProjectName = projectName()
+    user = User.query.get_or_404(id)
+    projects = user.project
 
-        user = User.query.get_or_404(id)
-        projects = user.project
-
-        if ProjectName.validate_on_submit():
-            
-            name_of_project = ProjectName.name.data
-            ProjectName.name.data = ''
+    if ProjectName.validate_on_submit():
+        
+        name_of_project = ProjectName.name.data
+        ProjectName.name.data = ''
 
 
-            p = Project(name=name_of_project, user_id=user.id)
-            db.session.add(p)
-            db.session.commit()
-            
-            flash(" New Project Added ")
+        p = Project(name=name_of_project, user_id=user.id)
+        db.session.add(p)
+        db.session.commit()
+        
+        flash(" New Project Added " , "success")
 
-            return redirect(url_for("status" , id=user.id))
-
-        else:
-
-            return render_template("status.html" , user=user , projects=projects , ProjectName=ProjectName)
+        return redirect(url_for("status" , id=user.id))
 
     else:
-        abort(403)
+        return render_template("status.html" , user=user , projects=projects , ProjectName=ProjectName)
 
 @app.route('/status/project/<int:id>' , methods=('GET' , 'POST'))
 @login_required
+@admin_required
 def add_layer(id):
     
     pro = Project.query.get_or_404(id)
@@ -213,7 +217,7 @@ def add_layer(id):
         db.session.add_all(data)
         db.session.commit()
         
-        flash(" Layer Added to the Project ")
+        flash(" Layer Added to the Project " , "success")
         return redirect(request.referrer)
     
     return render_template("add_layer.html" , user=pro.user , lay=lay , exisiting=pro.data)
@@ -250,7 +254,6 @@ def project(id):
         return render_template("layout.html")
 
     else:
-
         abort(403)
     
 @app.route('/users')
@@ -258,12 +261,12 @@ def project(id):
 def users():
 
     users = User.query.order_by(User.date_added).all()
-
     return render_template('users.html', users=users)
 
 
 @app.route('/update/<int:id>' , methods=('GET','POST'))
 @login_required
+@admin_required
 def update(id):
 
     RegisterForm = registerForm()
@@ -282,13 +285,13 @@ def update(id):
         try:
 
             db.session.commit()
-            flash("User updated successfully")
+            flash("User updated successfully", "success")
 
             return redirect(url_for('users'))
 
         except:
             
-            flash(" ERROR !!! ")
+            flash(" Some Occurred Please try again " , "error")
             return render_template('users.html',RegisterForm=RegisterForm, user=name_to_update)
 
     else:
@@ -297,43 +300,56 @@ def update(id):
 
 @app.route('/delete/<int:id>' , methods=('GET','POST'))
 @login_required
+@admin_required
 def delete(id):
 
+
     user_to_delete = User.query.get_or_404(id)
-    
+
     print("USER TO DELETE: " , user_to_delete.email , user_to_delete.id)
 
-    try:
+    if user_to_delete:
+
+        projects = Project.query.filter_by(user_id=user_to_delete.id).all()
+        
+        for p in projects:
+            data = Data.query.filter_by(project_id=p.id).all()
+            
+            for data_ in data:
+                db.session.delete(data_)
+
+        for project in projects:
+            db.session.delete(project)
+
+
         db.session.delete(user_to_delete)
         db.session.commit()
-        flash("User Deleted successfully")
+
+        flash("User Deleted ", "info")
         return redirect(url_for('users'))
 
-    except:
-        return "User Not Found"
-
+    else:
+        flash("User Not Found", "error")
+        return redirect(request.referrer)
+            
 
 @app.route('/delete/project/<int:id>', methods=('GET','POST') )
 @login_required
+@admin_required
 def delete_project(id):
 
-    if current_user.id == ADMIN:
-        project = Project.query.get_or_404(id)
+    project = Project.query.get_or_404(id)
 
-        if project:
-            db.session.delete(project)
-            db.session.commit()
-            flash("Project Deleted")
+    if project:
+        db.session.delete(project)
+        db.session.commit()
 
-            return redirect(request.referrer)
-        
-        else:
-            flash("Project Not Found")
-            return "Project Not Found"
-
+        flash("Project Deleted" , "error")
+        return redirect(request.referrer)
+    
     else:
-        abort(403)
-
+        flash("Project Not Found" , "info")
+        return redirect(request.referrer)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)
