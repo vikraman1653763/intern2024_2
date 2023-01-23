@@ -5,7 +5,7 @@
 
 {% block body %}
 
-    <div class="card w-90 bg-light" style="margin:1%; padding: 0.5%; ; ">
+    <div class="card w-90 bg-light" style="margin:1%; padding: 0.5%;">
         <div class="card-body">
         <h5 class="card-title"> User : {{current_user.username}} </h5>
         <h5 class="card-text"> Email : {{current_user.email}}</h5>
@@ -15,30 +15,33 @@
         </div>
     </div>
     
-        
-    
-    {% for pro in current_user.project %}
+    <div class="card w-90 bg-light" style="margin:1%; padding: 0.5%;">
 
-    <div  style="margin:1%; padding: 0.5%;">
-
-        <div class="card   mb-3">
-            <div class="card-body text-white bg-info d-flex justify-content-center align-items-center">
-                <img src="/static/images/folder.png" class="img-fluid" style=" width: 100px; height: 100px;">
-            </div>
+        <div class="project_container">
+            {% for pro in current_user.project %}
             
-            <div class="card-footer d-flex justify-content-between">
-                <h4> {{ pro.name }} </h4>
-
-                <div class="ml-auto">
-                    <a class="btn btn-primary" href="{{url_for('project', id=pro.id)}}"> Project </a>
+            <div class="card mb-3" style="width: 30%;">
                 
+                <div class="card-body text-white bg-info d-flex justify-content-center align-items-center">
+                    <img src="/static/images/folder.png" class="img-fluid" style=" width: 100px; height: 100px;">
                 </div>
+                
+                <div class="card-footer d-flex justify-content-between">
+                    
+                    <h5> {{ pro.name }} </h5>
+                    
+                    <div class="ml-auto">
+                        <a class="btn btn-primary" href="{{url_for('project', id=pro.id)}}"> Project </a>            
+                    </div>
+                    
             </div>
             
         </div>
+        
+        {% endfor %}
+        </div>
     </div>
-    {% endfor %}
-      
+    
 
 
 
