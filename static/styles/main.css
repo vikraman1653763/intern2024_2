@@ -19,18 +19,24 @@
 
 .login-container{
 
-    border: 1px solid black;
     
-    background-image: url('/static/images/bg.jpg');
-    
+    /* background-image: url('/static/images/bg.jpg'); */
+    background: linear-gradient(to right, #FFFCFF , #dce8e8);
+    /* background: linear-gradient(to right, #FFFCFF , #D5FEFD); */
     position: fixed;
 
     width: 100%;
     min-height: 100vh;
-
-
     
 }
+
+
+
+    /* #FFFCFF */
+/* 👉🏼 */
+    /* #D5FEFD */
+
+    
 /* 
 .login-container img{
 
