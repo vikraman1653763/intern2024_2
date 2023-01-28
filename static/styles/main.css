@@ -1,0 +1,46 @@
+.project_container{
+    
+    margin:1%; 
+    padding: 0.5%;
+
+    display: flex;
+
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    
+    gap: 1em;
+
+}
+
+.project_container a{
+    justify-content: space-around;
+}
+
+
+.login-container{
+
+    
+    /* background-image: url('/static/images/bg.jpg'); */
+    background: linear-gradient(to right, #FFFCFF , #dce8e8);
+    /* background: linear-gradient(to right, #FFFCFF , #D5FEFD); */
+    position: fixed;
+
+    width: 100%;
+    min-height: 100vh;
+    
+}
+
+iframe {
+
+    position: fixed;
+    width: 100%;
+    min-height: 100%;
+  }
+  
+.gradient-custom {
+    background: #6a11cb;
+    
+    background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+    
+    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+}

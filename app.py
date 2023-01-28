@@ -37,7 +37,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
 class User(db.Model , UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -136,15 +135,18 @@ def login():
         email = LoginForm.email.data
         password = LoginForm.password.data
 
-        LoginForm.email.data = ''
-        LoginForm.password.data = ''
 
         user = User.query.filter_by(email=email).first()
 
-        if user is not None:
+        # if user is not None:
+        if user:
             
             if check_password_hash(user.password, password):
                 
+                
+                LoginForm.email.data = ''
+                LoginForm.password.data = ''
+
                 login_user(user)
                 flash(" logged in successfully !! ", "success")
                 return redirect(url_for('dashboard'))
@@ -155,6 +157,9 @@ def login():
         else:
             flash(" Invalid Email/Password !! " , "error_msg")            
         
+
+    LoginForm.email.data = ''
+    LoginForm.password.data = ''
 
     return render_template("login.html" , LoginForm=LoginForm)
 
@@ -250,12 +255,17 @@ def project(id):
         folium.LayerControl().add_to(map)
 
         map.save('templates/map.html')
-
+    
         return render_template("layout.html")
 
     else:
         abort(403)
     
+@app.route("/dashboard/application/map")
+def map():
+
+    return render_template('map.html')
+
 @app.route('/users')
 @login_required
 def users():
@@ -350,6 +360,11 @@ def delete_project(id):
     else:
         flash("Project Not Found" , "info")
         return redirect(request.referrer)
+
+@app.route('/check')
+def check():
+
+    return render_template('bg.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)
