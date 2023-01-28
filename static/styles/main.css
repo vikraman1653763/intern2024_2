@@ -30,19 +30,13 @@
     
 }
 
+iframe {
 
-
-    /* #FFFCFF */
-/* 👉🏼 */
-    /* #D5FEFD */
-
-    
-/* 
-.login-container img{
-
-}
- */
-
+    position: fixed;
+    width: 100%;
+    min-height: 100%;
+  }
+  
 .gradient-custom {
     background: #6a11cb;
     

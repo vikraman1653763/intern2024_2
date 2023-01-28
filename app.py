@@ -37,7 +37,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
 class User(db.Model , UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -256,12 +255,17 @@ def project(id):
         folium.LayerControl().add_to(map)
 
         map.save('templates/map.html')
-
+    
         return render_template("layout.html")
 
     else:
         abort(403)
     
+@app.route("/dashboard/application/map")
+def map():
+
+    return render_template('map.html')
+
 @app.route('/users')
 @login_required
 def users():
