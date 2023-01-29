@@ -26,13 +26,13 @@
             <div class="card-body d-flex justify-content-center align-items-center">
            
                 <div style="align-content: center;">
-                    <img src="/static/images/folder.png" class="img-fluid" style=" width: 75px; height: 75px;">
+                    <img src="{{url_for('static' , filename='images/folder.png')}}" class="img-fluid" style=" width: 75px; height: 75px;">
                     <p style="align-items: center;"> <b>{{ pro.name }} </b></p>
                 </div>
             </div>
         
             <div class="card-footer d-flex justify-content-center">
-                <a class="btn " href="{{url_for('project', id=pro.id)}}"><img src="/static/images/log-in.png" alt="Project"></a>
+                <a class="btn " href="{{url_for('project', id=pro.id)}}"><img src="{{url_for('static' , filename='images/log-in.png')}}" alt="Project"></a>
 
                 <!-- <a class="btn" href="{{url_for('add_layer', id=pro.id)}}"> <img src="/static/images/plus.png" alt="Add"> </a> -->
 
