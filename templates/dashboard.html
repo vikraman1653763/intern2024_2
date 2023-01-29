@@ -14,32 +14,35 @@
         
         </div>
     </div>
+
     
+
+    <div class="project_container d-flex flex-wrap">
+
+        {% for pro in current_user.project %}
         
-    
-    {% for pro in current_user.project %}
+        <div class="card mb-3 col-sm-4">
 
-    <div  style="margin:1%; padding: 0.5%;">
-
-        <div class="card   mb-3">
-            <div class="card-body text-white bg-info d-flex justify-content-center align-items-center">
-                <img src="/static/images/folder.png" class="img-fluid" style=" width: 100px; height: 100px;">
-            </div>
-            
-            <div class="card-footer d-flex justify-content-between">
-                <h4> {{ pro.name }} </h4>
-
-                <div class="ml-auto">
-                    <a class="btn btn-primary" href="{{url_for('project', id=pro.id)}}"> Project </a>
-                
+            <div class="card-body d-flex justify-content-center align-items-center">
+           
+                <div style="align-content: center;">
+                    <img src="/static/images/folder.png" class="img-fluid" style=" width: 75px; height: 75px;">
+                    <p style="align-items: center;"> <b>{{ pro.name }} </b></p>
                 </div>
             </div>
-            
-        </div>
-    </div>
-    {% endfor %}
-      
+        
+            <div class="card-footer d-flex justify-content-center">
+                <a class="btn " href="{{url_for('project', id=pro.id)}}"><img src="/static/images/log-in.png" alt="Project"></a>
 
+                <!-- <a class="btn" href="{{url_for('add_layer', id=pro.id)}}"> <img src="/static/images/plus.png" alt="Add"> </a> -->
 
+                <!-- <a class="btn btn-primary" href="{{url_for('project', id=pro.id)}}"> Project </a> -->
+
+            </div>
+          </div>
+        
+          {% endfor %}
+      </div>
+    
 
 {% endblock %}
