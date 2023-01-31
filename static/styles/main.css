@@ -1,4 +1,7 @@
     
+
+
+
 .project_container {
     display: flex;
     flex-wrap: wrap;
@@ -24,19 +27,32 @@
   }
   
 
-
 .login-container{
 
-    
-    /* background-image: url('/static/images/bg.jpg'); */
-    background: linear-gradient(to right, #FFFCFF , #dce8e8);
-    /* background: linear-gradient(to right, #FFFCFF , #D5FEFD); */
     position: fixed;
-
     width: 100%;
-    min-height: 100vh;
-    
+
+    background-image: url('/static/images/greece-drones.webp') ;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
 }
+
+.login-container img {
+    filter: invert(100%);
+}
+
+.login-container .card{
+
+    /* background-color: #EB6440; */
+    /* color: white; */
+    /* background-image: url('/static/images/bg2.webp'); */
+    background-size: cover;
+    background-position: center
+
+}
+
 
 iframe {
 

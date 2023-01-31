@@ -153,7 +153,9 @@ def login():
         
         else:
             flash(" Invalid Email/Password !! " , "error_msg")            
-        
+
+    # else:
+    #     flash('Invalid email address. Please enter a valid email address.', 'error_msg')    
 
     return render_template("login.html" , LoginForm=LoginForm)
 

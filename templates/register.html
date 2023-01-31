@@ -1,11 +1,13 @@
 
 {% extends 'base.html' %}
 
-{% block title %} Login - Nevar-Systems {% endblock %}
+{% block title %} Add User - Nevar-Systems {% endblock %}
 
 
 {% block body %}
 
+
+<div>
 
 <section class="h-100 login-container">
 <!-- <section class="h-100 "> -->
@@ -27,9 +29,9 @@
             
             <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
               {{RegisterForm.hidden_tag()}}   
-                        
+              
               <div class="mb-3">
-                <label class="mb-2 text-muted" for="form2Example18">Username</label>
+                <label class="mb-2 " for="form2Example18">Username</label>
                 
                 <!-- {{RegisterForm.username( type="text" , id="form2Example18", class="form-control form-control-lg")}} -->
                 {{RegisterForm.username( type="text" ,class="form-control")}}
@@ -38,7 +40,7 @@
 
 
               <div class="mb-3">
-                <label class="mb-2 text-muted" for="form2Example18">E-Mail Address</label>
+                <label class="mb-2 " for="form2Example18">E-Mail Address</label>
                 
                 {{RegisterForm.email(id="form2Example18", class="form-control")}}
 
@@ -49,7 +51,7 @@
                           
               <div class="mb-3">
                 <div class="mb-2 w-100">
-                  <label class="text-muted" for="password">Password</label>
+                  <label for="password">Password</label>
                 </div>
                 {{RegisterForm.password( id="form2Example28" , class="form-control " )}}
 
@@ -61,7 +63,7 @@
               
               <div class="mb-3">
                 <div class="mb-2 w-100">
-                  <label class="text-muted" for="password">Password</label>
+                  <label efor="password">Password</label>
                 </div>
                 {{RegisterForm.password2( id="form2Example28" , class="form-control " )}}
 
@@ -73,7 +75,7 @@
               <!-- <div class="d-flex align-items-center" style="display: flex; align-items:center;"> -->
               <div style="display: flex; justify-content:center;">
                 <div class="form-check">
-                  {{RegisterForm.submit(class="btn btn-outline-primary ")}}
+                  {{RegisterForm.submit(class="btn btn-primary ")}}
                 </div>
               </div>
             </form>
@@ -85,5 +87,6 @@
     </div>
   </div>
 </section>
+
 {% endblock %}
 
