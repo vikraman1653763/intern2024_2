@@ -3,9 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
-from webforms import loginForm, registerForm, projectName
+from webforms import loginForm, registerForm, projectName, changeUserPassword
 from datetime import datetime
-from functools import wraps
+from functools import wraps 
 
 from geoserver.catalog import Catalog
 import folium
@@ -146,6 +146,11 @@ def login():
                 
                 login_user(user)
                 flash(" logged in successfully !! ", "success")
+
+                if password == "default": #TODO : REDIRECT TO ANOTHER URL 
+                    
+                    return redirect(url_for('changePassword'))
+                    
                 return redirect(url_for('dashboard'))
             
             else:
@@ -153,11 +158,41 @@ def login():
         
         else:
             flash(" Invalid Email/Password !! " , "error_msg")            
-
-    # else:
-    #     flash('Invalid email address. Please enter a valid email address.', 'error_msg')    
+        
 
     return render_template("login.html" , LoginForm=LoginForm)
+
+@app.route('/changePassword' , methods=('GET' , 'POST'))
+@login_required
+def changePassword():
+
+    pwd_to_update = current_user
+    Change_pwd = changeUserPassword()
+
+        
+    if Change_pwd.validate_on_submit():
+        
+        hashed_pw = generate_password_hash(Change_pwd.password_1.data  , "sha256")
+
+        pwd_to_update.password = hashed_pw
+        Change_pwd.password_1.data = ''
+
+        try:
+
+            db.session.commit()
+            flash("Password updated successfully", "success")
+
+            return redirect(url_for('dashboard'))
+
+        except:
+            
+            flash(" Some Occurred Please try again " , "error")
+            return redirect(url_for('dashboard'))
+
+    else:
+    
+    
+        return render_template('change_password.html' , Change_pwd=Change_pwd)
 
 
 @app.route('/dashboard')
@@ -258,7 +293,9 @@ def project(id):
         abort(403)
     
 @app.route("/dashboard/application/map")
+@login_required
 def map():
+
 
     return render_template('map.html')
 
