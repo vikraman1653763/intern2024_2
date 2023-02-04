@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_dff6ab3123d1b8e7b6baf600c36b423f {
+                #map_339829e2ab82bf492ff9449e74d8a724 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -39,14 +39,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_dff6ab3123d1b8e7b6baf600c36b423f" ></div>
+            <div class="folium-map" id="map_339829e2ab82bf492ff9449e74d8a724" ></div>
         
 </body>
 <script>
     
     
-            var map_dff6ab3123d1b8e7b6baf600c36b423f = L.map(
-                "map_dff6ab3123d1b8e7b6baf600c36b423f",
+            var map_339829e2ab82bf492ff9449e74d8a724 = L.map(
+                "map_339829e2ab82bf492ff9449e74d8a724",
                 {
                     center: [22.9734, 78.6569],
                     crs: L.CRS.EPSG3857,
@@ -60,38 +60,38 @@
 
         
     
-            var tile_layer_12846cf4a50a2a898501ca99075f668e = L.tileLayer(
+            var tile_layer_f223ede979fe6a09f3e1ef098e78056c = L.tileLayer(
                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "Data by \u0026copy; \u003ca target=\"_blank\" href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
-            ).addTo(map_dff6ab3123d1b8e7b6baf600c36b423f);
+            ).addTo(map_339829e2ab82bf492ff9449e74d8a724);
         
     
-            var macro_element_9f59979d800dfb2d751285e22c623836 = L.tileLayer.wms(
-                "http://127.0.0.1:8080/geoserver/Demouser/wms",
+            var macro_element_fa90784ed1a1a80615bb2929fb5221c0 = L.tileLayer.wms(
+                "http://192.168.43.178:8080/geoserver/Demouser/wms",
                 {"attribution": "", "format": "image/png", "layers": "Demouser:2011_dist", "styles": "", "transparent": true, "version": "1.1.1"}
-            ).addTo(map_dff6ab3123d1b8e7b6baf600c36b423f);
+            ).addTo(map_339829e2ab82bf492ff9449e74d8a724);
         
     
-            var macro_element_79cfbdd19afeeca4c7a7545d4b63bae7 = L.tileLayer.wms(
-                "http://127.0.0.1:8080/geoserver/Demouser/wms",
+            var macro_element_c266e22d93c5de61c8baa86e3b47c0a6 = L.tileLayer.wms(
+                "http://192.168.43.178:8080/geoserver/Demouser/wms",
                 {"attribution": "", "format": "image/png", "layers": "Demouser:admin2", "styles": "", "transparent": true, "version": "1.1.1"}
-            ).addTo(map_dff6ab3123d1b8e7b6baf600c36b423f);
+            ).addTo(map_339829e2ab82bf492ff9449e74d8a724);
         
     
-            var layer_control_5a171ebe50ce30b4df3700ed9802def7 = {
+            var layer_control_76ec3772415e7af28373fad015984bf5 = {
                 base_layers : {
-                    "openstreetmap" : tile_layer_12846cf4a50a2a898501ca99075f668e,
+                    "openstreetmap" : tile_layer_f223ede979fe6a09f3e1ef098e78056c,
                 },
                 overlays :  {
-                    "2011_dist" : macro_element_9f59979d800dfb2d751285e22c623836,
-                    "admin2" : macro_element_79cfbdd19afeeca4c7a7545d4b63bae7,
+                    "2011_dist" : macro_element_fa90784ed1a1a80615bb2929fb5221c0,
+                    "admin2" : macro_element_c266e22d93c5de61c8baa86e3b47c0a6,
                 },
             };
             L.control.layers(
-                layer_control_5a171ebe50ce30b4df3700ed9802def7.base_layers,
-                layer_control_5a171ebe50ce30b4df3700ed9802def7.overlays,
+                layer_control_76ec3772415e7af28373fad015984bf5.base_layers,
+                layer_control_76ec3772415e7af28373fad015984bf5.overlays,
                 {"autoZIndex": true, "collapsed": true, "position": "topright"}
-            ).addTo(map_dff6ab3123d1b8e7b6baf600c36b423f);
+            ).addTo(map_339829e2ab82bf492ff9449e74d8a724);
         
 </script>
 </html>

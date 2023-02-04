@@ -1,18 +1,13 @@
     
-
-
-
 .project_container {
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: space-evenly; */
-
+    gap: 1rem;
   }
   
 .project_container .card {
-    /* width: calc(33.33% - 20px); */
-    width: calc(25% - 20px);
-    margin: 10px;
+    width: calc(25% - 12px);
+
   }
   
 .project_container .card-body {
@@ -45,9 +40,6 @@
 
 .login-container .card{
 
-    /* background-color: #EB6440; */
-    /* color: white; */
-    /* background-image: url('/static/images/bg2.webp'); */
     background-size: cover;
     background-position: center
 
@@ -60,11 +52,26 @@ iframe {
     width: 100%;
     min-height: 100%;
   }
-  
-.gradient-custom {
-    background: #6a11cb;
-    
-    background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
-    
-    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+
+@media (max-width: 1200px){
+
+  .project_container .card {
+    width: calc(33.3% - 1%);
+
+  }
+} 
+
+@media (max-width: 1100px) {
+
+  .project_container .card {
+    width: calc(50% - 1%);
+  }
+} 
+
+@media (max-width: 600px) {
+
+  .project_container .card {
+    width: calc(100% - 5px);
+  }
+
 }

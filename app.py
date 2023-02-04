@@ -147,7 +147,7 @@ def login():
                 login_user(user)
                 flash(" logged in successfully !! ", "success")
 
-                if password == "default": #TODO : REDIRECT TO ANOTHER URL 
+                if password == "default":
                     
                     return redirect(url_for('changePassword'))
                     
@@ -270,10 +270,13 @@ def project(id):
     if lay.user.username == current_user.username:     
 
         map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
+        
+        ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
 
         for i in lay.data:
+            # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+            WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
 
-            WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
                             layers= workspace+':'+i.name,
                             name=i.name,
                             fmt='image/png',
@@ -395,4 +398,5 @@ def delete_project(id):
         return redirect(request.referrer)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=5000)
+    # app.run(host="0.0.0.0", debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=8080)

@@ -92,35 +92,29 @@
 
         {% for category, message in messages %}
 
-          {% if category == "success" %}
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
+        
+        {% if category == "success" %}
+              <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: absolute; z-index: 1; width: 100%;" >
                   <strong> {{message}} </strong> 
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>      
               </div> 
-
           {% elif category == "error_msg" %}
-
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong> {{message}} </strong> 
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div> 
-
-          {% elif category == "info" %}
-
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong> {{message}} </strong> 
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div> 
           
-          {% elif category == "ValidationError" %}
+              <div class="alert alert-danger alert-dismissible fade show" role="alert" style="position: absolute; z-index: 1; width: 100%;">
+                <strong> {{message}} </strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div> 
 
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong> {{message}} </strong> 
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div> 
-
-          {% endif %}
-        {% endfor %}
+            {% elif category == "info" %}
+            
+              
+              <div class="alert alert-warning alert-dismissible fade show" role="alert"  style="position: absolute; z-index: 1; width: 100%;" >
+                <strong> {{message}} </strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div> 
+            
+            {% endif %}
+          {% endfor %}
       {% endwith %}
                        
 
