@@ -11,6 +11,12 @@ from geoserver.catalog import Catalog
 import folium
 from folium.raster_layers import WmsTileLayer
 
+# TODO: 
+    # - ADD PASSWORD VIEW BUTTON
+
+
+
+
 
 # id 2 Admin hariharan141200@gmail.com 
 cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
@@ -273,9 +279,11 @@ def project(id):
         
         ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
 
+#  192.168.1.47 
         for i in lay.data:
             # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-            WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
+            # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
+            WmsTileLayer(url='http://192.168.1.47:8080/geoserver/' + workspace +'/wms',
 
                             layers= workspace+':'+i.name,
                             name=i.name,
@@ -398,5 +406,6 @@ def delete_project(id):
         return redirect(request.referrer)
 
 if __name__ == "__main__":
-    # app.run(host="0.0.0.0", debug=True, port=5000)
-    app.run(host="0.0.0.0", debug=True, port=8080)
+    app.run(host="0.0.0.0", debug=True, port=5000)
+    # app.run(host="0.0.0.0", debug=True, port=8080)
+
