@@ -15,9 +15,6 @@ from folium.raster_layers import WmsTileLayer
     # - ADD PASSWORD VIEW BUTTON
 
 
-
-
-
 # id 2 Admin hariharan141200@gmail.com 
 cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
 
@@ -269,39 +266,40 @@ def add_layer(id):
 @login_required
 def project(id):
   
-    workspace = current_user.username
+       return render_template("layout.html")
+#     workspace = current_user.username
     
-    lay = Project.query.get_or_404(id)
+#     lay = Project.query.get_or_404(id)
 
-    if lay.user.username == current_user.username:     
+#     if lay.user.username == current_user.username:     
 
-        map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
+#         map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
         
-        ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
+#         ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
 
-#  192.168.1.47 
-        for i in lay.data:
-            # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-            # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
-            WmsTileLayer(url='http://192.168.1.47:8080/geoserver/' + workspace +'/wms',
+# #  192.168.1.47 x 
+#         for i in lay.data:
+#             # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+#             # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
+#             WmsTileLayer(url='http://192.168.1.47:8080/geoserver/' + workspace +'/wms',
 
-                            layers= workspace+':'+i.name,
-                            name=i.name,
-                            fmt='image/png',
-                            overlay=True,
-                            transparent=True,
-                            control=True
+#                             layers= workspace+':'+i.name,
+#                             name=i.name,
+#                             fmt='image/png',
+#                             overlay=True,
+#                             transparent=True,
+#                             control=True
 
-                            ).add_to(map)
+#                             ).add_to(map)
 
-        folium.LayerControl().add_to(map)
+#         folium.LayerControl().add_to(map)
 
-        map.save('templates/map.html')
+#         map.save('templates/map.html')
     
-        return render_template("layout.html")
+#         return render_template("layout.html")
 
-    else:
-        abort(403)
+#     else:
+#         abort(403)
     
 @app.route("/dashboard/application/map")
 @login_required
