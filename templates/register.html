@@ -43,10 +43,13 @@
                 <label class="mb-2 " for="form2Example18">E-Mail Address</label>
                 
                 {{RegisterForm.email(id="form2Example18", class="form-control")}}
-
-                <div class="invalid-feedback">
-                  Email is invalid
-                </div>
+                
+                {% for error in RegisterForm.email.errors %}
+                <span style="color:red;">
+       
+                    {{error}}
+                </span>
+                {% endfor %}
               </div>
                           
               <div class="mb-3">

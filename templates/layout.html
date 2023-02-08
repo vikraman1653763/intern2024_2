@@ -14,13 +14,17 @@
 
 <script src="/static/resources/ol/ol.js"></script>
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
-<!-- <script src="/static/js/main.js"></script> -->
 
-<script>
-    
+<script  type="text/javascript">
+
+        var lay = JSON.parse('{{ lay | safe }}')
+        var workspace = JSON.parse('{{ workspace | safe}}')
+
         var mapView = new ol.View({
-            center: ol.proj.fromLonLat([80.2707 ,13.0827]),
+            // center: ol.proj.fromLonLat([80.2707 ,13.0827]),
+            center: ol.proj.fromLonLat([ 79.5235 , 12.3768 ]),
             zoom: 4.5
+            // zoom: 12
         })
 
 
@@ -45,6 +49,7 @@
         });
 
         // map.addLayer(osmTile);
+
         var baseGroup = new ol.layer.Group({
             title: 'base map',
             layers : [osmTile, noneTile]
@@ -52,46 +57,113 @@
 
         map.addLayer(baseGroup);
 
-        var India_state = new ol.layer.Tile({
-            title: 'India States',
-            source: new ol.source.TileWMS({
-            url: 'http://127.0.0.1:8080/geoserver/GISSimplified/wms',
-            params: {'LAYERS': 'GISSimplified:admin2', 'TILED': 'true'},
-            serverType: 'geoserver',
-            visible: true
+        var layer_names = [];
+
+        for(let i = 0; i < lay.length ; i++){
+                    
+            current = window[lay[i]]
+
+            if (lay[i] == "Kilnamandi_DSM" || lay[i] == "DSm"){
+                console.log("RASTER")
+
+                current = new ol.layer.Image({
+
+                    title: lay[i],
+                    source: new ol.source.ImageWMS({
+                    url: 'http://127.0.0.1:8080/geoserver/' + workspace  + '/wms',
+                    params: {'LAYERS': workspace + ':' + lay[i]},
+                    ratio: 5,
+                    serverType: 'geoserver',
+                    visible: true
+                    })
+
+                    });
+
+                }
+
+            else{
+             
+                console.log("VECTOR")
+    
+                    current = new ol.layer.Tile({
+
+                        title: lay[i],
+                        source: new ol.source.TileWMS({
+                        url: 'http://127.0.0.1:8080/geoserver/' + workspace  + '/wms',
+                        params: {'LAYERS': workspace + ':' + lay[i], 'TILED': 'true'},
+                        serverType: 'geoserver',
+                        visible: true
+                    })
+                    
+                });
+                
+            }
+            console.log(lay[i]) 
+            console.log(workspace + ':' + lay[i])
+            console.log('http://127.0.0.1:8080/geoserver/' + workspace  + '/wms') 
+
+            console.log('\n')
+
+            layer_names.push(current)
+        }
+        
+        var overlayGroup = new ol.layer.Group({ 
+
+            title:'overlay group',
+            layers : layer_names
+
             })
-        });
 
-        var Eclipse = new ol.layer.Tile({
-            title: 'ECLIPSE',
-            source: new ol.source.TileWMS({
-            url: 'http://127.0.0.1:8080/geoserver/ne/wms',
-            params: {'LAYERS': 'ne:boundary_lines	', 'TILED': 'true'},
-            serverType: 'geoserver',
-            visible: true
-            })
-        });
+        map.addLayer(overlayGroup);        
+
+        // var overlayGroup = new ol.layer.Group({ 
+
+        //     title:'overlay group',
+        //     layers : [ one]
+
+        // })
+
+        // map.addLayer(overlayGroup);
+
+        // var India_state = new ol.layer.Tile({
+        //     title: 'India States',
+        //     source: new ol.source.TileWMS({
+        //     url: 'http://127.0.0.1:8080/geoserver/GISSimplified/wms',
+        //     params: {'LAYERS': 'GISSimplified:admin2', 'TILED': 'true'},
+        //     serverType: 'geoserver',
+        //     visible: true
+        //     })
+        // });
+
+        // var Eclipse = new ol.layer.Tile({
+        //     title: 'ECLIPSE',
+        //     source: new ol.source.TileWMS({
+        //     url: 'http://127.0.0.1:8080/geoserver/ne/wms',
+        //     params: {'LAYERS': 'ne:boundary_lines	', 'TILED': 'true'},
+        //     serverType: 'geoserver',
+        //     visible: true
+        //     })
+        // });
 
 
-        // map.addLayer(India_state);
+        // // map.addLayer(India_state);
 
-        var USA = new ol.layer.Tile({ 
-            title: 'USA',
-            source: new ol.source.TileWMS({
-            url: 'http://127.0.0.1:8080/geoserver/adUcation/wms',
-            params: {'LAYERS': 'adUcation:states', 'TILED': 'true'},
-            serverType: 'geoserver',
-            visible: true
-            })
-        });
+        // var USA = new ol.layer.Tile({ 
+        //     title: 'USA',
+        //     source: new ol.source.TileWMS({
+        //     url: 'http://127.0.0.1:8080/geoserver/adUcation/wms',
+        //     params: {'LAYERS': 'adUcation:states', 'TILED': 'true'},
+        //     serverType: 'geoserver',
+        //     visible: true
+        //     })
+        // });
 
         // map.addLayer(USA);
-        var overlayGroup = new ol.layer.Group({ 
-            title:'overlay group',
-            layers : [India_state , USA , Eclipse]
-        })
+        // var overlayGroup = new ol.layer.Group({ 
+        //     title:'overlay group',
+        //     layers : [ India_state , USA , Eclipse]
+        // })
 
-        map.addLayer(overlayGroup);
 
 
         var layerSwitcher = new ol.control.LayerSwitcher({

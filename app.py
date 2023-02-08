@@ -1,4 +1,4 @@
-from flask import Flask,  render_template , request , flash , redirect , url_for , abort
+from flask import Flask,  render_template , request , flash , redirect , url_for , abort, json, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -9,14 +9,23 @@ from functools import wraps
 
 from geoserver.catalog import Catalog
 import folium
-from folium.raster_layers import WmsTileLayer
+# from folium import plugins
+from folium.raster_layers import WmsTileLayer , ImageOverlay
 
 # TODO: 
     # - ADD PASSWORD VIEW BUTTON
 
+    # - work in ortho 
+
+    # - ADD Features to map 
+
+    # - ADD layer type in Layer Data
+
 
 # id 2 Admin hariharan141200@gmail.com 
 cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
+
+
 
 ADMIN = 2
 
@@ -111,6 +120,7 @@ def register():
 
             cat.create_workspace(username, username)
 
+            flash(" User Added Successfully !!! ")
         RegisterForm.email.data = ''
         RegisterForm.username.data = ''
         RegisterForm.password.data = ''
@@ -266,40 +276,53 @@ def add_layer(id):
 @login_required
 def project(id):
   
-       return render_template("layout.html")
-#     workspace = current_user.username
+    workspace = current_user.username
     
-#     lay = Project.query.get_or_404(id)
+    lay = Project.query.get_or_404(id)
 
-#     if lay.user.username == current_user.username:     
+    if lay.user.username == current_user.username:     
 
-#         map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
-        
-#         ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
+        map = folium.Map(location=[12.388754 , 79.496579], zoom_start=4.5)
+                        
 
-# #  192.168.1.47 x 
-#         for i in lay.data:
-#             # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-#             # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
-#             WmsTileLayer(url='http://192.168.1.47:8080/geoserver/' + workspace +'/wms',
+        for i in lay.data:
 
-#                             layers= workspace+':'+i.name,
-#                             name=i.name,
-#                             fmt='image/png',
-#                             overlay=True,
-#                             transparent=True,
-#                             control=True
+            # ImageOverlay(
+            #     image='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+            #     bounds=[[-90, -180], [90, 180]],
+            #     mercator_project=True,
+            #     opacity=0.5,
+            #     name=i.name,
+            # ).add_to(map)
+            WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
 
-#                             ).add_to(map)
+                            layers= workspace+':'+i.name,
+                            name=i.name,
+                            fmt='image/png',
+                            overlay=True,
+                            transparent=True,
+                            control=True
 
-#         folium.LayerControl().add_to(map)
+                            ).add_to(map)
 
-#         map.save('templates/map.html')
+        folium.LayerControl().add_to(map)
+
+        map.save('templates/map.html')
     
-#         return render_template("layout.html")
+        return render_template("folium.html")
 
-#     else:
-#         abort(403)
+
+
+        # check = []
+        # for i in lay.data:
+        #     check.append(i.name)
+
+        # print(check)
+
+        # return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace))
+
+    else:
+        abort(403)
     
 @app.route("/dashboard/application/map")
 @login_required
@@ -402,6 +425,10 @@ def delete_project(id):
     else:
         flash("Project Not Found" , "info")
         return redirect(request.referrer)
+
+
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5000)
