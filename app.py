@@ -21,7 +21,7 @@ from waitress import serve
 
     # - work in ortho 
 
-# ngrok_ip = "https://83ab-61-2-143-247.in.ngrok.io/"
+# ngrok_ip = "https://7fd2-61-2-143-247.in.ngrok.io/"
 ngrok_ip = "http://192.168.1.65:8080"
 
 # id 2 Admin hariharan141200@gmail.com 
@@ -296,41 +296,6 @@ def project(id):
     lay = Project.query.get_or_404(id)
 
     if lay.user.username == current_user.username:     
-
-        # map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
-        
-
-        print("GEOSERVER MAPPING : " , ngrok_ip + '//geoserver/' + workspace +'/wms')
-        print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
-        print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
-        print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
-        print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
-        print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
-        print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
-
-
-        # for i in lay.data:
-
-        #     # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-        #     # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
-        #     WmsTileLayer(url=ngrok_ip + '/geoserver/' + workspace +'/wms',
-
-        #                     layers= workspace+':'+i.name,
-        #                     name=i.name,
-        #                     fmt='image/png',
-        #                     overlay=True,
-        #                     transparent=True,
-        #                     control=True
-
-        #                     ).add_to(map)
-
-        # folium.LayerControl().add_to(map)
-
-        # map.save('templates/map.html')
-    
-        # return render_template("folium.html")
-
-
 
         check = []
         for i in lay.data:

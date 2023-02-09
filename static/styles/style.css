@@ -10,6 +10,43 @@ body{
     overflow: hidden;
 }
 
+
+.header{
+    grid-area: header;
+    font-size: 25px;
+    height: 50px;
+
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+.grid-container {
+  display: grid;
+  grid-template-areas: 'header header' 'left right' 'footer footer';
+}
+
+.left {
+  grid-area: left;
+  width: 20vw;
+  height: 100vh;
+
+  border: 1px solid red;
+}
+
+
+.toc{
+  margin-left: 10px;
+}
+
+.right{
+
+  grid-area: right;
+  width: 80vw;
+  height: 100vh;
+  border: 5px solid blue;
+}
+
+
 #map {
     position: absolute;
     width: 100vw;
@@ -22,15 +59,25 @@ body{
     right: auto;
     bottom: 5px;
     left: 85%;
-    /* transform: translateX(-50%); */
+    transform: translateX(-50%);
     /* border: 1px solid grey; */
     border-radius: 10px;
     padding: 5px;
-    /* background-color: rgba(225, 225,225, 0.4); */
+    background-color: rgba(225, 225,225, 0.4);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 12px;
     font-weight: bolder;
 }
+
+.scalebar{
+  top: auto;
+  right: auto;
+  bottom: 5px;
+  left: 85%;
+  transform: translateX(-50%);
+  
+}
+
 
 .ol-popup {
     position: absolute;
