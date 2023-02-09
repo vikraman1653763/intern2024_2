@@ -282,44 +282,13 @@ def project(id):
 
     if lay.user.username == current_user.username:     
 
-        map = folium.Map(location=[12.388754 , 79.496579], zoom_start=4.5)
-                        
-
+        check = []
         for i in lay.data:
+            check.append(i.name)
 
-            # ImageOverlay(
-            #     image='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-            #     bounds=[[-90, -180], [90, 180]],
-            #     mercator_project=True,
-            #     opacity=0.5,
-            #     name=i.name,
-            # ).add_to(map)
-            WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+        print(check)
 
-                            layers= workspace+':'+i.name,
-                            name=i.name,
-                            fmt='image/png',
-                            overlay=True,
-                            transparent=True,
-                            control=True
-
-                            ).add_to(map)
-
-        folium.LayerControl().add_to(map)
-
-        map.save('templates/map.html')
-    
-        return render_template("folium.html")
-
-
-
-        # check = []
-        # for i in lay.data:
-        #     check.append(i.name)
-
-        # print(check)
-
-        # return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace))
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace))
 
     else:
         abort(403)
