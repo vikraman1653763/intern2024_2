@@ -1,4 +1,4 @@
-from flask import Flask,  render_template , request , flash , redirect , url_for , abort
+from flask import Flask,  render_template , request , flash , redirect , url_for , abort, json, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -9,7 +9,8 @@ from functools import wraps
 
 from geoserver.catalog import Catalog
 import folium
-from folium.raster_layers import WmsTileLayer
+# from folium import plugins
+from folium.raster_layers import WmsTileLayer , ImageOverlay
 
 
 from waitress import serve 
@@ -18,8 +19,10 @@ from waitress import serve
 # TODO: 
     # - ADD PASSWORD VIEW BUTTON
 
+    # - work in ortho 
 
-ngrok_ip = "https://d619-61-2-143-247.in.ngrok.io/"
+# ngrok_ip = "https://83ab-61-2-143-247.in.ngrok.io/"
+ngrok_ip = "http://192.168.1.65:8080"
 
 # id 2 Admin hariharan141200@gmail.com 
 # cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
@@ -35,14 +38,16 @@ print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
 print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
 # print("GEOSERVER URL : ", cat.get_info())
 
+
+
 ADMIN = 2
 
 app = Flask(__name__)
 
-
+# database_ip = "192.168.1.65:8080"
 app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@localhost/test'
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@localhost/nevarSystems'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@' + ngrok_ip + '/nevarSystems'
+# app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@' + database_ip + '/nevarSystems'
 app.config['SECRET_KEY'] = "SECRET KEY"
 
 
@@ -130,6 +135,7 @@ def register():
 
             cat.create_workspace(username, username)
 
+            flash(" User Added Successfully !!! ")
         RegisterForm.email.data = ''
         RegisterForm.username.data = ''
         RegisterForm.password.data = ''
@@ -291,7 +297,7 @@ def project(id):
 
     if lay.user.username == current_user.username:     
 
-        map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
+        # map = folium.Map(location=[22.9734 , 78.6569], zoom_start=5)
         
 
         print("GEOSERVER MAPPING : " , ngrok_ip + '//geoserver/' + workspace +'/wms')
@@ -303,26 +309,36 @@ def project(id):
         print("GEOSERVER MAPPING : " , ngrok_ip + '/geoserver/' + workspace +'/wms')
 
 
-        for i in lay.data:
+        # for i in lay.data:
 
-            # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-            # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
-            WmsTileLayer(url=ngrok_ip + '/geoserver/' + workspace +'/wms',
+        #     # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+        #     # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
+        #     WmsTileLayer(url=ngrok_ip + '/geoserver/' + workspace +'/wms',
 
-                            layers= workspace+':'+i.name,
-                            name=i.name,
-                            fmt='image/png',
-                            overlay=True,
-                            transparent=True,
-                            control=True
+        #                     layers= workspace+':'+i.name,
+        #                     name=i.name,
+        #                     fmt='image/png',
+        #                     overlay=True,
+        #                     transparent=True,
+        #                     control=True
 
-                            ).add_to(map)
+        #                     ).add_to(map)
 
-        folium.LayerControl().add_to(map)
+        # folium.LayerControl().add_to(map)
 
-        map.save('templates/map.html')
+        # map.save('templates/map.html')
     
-        return render_template("layout.html")
+        # return render_template("folium.html")
+
+
+
+        check = []
+        for i in lay.data:
+            check.append(i.name)
+
+        print(check)
+
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip))
 
     else:
         abort(403)
@@ -430,7 +446,7 @@ def delete_project(id):
         return redirect(request.referrer)
 
 
-dev = False
+dev = True
 
 
 if __name__ == "__main__":
