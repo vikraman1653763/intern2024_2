@@ -29,13 +29,6 @@ ngrok_ip = "http://192.168.1.55:8080"
 cat = Catalog( ngrok_ip + "/geoserver/rest/", username="admin", password="geoserver")
 
 
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
-print("GEOSERVER URL : " , ngrok_ip + "/geoserver/rest/")
 # print("GEOSERVER URL : ", cat.get_info())
 
 
@@ -291,56 +284,56 @@ def add_layer(id):
 @login_required
 def project(id):
 
+#     workspace = current_user.username
+    
+#     lay = Project.query.get_or_404(id)
+
+#     if lay.user.username == current_user.username:     
+
+#         map = folium.Map(location=[8.387088 , 77.007328], zoom_start=15)
+        
+#         ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
+
+# #  192.168.1.47 
+#         for i in lay.data:
+#             # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
+#             # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
+#             WmsTileLayer(url='http://192.168.1.55:8080/geoserver/' + workspace +'/wms',
+
+#                             layers= workspace+':'+i.name,
+#                             name=i.name,
+#                             fmt='image/png',
+#                             overlay=True,
+#                             transparent=True,
+#                             control=True
+
+#                             ).add_to(map)
+
+#         folium.LayerControl().add_to(map)
+
+#         map.save('templates/map.html')
+    
+#         return render_template("folium.html")
+
+#     else:
+#         abort(403)
+  
     workspace = current_user.username
     
     lay = Project.query.get_or_404(id)
 
     if lay.user.username == current_user.username:     
 
-        map = folium.Map(location=[8.387088 , 77.007328], zoom_start=15)
-        
-        ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
-
-#  192.168.1.47 
+        check = []
         for i in lay.data:
-            # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-            # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
-            WmsTileLayer(url='http://192.168.1.47:8080/geoserver/' + workspace +'/wms',
+            check.append(i.name)
 
-                            layers= workspace+':'+i.name,
-                            name=i.name,
-                            fmt='image/png',
-                            overlay=True,
-                            transparent=True,
-                            control=True
+        print(check)
 
-                            ).add_to(map)
-
-        folium.LayerControl().add_to(map)
-
-        map.save('templates/map.html')
-    
-        return render_template("folium.html")
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip))
 
     else:
         abort(403)
-  
-    # workspace = current_user.username
-    
-    # lay = Project.query.get_or_404(id)
-
-    # if lay.user.username == current_user.username:     
-
-    #     check = []
-    #     for i in lay.data:
-    #         check.append(i.name)
-
-    #     print(check)
-
-    #     return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip))
-
-    # else:
-    #     abort(403)
     
 @app.route("/dashboard/application/map")
 @login_required
