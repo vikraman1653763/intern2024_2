@@ -16,19 +16,6 @@
 
             <h3>layers</h3>
 
-            <input type="checkbox" id="osm" value="Open Street Map" checked onchange="toggleLayer(event)">
-            <label for="osm"> Open Street Map </label>
-            <br>
-
-            
-            <input type="checkbox" id="admin2" value="admin2" checked onchange="toggleLayer(event)">
-            <label for="osm"> admin2</label>
-            <br>
-
-            
-            <input type="checkbox" id="2011_dist" value="2011_dist" checked onchange="toggleLayer(event)">
-            <label for="osm"> 2011_dist </label>
-            <br>
 
         </div>
     </div>
@@ -44,8 +31,42 @@
     </div>
 
 </div> -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
 
-<div id="map" style="width: 100%; height: 100vh;"></div>
+
+<div class="container-fluid"  >
+    <div class="row">
+        <div class="col-sm-2" id="sidebar">
+            <h3>Layers</h3>
+
+            <input type="checkbox" id="osm" value="Open Street Map" checked onchange="toggleLayer(event)">
+            <label for="osm"> Open Street Map </label>
+            <br>
+
+            {% for l in layer_list %}
+
+                <input type="checkbox" id="{{l}}" value="{{l}}" checked onchange="toggleLayer(event)">
+                <label for="{{l}}"> {{l}}</label>
+                <br>
+
+            {% endfor %}
+           
+        </div>
+
+        <div class="col-sm-10" style="padding: 0%; margin: 0%;">
+            
+            
+            <div id="map" style="width: 100%; height: 100vh;"></div>
+            <button id="toggle-btn" style="position:relative; z-index: 2; width: 40px;">
+                <i class="fa fa-times" id="toggle-icon" ></i>
+            </button>
+            
+        </div>
+
+    </div>
+</div>
+
+
 <!-- 
 <div id="popup" class="ol-popup">
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -94,8 +115,46 @@
 <script  type="text/javascript">
 
 
+        $(document).ready(function() {
+            $("#toggle-btn").click(function() {
+                $("#sidebar").toggle();
+                if ($("#toggle-icon").hasClass("fa-times")) {
+                $("#toggle-icon").removeClass("fa-times");
+                $("#toggle-icon").addClass("fa-bars");
+                } else {
+                $("#toggle-icon").removeClass("fa-bars");
+                $("#toggle-icon").addClass("fa-times");
+                }
+            });
+        });
+        // fa fa-bars
 
+        function toggleLayer(eve){
+
+            var lyername = eve.target.value;
+            var checkedStatus = eve.target.checked;
+            var lyrList = map.getLayers();
+            // var lyrList = layer_names;
+
+            console.log(lyername , checkedStatus , lyrList);
+
+
+            lyrList.forEach(function(element) {
                 
+                console.log(element.get('title'));
+                if(lyername == element.get('title')){
+
+                    console.log(element.get('title'));
+
+                    element.setVisible(checkedStatus);
+                }
+                
+            });
+            
+        }
+
+
+                        
         var lay = JSON.parse('{{ lay | safe }}')
         var workspace = JSON.parse('{{ workspace | safe}}')
         var ngrok_ip = JSON.parse('{{ ngrok_ip | safe}}')
@@ -162,25 +221,35 @@
 
             layer_names.push(current)
 
-        }
+            map.addLayer(current);
 
+        }
+        
+        // http://192.168.1.55:8080/geoserver/webGis/wms?service=WMS&version=1.1.0&request=GetMap&layers=webGis%3Aroad&bbox=720923.375%2C927372.0625%2C721371.375%2C928005.8125&width=542&height=768&srs=EPSG%3A4326&styles=&format=application/openlayers
+        // http://192.168.1.55:8080/geoserver/webGis/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=webGis%3Ashed&TILED=true&WIDTH=256&HEIGHT=256&CRS=EPSG%3A3857&STYLES=&BBOX=3757032.814272985%2C0%2C5009377.085697313%2C1252344.2714243277
+        
         // map.addLayer(IndiaStTile);
 
-        var overlayGroup = new ol.layer.Group({
-            title: 'Overlays',
-            fold: true,
-            layers: layer_names
-        });
+        // var overlayGroup = new ol.layer.Group({
+        //     title: 'Overlays',
+        //     fold: true,
+        //     layers: layer_names
+        // });
 
-        map.addLayer(overlayGroup);
+        // map.addLayer(overlayGroup);
 
-        var layerSwitcher = new ol.control.LayerSwitcher({
-            activationMode: 'click',
-            startActive: false,
-            groupSelectStyle: 'children'
-        });
+        // var layerSwitcher = new ol.control.LayerSwitcher({
+        //     activationMode: 'click',
+        //     startActive: false,
+        //     groupSelectStyle: 'children'
+        // });
 
-        map.addControl(layerSwitcher);
+        // map.addControl(layerSwitcher);
+
+
+
+
+        
 </script>
 
     
