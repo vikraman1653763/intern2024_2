@@ -7,7 +7,7 @@
 body{
     /* margin: 0; */
     /* padding: 0; */
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 
@@ -86,7 +86,8 @@ body{
     padding: 15px;
     border-radius: 10px;
     border: 1px solid #cccccc;
-    bottom: 12px;
+    bottom: 2px;
+    /* bottom: 12px; */
     left: -50px;
     min-width: 280px;
   }

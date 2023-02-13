@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_598948bfb25e378b9bb3a20dfaa2dde2 {
+                #map_cbdd977916728f35ce313498f70475af {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -39,18 +39,18 @@
 <body>
     
     
-            <div class="folium-map" id="map_598948bfb25e378b9bb3a20dfaa2dde2" ></div>
+            <div class="folium-map" id="map_cbdd977916728f35ce313498f70475af" ></div>
         
 </body>
 <script>
     
     
-            var map_598948bfb25e378b9bb3a20dfaa2dde2 = L.map(
-                "map_598948bfb25e378b9bb3a20dfaa2dde2",
+            var map_cbdd977916728f35ce313498f70475af = L.map(
+                "map_cbdd977916728f35ce313498f70475af",
                 {
-                    center: [22.9734, 78.6569],
+                    center: [8.387088, 77.007328],
                     crs: L.CRS.EPSG3857,
-                    zoom: 5,
+                    zoom: 15,
                     zoomControl: true,
                     preferCanvas: false,
                 }
@@ -60,52 +60,101 @@
 
         
     
-            var tile_layer_8b15745f4a9f263650dc9e946e4e8a63 = L.tileLayer(
+            var tile_layer_9ac406950a20085e4bd16a611e9320df = L.tileLayer(
                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "Data by \u0026copy; \u003ca target=\"_blank\" href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca target=\"_blank\" href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
-            ).addTo(map_598948bfb25e378b9bb3a20dfaa2dde2);
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
         
     
-            var macro_element_ed2c9d012c7872cde2ca1dfd05ee69c0 = L.tileLayer.wms(
-                "https://d619-61-2-143-247.in.ngrok.io//geoserver/Demouser/wms",
-                {"attribution": "", "format": "image/png", "layers": "Demouser:2011_dist", "styles": "", "transparent": true, "version": "1.1.1"}
-            ).addTo(map_598948bfb25e378b9bb3a20dfaa2dde2);
+            var macro_element_4dede6cad8d616f6076c62df7dc0f6b9 = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:100mbuffer", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
         
     
-            var macro_element_39d2de7cfa518b59737f2e596ad968ac = L.tileLayer.wms(
-                "https://d619-61-2-143-247.in.ngrok.io//geoserver/Demouser/wms",
-                {"attribution": "", "format": "image/png", "layers": "Demouser:admin2", "styles": "", "transparent": true, "version": "1.1.1"}
-            ).addTo(map_598948bfb25e378b9bb3a20dfaa2dde2);
+            var macro_element_b9c6ff21a16a32e460157f28eea29f49 = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:300mbuffer", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
         
     
-            var macro_element_193367c6841f94ecf36e607d43a51489 = L.tileLayer.wms(
-                "https://d619-61-2-143-247.in.ngrok.io//geoserver/Demouser/wms",
-                {"attribution": "", "format": "image/png", "layers": "Demouser:Kilnamandi_DSM", "styles": "", "transparent": true, "version": "1.1.1"}
-            ).addTo(map_598948bfb25e378b9bb3a20dfaa2dde2);
+            var macro_element_39e5f4eea4377c12833e11a79ceb716d = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:350m", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
         
     
-            var macro_element_74c63cf3f097998b4813875f79d8a945 = L.tileLayer.wms(
-                "https://d619-61-2-143-247.in.ngrok.io//geoserver/Demouser/wms",
-                {"attribution": "", "format": "image/png", "layers": "Demouser:DSm", "styles": "", "transparent": true, "version": "1.1.1"}
-            ).addTo(map_598948bfb25e378b9bb3a20dfaa2dde2);
+            var macro_element_6da70eaacc24791cb4b836d28fe5291b = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:buidings", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
         
     
-            var layer_control_7853fd9ccde3af9d07dd0a0e36195ca2 = {
+            var macro_element_5cacda52655c0197a966a90f1c64fb83 = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:buildings", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var macro_element_9de64e4c3a5a82e3175090c50ea676ea = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:powerline", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var macro_element_17f1c756fc2b30d0758dbd4d30b2bafc = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:rangepoint", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var macro_element_4d48d7ab92ad3fc1edaa9cb085995a77 = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:road", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var macro_element_21b141680fa64a52c9765bcef3704f43 = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:shed", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var macro_element_8482acc6cfc17c46046f0b75952a7827 = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:tree", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var macro_element_c3d8991ace85bfd1c1f519d57df87a3e = L.tileLayer.wms(
+                "http://192.168.1.47:8080/geoserver/webGis/wms",
+                {"attribution": "", "format": "image/png", "layers": "webGis:water", "styles": "", "transparent": true, "version": "1.1.1"}
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
+        
+    
+            var layer_control_bc43a085da92b113f611df883126192f = {
                 base_layers : {
-                    "openstreetmap" : tile_layer_8b15745f4a9f263650dc9e946e4e8a63,
+                    "openstreetmap" : tile_layer_9ac406950a20085e4bd16a611e9320df,
                 },
                 overlays :  {
-                    "2011_dist" : macro_element_ed2c9d012c7872cde2ca1dfd05ee69c0,
-                    "admin2" : macro_element_39d2de7cfa518b59737f2e596ad968ac,
-                    "Kilnamandi_DSM" : macro_element_193367c6841f94ecf36e607d43a51489,
-                    "DSm" : macro_element_74c63cf3f097998b4813875f79d8a945,
+                    "100mbuffer" : macro_element_4dede6cad8d616f6076c62df7dc0f6b9,
+                    "300mbuffer" : macro_element_b9c6ff21a16a32e460157f28eea29f49,
+                    "350m" : macro_element_39e5f4eea4377c12833e11a79ceb716d,
+                    "buidings" : macro_element_6da70eaacc24791cb4b836d28fe5291b,
+                    "buildings" : macro_element_5cacda52655c0197a966a90f1c64fb83,
+                    "powerline" : macro_element_9de64e4c3a5a82e3175090c50ea676ea,
+                    "rangepoint" : macro_element_17f1c756fc2b30d0758dbd4d30b2bafc,
+                    "road" : macro_element_4d48d7ab92ad3fc1edaa9cb085995a77,
+                    "shed" : macro_element_21b141680fa64a52c9765bcef3704f43,
+                    "tree" : macro_element_8482acc6cfc17c46046f0b75952a7827,
+                    "water" : macro_element_c3d8991ace85bfd1c1f519d57df87a3e,
                 },
             };
             L.control.layers(
-                layer_control_7853fd9ccde3af9d07dd0a0e36195ca2.base_layers,
-                layer_control_7853fd9ccde3af9d07dd0a0e36195ca2.overlays,
+                layer_control_bc43a085da92b113f611df883126192f.base_layers,
+                layer_control_bc43a085da92b113f611df883126192f.overlays,
                 {"autoZIndex": true, "collapsed": true, "position": "topright"}
-            ).addTo(map_598948bfb25e378b9bb3a20dfaa2dde2);
+            ).addTo(map_cbdd977916728f35ce313498f70475af);
         
 </script>
 </html>
