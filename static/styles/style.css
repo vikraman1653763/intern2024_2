@@ -4,12 +4,6 @@
     padding: 0;
 }
 
-body{
-    /* margin: 0; */
-    /* padding: 0; */
-    /* overflow: hidden; */
-}
-
 
 .header{
     grid-area: header;
@@ -48,9 +42,17 @@ body{
 
 
 #map {
-    position: absolute;
+    position: fixed; 
     width: 100vw;
+    /* column-width: 100vw; */
     height: 100vh;
+
+    margin: 0%;
+    padding: 0%;
+
+
+    left: 0;
+
 }
 
 .mousePosition {
@@ -132,6 +134,7 @@ body{
     border-radius: 2px;
     border: none;
     align-items: center;
+
 }
 
 .myButton:hover{
@@ -146,34 +149,70 @@ body{
 background-color: rgba(22, 170, 35, 1);
 }
 
+/* U R D L */
+
 .homeButtonDiv{
-  position: relative;
+  /* position: relative; */
   display: block;
-  margin: 10px auto auto 10px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+
+  /* margin: 10px auto auto 10px; */
+  
+  /* margin: 50px -10px 30px 10px; */
 }
 
 .fsButtonDiv {
-  position: relative;
+  /* position: relative;
+  float: right;
+  margin: 1px auto auto 10px; */
+  
   display: block;
-  margin: 1px auto auto 10px;
+  position: absolute;
+  right: 10px;
+  top: 40px;
+
+  /*  */
 }
 
 .featureInfoDiv {
-  position: relative;
+  /* position: relative;
   display: block;
-  margin: 1px auto auto 10px;
+  margin: 1px auto auto 10px; */
+
+  
+  display: block;
+  position: absolute;
+  right: 10px;
+  top:70px;
+
+
 }
 
 .lengthButtonDiv {
-  position: relative;
+  /* position: relative;
   display: block;
-  margin: 1px auto auto 10px;
+  margin: 1px auto auto 10px; */
+
+  
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 100px;
+
 }
 
 .areaButtonDiv {
-  position: relative;
+  /* position: relative;
   display: block;
-  margin: 1px auto auto 10px;
+  margin: 1px auto auto 10px; */
+
+  
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 130px;
 }
 
   /* start : Measure styling */
@@ -220,21 +259,38 @@ background-color: rgba(22, 170, 35, 1);
   }
 
   .ziButtonDiv {
-    position: relative;
+    /* position: relative;
     display: block;
-    margin: 1px auto auto 10px;
+    margin: 1px auto auto 10px; */
+      
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 160px;
   }
 
   .zoButtonDiv {
-    position: relative;
+    /* position: relative;
     display: block;
-    margin: 1px auto auto 10px;
+    margin: 1px auto auto 10px; */
+
+      
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 190px;
   }
 
   .myButtonDiv {
-    position: relative;
+    /* position: relative;
     display: block;
-    margin: 1px auto auto 10px;
+    margin: 1px auto auto 10px; */
+
+      
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 220px;
   }
 
   .attQueryDiv {
