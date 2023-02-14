@@ -21,7 +21,7 @@ from waitress import serve
 
     # - work in ortho 
 
-# ngrok_ip = "https://7fd2-61-2-143-247.in.ngrok.io/"
+# ngrok_ip = "https://9b06-61-2-143-247.in.ngrok.io/"
 ngrok_ip = "http://192.168.1.55:8080"
 
 # id 2 Admin hariharan141200@gmail.com 
