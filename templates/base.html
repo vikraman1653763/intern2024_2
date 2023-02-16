@@ -52,18 +52,14 @@
           <span class="navbar-toggler-icon"> </span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav"  style="display: flex; justify-content:flex-end;width: 100%; ">
-            <!-- <p style="color: white"> -->
-              <!-- {{ current_user.id ,  ADMIN }} -->
+          <ul class="navbar-nav"  style="display: flex; justify-content:flex-end;width: 100%; gap:1rem">
 
-            <!-- </p> -->
-            <li class="nav-item" style="font-size: large; "> 
-              <a class="nav-link" style="color: white;" href="{{ url_for('dashboard')}}">Dashboard</a>
-            </li>
+
 
             {% if current_user.is_authenticated %}
             
-                {% if current_user.id == 2 %}
+                {% if current_user.role == "admin" %}
+
 
                   <li class="nav-item" style="font-size: large;">
                     <a class="nav-link" style="color: white;" href="{{ url_for('users')}}">Users</a>
@@ -72,6 +68,13 @@
                   <li class="nav-item" style="font-size: large;">
                     <a class="nav-link" style="color: white;" href="{{ url_for('register')}}">Register</a>
                   </li>
+
+                {% else %}
+            
+                    <li class="nav-item" style="font-size: large; "> 
+                      <a class="nav-link" style="color: white;" href="{{ url_for('dashboard')}}">Dashboard</a>
+                    </li>
+
                 {% endif %}
 
 
@@ -132,7 +135,28 @@
                 $('.alert').alert('close');
             }, 3000);
         });
+
+              
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const deleteButtons = document.querySelectorAll('[data-confirm]');
+            
+                for (let i = 0; i < deleteButtons.length; i++) {
+            
+                    deleteButtons[i].addEventListener('click', function(event) {
+                        if (!confirm(this.getAttribute('data-confirm'))) {
+                            event.preventDefault();
+                        }
+                    });
+            
+                }
+            
+            });
+
+
+        
         </script>
+        
 
       {% block body %}
 

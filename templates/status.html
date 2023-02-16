@@ -47,7 +47,8 @@
             <div class="card-footer d-flex justify-content-between">
               <a class="btn" href="{{url_for('add_layer', id=pro.id)}}"> <img src="{{url_for('static' , filename='images/plus.png')}}" alt="Add"> </a>
               <div class="ml-auto">
-                <a class="btn" href="{{url_for('delete_project', id=pro.id)}}"> <img src="{{url_for('static' , filename='images/delete1.png')}} " alt="Delete"> </a>
+                <a href="{{ url_for('delete_project', id=pro.id) }}" class="btn" data-confirm="Are you sure you want to delete this project?"><img src="{{url_for('static' , filename='images/delete1.png')}} " alt="Delete"></a>
+
               </div>
             </div>
           </div>

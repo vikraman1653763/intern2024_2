@@ -149,14 +149,6 @@
 
         map.addLayer(osmTile);
 
-        // var satellite = new ol.layer.Tile({
-        // title: 'satellite',
-
-        // source: new ol.source.BingMaps({
-        //     imagerySet: 'Aerial'
-        // })
-        // });
-        
         var satellite = new ol.layer.Tile({
             
             title: 'satellite',
@@ -169,13 +161,6 @@
 
         map.addLayer(satellite);
 
-        // var baseGroup = new ol.layer.Group({
-        //     title: 'Base Maps',
-        //     fold: true,
-        //     layers: [osmTile, noneTile]
-        // });
-
-        // map.addLayer(baseGroup);
 
         var layer_names = [];
 
@@ -198,12 +183,12 @@
             });
             
             
-            // console.log(lay[i]) 
+            console.log(lay[i]) 
             // console.log(workspace + ':' + lay[i])
             // console.log(ngrok_ip + '/geoserver/' + workspace  + '/wms') 
             
             
-            console.log("Layer ", lyr[lay[i]])
+            // console.log("Layer ", lyr[lay[i]])
             
             layer_names.push(lay[i])
             
@@ -214,7 +199,17 @@
 
         console.log("Layer Names ",layer_names)
 
+        // var India_state = new ol.layer.Image({
+        //     title: 'India States',
+        //     source: new ol.source.ImageWMS({
+        //     url: 'http://127.0.0.1:8080/geoserver/GISSimplified/wms',
+        //     params: {'LAYERS': 'GISSimplified:admin2'},
+        //     serverType: 'geoserver',
+        //     visible: true
+        //     })
+        // });
 
+        
         var mousePosition = new ol.control.MousePosition({
             className: 'mousePosition',
             projection:'EPSG:4326', 

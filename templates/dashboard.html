@@ -9,6 +9,7 @@
         <div class="card-body">
         <h5 class="card-title"> User : {{current_user.username}} </h5>
         <h5 class="card-text"> Email : {{current_user.email}}</h5>
+        <h5 class="card-text"> Email : {{current_user.role}}</h5>
 
         <br>
         
@@ -21,22 +22,22 @@
         <div class="project_container " >
 
             {% for pro in current_user.project %}
-            
-            <div class="card ">
+                
+                <div class="card ">
 
-                <div class="card-body" style="width:100%">
-            
-                    <div style="align-content: center;">
-                        <img src="{{url_for('static' , filename='images/folder.png')}}" class="img-fluid" style=" width: 75px; height: 75px;">
-                        <p style="align-items: center;"> <b>{{ pro.name }} </b></p>
+                    <div class="card-body" style="width:100%">
+                
+                        <div style="align-content: center;">
+                            <img src="{{url_for('static' , filename='images/folder.png')}}" class="img-fluid" style=" width: 75px; height: 75px;">
+                            <p style="align-items: center;"> <b>{{ pro.name }} </b></p>
+                        </div>
+                    </div>
+                
+                    <div class="card-footer d-flex justify-content-center">
+                        <a class="btn " href="{{url_for('project', id=pro.id)}}"><img src="{{url_for('static' , filename='images/log-in.png')}}" alt="Project"></a>
+
                     </div>
                 </div>
-            
-                <div class="card-footer d-flex justify-content-center">
-                    <a class="btn " href="{{url_for('project', id=pro.id)}}"><img src="{{url_for('static' , filename='images/log-in.png')}}" alt="Project"></a>
-
-                </div>
-            </div>
             
             {% endfor %}
             </div>

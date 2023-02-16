@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
-from webforms import loginForm, registerForm, projectName, changeUserPassword
+from webforms import loginForm, registerForm, projectName, changeUserPassword, searchForm
 from datetime import datetime
 from functools import wraps 
 
@@ -98,7 +98,6 @@ def admin_required(func):
 def index():
     return render_template("index.html")
 
-
 @app.route('/register' , methods=('GET' , 'POST'))
 @login_required
 @admin_required
@@ -172,7 +171,11 @@ def login():
                     
                     return redirect(url_for('changePassword'))
                     
-                return redirect(url_for('dashboard'))
+
+                if user.role == "admin":
+                    return redirect(url_for('users'))
+                else:
+                    return redirect(url_for('dashboard'))
             
             else:
                 flash(" Invalid Email/Password !! " , "error_msg")
@@ -262,9 +265,16 @@ def add_layer(id):
     workspace = pro.user.username
 
     lay = {}
+
+    already_exists =[i.name for i in pro.data]
+
     for layer in layers:
-        if workspace in layer.name :
-            lay[layer.name] = layer.name.split(":")[1]
+
+        if workspace in layer.name : #WORKSAPE FILTER
+            x_ = layer.name.split(":")[1]
+
+            if x_ not in already_exists:
+                lay[layer.name] = x_
 
 
     if request.method == 'POST':
@@ -277,6 +287,9 @@ def add_layer(id):
         flash(" Layer Added to the Project " , "success")
         return redirect(request.referrer)
     
+
+    print("EXISTA : " , already_exists)
+  
     return render_template("add_layer.html" , user=pro.user , lay=lay , exisiting=pro.data)
     
 
@@ -284,40 +297,6 @@ def add_layer(id):
 @login_required
 def project(id):
 
-#     workspace = current_user.username
-    
-#     lay = Project.query.get_or_404(id)
-
-#     if lay.user.username == current_user.username:     
-
-#         map = folium.Map(location=[8.387088 , 77.007328], zoom_start=15)
-        
-#         ip = "https://c8d1-2402-3a80-450-d847-1cc8-a352-d7e7-ae64.in.ngrok.io"
-
-# #  192.168.1.47 
-#         for i in lay.data:
-#             # WmsTileLayer(url='http://127.0.0.1:8080/geoserver/' + workspace +'/wms',
-#             # WmsTileLayer(url='http://192.168.43.178:8080/geoserver/' + workspace +'/wms',
-#             WmsTileLayer(url='http://192.168.1.55:8080/geoserver/' + workspace +'/wms',
-
-#                             layers= workspace+':'+i.name,
-#                             name=i.name,
-#                             fmt='image/png',
-#                             overlay=True,
-#                             transparent=True,
-#                             control=True
-
-#                             ).add_to(map)
-
-#         folium.LayerControl().add_to(map)
-
-#         map.save('templates/map.html')
-    
-#         return render_template("folium.html")
-
-#     else:
-#         abort(403)
-  
     workspace = current_user.username
     
     lay = Project.query.get_or_404(id)
@@ -343,6 +322,7 @@ def map():
     return render_template('map.html')
 
 @app.route('/users')
+@admin_required
 @login_required
 def users():
 
@@ -435,6 +415,24 @@ def delete_project(id):
     
     else:
         flash("Project Not Found" , "info")
+        return redirect(request.referrer)
+
+@app.route('/delete/project/layer/<int:id>', methods=('GET','POST') )
+@login_required
+@admin_required
+def delete_layer(id):
+
+    layer = Data.query.get_or_404(id)
+
+    if project:
+        db.session.delete(layer)
+        db.session.commit()
+
+        flash("Layer Deleted" , "error")
+        return redirect(request.referrer)
+    
+    else:
+        flash("Layer Not Found" , "info")
         return redirect(request.referrer)
 
 

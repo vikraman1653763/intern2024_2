@@ -6,25 +6,35 @@
 
 {% block body %}
 
+
+
+
     {% for user in users %}
 
-        <div class="card bg-light" style="margin:1%; padding: 0.5%; width:calc(100% - 2%); ">
-            <h5 class="card-header" >{{user.username}}</h5>
-            <div class="card-body">
+        {% if user.role != "admin" %}
 
-            <h5 class="card-title"style="margin:0.5%; padding: 0.5%; padding-bottom:1%">{{user.email}}</h5>
-            
-                <div>
+            <div class="card bg-light" style="margin:1%; padding: 0.5%; width:calc(100% - 2%); ">
+
+                <h5 class="card-header" >{{user.username}}</h5>
+                <div class="card-body">
                     
-                    <a href="{{url_for('status' , id=user.id)}}" class="btn btn-outline-primary" style="text-align: right;"> Dashboard </a>                    
-                    <a href="{{url_for('update' , id=user.id)}}" class="btn btn-outline-secondary ml-auto" style="text-align: right;"> update user </a>                    
-                    <!-- <a href="{{url_for('delete' , id=user.id)}}" class="btn btn-outline-danger ml-auto" style="text-align: right;"> Delete user </a>                     -->
+                    <h5 class="card-title"style="margin:0.5%; padding: 0.5%; padding-bottom:1%">{{user.email}}</h5>
+                    <h6 style="margin-left:0.5%; padding-left: 0.5%; padding-bottom:1%"> No.of.Projects : {{user.project|length}}</h6>
                     
+
+                    <div  style="display: flex;justify-content: flex-end;gap: 1rem;">
+                        
+                        <a href="{{url_for('status' , id=user.id)}}" class="btn btn-primary" style="text-align: right;"> Dashboard </a>                    
+                        <a href="{{url_for('update' , id=user.id)}}" class="btn btn-secondary ml-auto" style="text-align: right;"> update user </a>                    
+                        <a href="{{ url_for('delete', id=user.id) }}" class="btn btn-danger" data-confirm="Are you sure you want to delete this user?">Delete</a>
+                        
+                    </div>
+                        
                 </div>
+
             </div>
 
-        </div>
-
+        {% endif %}    
     {% endfor %}
 
 {% endblock %}

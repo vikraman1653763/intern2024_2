@@ -32,3 +32,9 @@ class projectName(FlaskForm):
 
     name = StringField("Project Name" , [ validators.DataRequired()])
     submit = SubmitField("Add Project")
+
+
+class searchForm(FlaskForm):
+
+    searched = StringField("Search" , [ validators.DataRequired()])
+    submit = SubmitField("Submit")
