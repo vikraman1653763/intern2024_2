@@ -20,9 +20,12 @@ from waitress import serve
     # - ADD PASSWORD VIEW BUTTON
 
     # - work in ortho 
+    # - delete workspace if user is deleted
+
 
 # ngrok_ip = "https://9b06-61-2-143-247.in.ngrok.io/"
-ngrok_ip = "http://192.168.1.55:8080"
+# ngrok_ip = "http://192.168.1.55:8080"
+ngrok_ip = "http://127.0.0.1:8080"
 
 # id 2 Admin hariharan141200@gmail.com 
 # cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
@@ -301,15 +304,49 @@ def project(id):
     
     lay = Project.query.get_or_404(id)
 
+                
     if lay.user.username == current_user.username:     
 
+        workspace_name = current_user.username
+        
         check = []
         for i in lay.data:
             check.append(i.name)
 
-        print(check)
+            layer_name = i.name
 
-        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check)
+        if check:
+            layer = cat.get_layer(layer_name)
+        
+            lon = layer.resource.native_bbox[0]
+            lat = layer.resource.native_bbox[2]
+            zoom = 15
+
+        else:
+            
+            lon = "78.6569"
+            lat = "11.1271"
+            zoom = 7
+
+        # # print(check)
+        # # print(dir(layer))
+
+        # # a = dir(layer)
+        # # for i in a:
+        # #     print(f"ATTRIBUTE : {i}" , getattr(layer, i))
+
+
+        # # print(layer.resource)
+        # # print("RESOURCE : " , dir(layer.resource))
+
+        # # for val , i in enumerate(dir(layer.resource)):
+        # #     print(" RESOURCE : " , val , " attribute : " , i , getattr(layer.resource, i) )
+
+        # print("LONGITUDE : " , layer.resource.native_bbox[0])
+        # print("LATITUDE : " , layer.resource.native_bbox[2])
+
+
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom))
 
     else:
         abort(403)
@@ -376,6 +413,43 @@ def delete(id):
 
     if user_to_delete:
 
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , user_to_delete.username)
+        print(" WORKSPACE : " , type(user_to_delete.username))
+                
+        # workspace_name = user_to_delete.username
+
+        # # get a reference to the workspace
+        # workspace = cat.get_workspace(workspace_name)
+
+        # # get all the resources in the workspace
+        # resources = cat.get_resources(workspace)
+
+        # # delete each resource
+        # for resource in resources:
+        #     cat.delete(resource)
+
+        # # delete the workspace
+        # cat.delete(workspace, purge=True)
+
+        # w_ = cat.get_workspace(user_to_delete.username)
+        # cat.delete(w_, purge=True)
+
+
+        # cat.delete_workspace(workspace=user_to_delete.username)
+
+
+
         projects = Project.query.filter_by(user_id=user_to_delete.id).all()
         
         for p in projects:
@@ -388,8 +462,11 @@ def delete(id):
             db.session.delete(project)
 
 
+
         db.session.delete(user_to_delete)
         db.session.commit()
+
+
 
         flash("User Deleted ", "info")
         return redirect(url_for('users'))
@@ -428,7 +505,7 @@ def delete_layer(id):
         db.session.delete(layer)
         db.session.commit()
 
-        flash("Layer Deleted" , "error")
+        flash("Layer Deleted" , "error_msg")
         return redirect(request.referrer)
     
     else:

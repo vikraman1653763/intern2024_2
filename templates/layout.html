@@ -48,7 +48,7 @@
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
 
-
+<!-- 
     <div class="attQueryDiv" id="attQueryDiv">
         <div class="headerDiv" id="headerDiv">
             <label for="">Attribute Query</label>
@@ -73,7 +73,7 @@
     </div>
 
     <div class="attListDiv" id="attListDiv">
-    </div>
+    </div> -->
  
 
 </div> 
@@ -121,10 +121,14 @@
         var workspace = JSON.parse('{{ workspace | safe}}')
         var ngrok_ip = JSON.parse('{{ ngrok_ip | safe}}')
 
+        var lon = JSON.parse('{{ lon | safe }}')
+        var lat = JSON.parse('{{ lat | safe }}')
+        var zoom_ = JSON.parse('{{ zoom | safe }}')
+
 
         var mapView = new ol.View({
-            center: ol.proj.fromLonLat([77.0046, 8.3932]),
-            zoom: 16
+            center: ol.proj.fromLonLat([lon, lat]),
+            zoom: zoom_
         });
 
 
@@ -147,20 +151,20 @@
             source: new ol.source.OSM()
         });
 
-        map.addLayer(osmTile);
-
+        
         var satellite = new ol.layer.Tile({
             
             title: 'satellite',
-
+            
             source: new ol.source.XYZ({
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 maxZoom: 19
-           })
+            })
         });
-
+        
         map.addLayer(satellite);
-
+        
+        map.addLayer(osmTile);
 
         var layer_names = [];
 
@@ -198,16 +202,6 @@
         }
 
         console.log("Layer Names ",layer_names)
-
-        // var India_state = new ol.layer.Image({
-        //     title: 'India States',
-        //     source: new ol.source.ImageWMS({
-        //     url: 'http://127.0.0.1:8080/geoserver/GISSimplified/wms',
-        //     params: {'LAYERS': 'GISSimplified:admin2'},
-        //     serverType: 'geoserver',
-        //     visible: true
-        //     })
-        // });
 
         
         var mousePosition = new ol.control.MousePosition({
@@ -379,65 +373,65 @@
 
         // start : FeatureInfo Control
 
-        var featureInfoButton = document.createElement('button');
-        featureInfoButton.innerHTML = '<img src="/static/resources/images/identify.svg" alt="" style="width:20x;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        featureInfoButton.className = 'myButton';
-        featureInfoButton.id = 'featureInfoButton';
+        // var featureInfoButton = document.createElement('button');
+        // featureInfoButton.innerHTML = '<img src="/static/resources/images/identify.svg" alt="" style="width:20x;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
+        // featureInfoButton.className = 'myButton';
+        // featureInfoButton.id = 'featureInfoButton';
 
-        var featureInfoElement = document.createElement('div');
-        featureInfoElement.className = 'featureInfoDiv';
-        featureInfoElement.appendChild(featureInfoButton);
+        // var featureInfoElement = document.createElement('div');
+        // featureInfoElement.className = 'featureInfoDiv';
+        // featureInfoElement.appendChild(featureInfoButton);
 
-        var featureInfoControl = new ol.control.Control({
-            element: featureInfoElement
-        })
+        // var featureInfoControl = new ol.control.Control({
+        //     element: featureInfoElement
+        // })
 
-        var featureInfoFlag = false;
-        featureInfoButton.addEventListener("click", () => {
-            featureInfoButton.classList.toggle('clicked');
-            featureInfoFlag = !featureInfoFlag;
-        })
+        // var featureInfoFlag = false;
+        // featureInfoButton.addEventListener("click", () => {
+        //     featureInfoButton.classList.toggle('clicked');
+        //     featureInfoFlag = !featureInfoFlag;
+        // })
 
-        map.addControl(featureInfoControl);
+        // map.addControl(featureInfoControl);
 
-        map.on('singleclick', function (evt) {
+        // map.on('singleclick', function (evt) {
             
             
             
-            featureInfoFlag = true; //change this
+        //     featureInfoFlag = true; //change this
 
 
-            if (featureInfoFlag) {
+        //     if (featureInfoFlag) {
 
-                content.innerHTML = '';
-                var resolution = mapView.getResolution();
+        //         content.innerHTML = '';
+        //         var resolution = mapView.getResolution();
                       
                 
-                for(let i =0; i < layer_names.length ; i++){
+        //         for(let i =0; i < layer_names.length ; i++){
 
-                    var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(evt.coordinate, resolution, 'EPSG:3857', {
-                        'INFO_FORMAT': 'application/json',
-                        'propertyName': 'layer,gm_type'
-                    });
+        //             var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(evt.coordinate, resolution, 'EPSG:3857', {
+        //                 'INFO_FORMAT': 'application/json',
+        //                 'propertyName': 'layer,gm_type'
+        //             });
                     
                     
-                    console.log(layer_names[i] , url)
+        //             console.log(layer_names[i] , url)
                     
-                    if (url) {
-                        $.getJSON(url, function (data) {
-                            var feature = data.features[0];
-                            var props = feature.properties;
-                            content.innerHTML = "<h3> State : </h3> <p>" + props.layer.toUpperCase() + "</p> <br> <h3> District : </h3> <p>" +
-                                props.gm_type.toUpperCase() + "</p>";
-                                popup.setPosition(evt.coordinate);
-                            })
+        //             if (url) {
+        //                 $.getJSON(url, function (data) {
+        //                     var feature = data.features[0];
+        //                     var props = feature.properties;
+        //                     content.innerHTML = "<h3> State : </h3> <p>" + props.layer.toUpperCase() + "</p> <br> <h3> District : </h3> <p>" +
+        //                         props.gm_type.toUpperCase() + "</p>";
+        //                         popup.setPosition(evt.coordinate);
+        //                     })
                             
-                        } else {
-                            popup.setPosition(undefined);
-                        }
-                    }
-                }
-        });
+        //                 } else {
+        //                     popup.setPosition(undefined);
+        //                 }
+        //             }
+        //         }
+        // });
 
         // start : Length and Area Measurement Control
 
@@ -764,167 +758,167 @@
         //     element: qryElement
         // })
 
-        var qryFlag = false;
-        qryButton.addEventListener("click", () => {
-            // disableOtherInteraction('lengthButton');
-            qryButton.classList.toggle('clicked');
-            qryFlag = !qryFlag;
-            document.getElementById("map").style.cursor = "default";
-            if (qryFlag) {
-                if (geojson) {
-                    geojson.getSource().clear();
-                    map.removeLayer(geojson);
-                }
+        // var qryFlag = false;
+        // qryButton.addEventListener("click", () => {
+        //     // disableOtherInteraction('lengthButton');
+        //     qryButton.classList.toggle('clicked');
+        //     qryFlag = !qryFlag;
+        //     document.getElementById("map").style.cursor = "default";
+        //     if (qryFlag) {
+        //         if (geojson) {
+        //             geojson.getSource().clear();
+        //             map.removeLayer(geojson);
+        //         }
 
-                if (featureOverlay) {
-                    featureOverlay.getSource().clear();
-                    map.removeLayer(featureOverlay);
-                }
-                document.getElementById("attQueryDiv").style.display = "block";
+        //         if (featureOverlay) {
+        //             featureOverlay.getSource().clear();
+        //             map.removeLayer(featureOverlay);
+        //         }
+        //         document.getElementById("attQueryDiv").style.display = "block";
 
-                bolIdentify = false;
+        //         bolIdentify = false;
 
-                addMapLayerList();
-            } else {
-                document.getElementById("attQueryDiv").style.display = "none";
-                document.getElementById("attListDiv").style.display = "none";
+        //         addMapLayerList();
+        //     } else {
+        //         document.getElementById("attQueryDiv").style.display = "none";
+        //         document.getElementById("attListDiv").style.display = "none";
 
-                if (geojson) {
-                    geojson.getSource().clear();
-                    map.removeLayer(geojson);
-                }
+        //         if (geojson) {
+        //             geojson.getSource().clear();
+        //             map.removeLayer(geojson);
+        //         }
 
-                if (featureOverlay) {
-                    featureOverlay.getSource().clear();
-                    map.removeLayer(featureOverlay);
-                }
-            }
+        //         if (featureOverlay) {
+        //             featureOverlay.getSource().clear();
+        //             map.removeLayer(featureOverlay);
+        //         }
+        //     }
 
-        })
+        // })
 
-        map.addControl(qryControl);
+        // map.addControl(qryControl);
 
-        function addMapLayerList() {
-            $(document).ready(function () {
-                $.ajax({
-                    type: "GET",
-                    url: "http://localhost:8080/geoserver/wfs?request=getCapabilities",
-                    dataType: "xml",
-                    success: function (xml) {
-                        var select = $('#selectLayer');
-                        select.append("<option class='ddindent' value=''></option>");
-                        $(xml).find('FeatureType').each(function () {
-                            $(this).find('Name').each(function () {
-                                var value = $(this).text();
-                                select.append("<option class='ddindent' value='" + value + "'>" + value + "</option>");
-                            });
-                        });
-                    }
-                });
-            });
+        // function addMapLayerList() {
+        //     $(document).ready(function () {
+        //         $.ajax({
+        //             type: "GET",
+        //             url: "http://localhost:8080/geoserver/wfs?request=getCapabilities",
+        //             dataType: "xml",
+        //             success: function (xml) {
+        //                 var select = $('#selectLayer');
+        //                 select.append("<option class='ddindent' value=''></option>");
+        //                 $(xml).find('FeatureType').each(function () {
+        //                     $(this).find('Name').each(function () {
+        //                         var value = $(this).text();
+        //                         select.append("<option class='ddindent' value='" + value + "'>" + value + "</option>");
+        //                     });
+        //                 });
+        //             }
+        //         });
+        //     });
 
-        };
+        // };
 
-        $(function () {
-            document.getElementById("selectLayer").onchange = function () {
-                var select = document.getElementById("selectAttribute");
-                while (select.options.length > 0) {
-                    select.remove(0);
-                }
-                var value_layer = $(this).val();
-                $(document).ready(function () {
-                    $.ajax({
-                        type: "GET",
-                        url: "http://localhost:8080/geoserver/wfs?service=WFS&request=DescribeFeatureType&version=1.1.0&typeName=" + value_layer,
-                        dataType: "xml",
-                        success: function (xml) {
+        // $(function () {
+        //     document.getElementById("selectLayer").onchange = function () {
+        //         var select = document.getElementById("selectAttribute");
+        //         while (select.options.length > 0) {
+        //             select.remove(0);
+        //         }
+        //         var value_layer = $(this).val();
+        //         $(document).ready(function () {
+        //             $.ajax({
+        //                 type: "GET",
+        //                 url: "http://localhost:8080/geoserver/wfs?service=WFS&request=DescribeFeatureType&version=1.1.0&typeName=" + value_layer,
+        //                 dataType: "xml",
+        //                 success: function (xml) {
 
-                            var select = $('#selectAttribute');
-                            //var title = $(xml).find('xsd\\:complexType').attr('name');
-                            //  alert(title);
-                            select.append("<option class='ddindent' value=''></option>");
-                            $(xml).find('xsd\\:sequence').each(function () {
+        //                     var select = $('#selectAttribute');
+        //                     //var title = $(xml).find('xsd\\:complexType').attr('name');
+        //                     //  alert(title);
+        //                     select.append("<option class='ddindent' value=''></option>");
+        //                     $(xml).find('xsd\\:sequence').each(function () {
 
-                                $(this).find('xsd\\:element').each(function () {
-                                    var value = $(this).attr('name');
-                                    //alert(value);
-                                    var type = $(this).attr('type');
-                                    //alert(type);
-                                    if (value != 'geom' && value != 'the_geom') {
-                                        select.append("<option class='ddindent' value='" + type + "'>" + value + "</option>");
-                                    }
-                                });
+        //                         $(this).find('xsd\\:element').each(function () {
+        //                             var value = $(this).attr('name');
+        //                             //alert(value);
+        //                             var type = $(this).attr('type');
+        //                             //alert(type);
+        //                             if (value != 'geom' && value != 'the_geom') {
+        //                                 select.append("<option class='ddindent' value='" + type + "'>" + value + "</option>");
+        //                             }
+        //                         });
 
-                            });
-                        }
-                    });
-                });
-            }
-            document.getElementById("selectAttribute").onchange = function () {
-                var operator = document.getElementById("selectOperator");
-                while (operator.options.length > 0) {
-                    operator.remove(0);
-                }
+        //                     });
+        //                 }
+        //             });
+        //         });
+        //     }
+        //     document.getElementById("selectAttribute").onchange = function () {
+        //         var operator = document.getElementById("selectOperator");
+        //         while (operator.options.length > 0) {
+        //             operator.remove(0);
+        //         }
 
-                var value_type = $(this).val();
-                // alert(value_type);
-                var value_attribute = $('#selectAttribute option:selected').text();
-                operator.options[0] = new Option('Select operator', "");
+        //         var value_type = $(this).val();
+        //         // alert(value_type);
+        //         var value_attribute = $('#selectAttribute option:selected').text();
+        //         operator.options[0] = new Option('Select operator', "");
 
-                if (value_type == 'xsd:short' || value_type == 'xsd:int' || value_type == 'xsd:double') {
-                    var operator1 = document.getElementById("selectOperator");
-                    operator1.options[1] = new Option('Greater than', '>');
-                    operator1.options[2] = new Option('Less than', '<');
-                    operator1.options[3] = new Option('Equal to', '=');
-                }
-                else if (value_type == 'xsd:string') {
-                    var operator1 = document.getElementById("selectOperator");
-                    operator1.options[1] = new Option('Like', 'Like');
-                    operator1.options[2] = new Option('Equal to', '=');
-                }
-            }
+        //         if (value_type == 'xsd:short' || value_type == 'xsd:int' || value_type == 'xsd:double') {
+        //             var operator1 = document.getElementById("selectOperator");
+        //             operator1.options[1] = new Option('Greater than', '>');
+        //             operator1.options[2] = new Option('Less than', '<');
+        //             operator1.options[3] = new Option('Equal to', '=');
+        //         }
+        //         else if (value_type == 'xsd:string') {
+        //             var operator1 = document.getElementById("selectOperator");
+        //             operator1.options[1] = new Option('Like', 'Like');
+        //             operator1.options[2] = new Option('Equal to', '=');
+        //         }
+        //     }
 
-            document.getElementById('attQryRun').onclick = function () {
-                map.set("isLoading", 'YES');
+        //     document.getElementById('attQryRun').onclick = function () {
+        //         map.set("isLoading", 'YES');
 
-                if (featureOverlay) {
-                    featureOverlay.getSource().clear();
-                    map.removeLayer(featureOverlay);
-                }
+        //         if (featureOverlay) {
+        //             featureOverlay.getSource().clear();
+        //             map.removeLayer(featureOverlay);
+        //         }
 
-                var layer = document.getElementById("selectLayer");
-                var attribute = document.getElementById("selectAttribute");
-                var operator = document.getElementById("selectOperator");
-                var txt = document.getElementById("enterValue");
+        //         var layer = document.getElementById("selectLayer");
+        //         var attribute = document.getElementById("selectAttribute");
+        //         var operator = document.getElementById("selectOperator");
+        //         var txt = document.getElementById("enterValue");
 
-                if (layer.options.selectedIndex == 0) {
-                    alert("Select Layer");
-                } else if (attribute.options.selectedIndex == -1) {
-                    alert("Select Attribute");
-                } else if (operator.options.selectedIndex <= 0) {
-                    alert("Select Operator");
-                } else if (txt.value.length <= 0) {
-                    alert("Enter Value");
-                } else {
-                    var value_layer = layer.options[layer.selectedIndex].value;
-                    var value_attribute = attribute.options[attribute.selectedIndex].text;
-                    var value_operator = operator.options[operator.selectedIndex].value;
-                    var value_txt = txt.value;
-                    if (value_operator == 'Like') {
-                        value_txt = "%25" + value_txt + "%25";
-                    }
-                    else {
-                        value_txt = value_txt;
-                    }
-                    var url = "http://localhost:8080/geoserver/GISSimplified/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" + value_layer + "&CQL_FILTER=" + value_attribute + "+" + value_operator + "+'" + value_txt + "'&outputFormat=application/json"
-                    // console.log(url);
-                    newaddGeoJsonToMap(url);
-                    newpopulateQueryTable(url);
-                    setTimeout(function () { newaddRowHandlers(url); }, 300);
-                    map.set("isLoading", 'NO');
-                }
-            }
-        });
+        //         if (layer.options.selectedIndex == 0) {
+        //             alert("Select Layer");
+        //         } else if (attribute.options.selectedIndex == -1) {
+        //             alert("Select Attribute");
+        //         } else if (operator.options.selectedIndex <= 0) {
+        //             alert("Select Operator");
+        //         } else if (txt.value.length <= 0) {
+        //             alert("Enter Value");
+        //         } else {
+        //             var value_layer = layer.options[layer.selectedIndex].value;
+        //             var value_attribute = attribute.options[attribute.selectedIndex].text;
+        //             var value_operator = operator.options[operator.selectedIndex].value;
+        //             var value_txt = txt.value;
+        //             if (value_operator == 'Like') {
+        //                 value_txt = "%25" + value_txt + "%25";
+        //             }
+        //             else {
+        //                 value_txt = value_txt;
+        //             }
+        //             var url = "http://localhost:8080/geoserver/GISSimplified/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" + value_layer + "&CQL_FILTER=" + value_attribute + "+" + value_operator + "+'" + value_txt + "'&outputFormat=application/json"
+        //             // console.log(url);
+        //             newaddGeoJsonToMap(url);
+        //             newpopulateQueryTable(url);
+        //             setTimeout(function () { newaddRowHandlers(url); }, 300);
+        //             map.set("isLoading", 'NO');
+        //         }
+        //     }
+        // });
 
         function newaddGeoJsonToMap(url) {
 
