@@ -24,7 +24,7 @@ from waitress import serve
 
 
 # ngrok_ip = "https://9b06-61-2-143-247.in.ngrok.io/"
-# ngrok_ip = "http://192.168.1.55:8080"
+# ngrok_ip = "http://192.168.1.75:8080"
 ngrok_ip = "http://127.0.0.1:8080"
 
 # id 2 Admin hariharan141200@gmail.com 
@@ -316,17 +316,24 @@ def project(id):
             layer_name = i.name
 
         if check:
+
+
             layer = cat.get_layer(layer_name)
         
             lon = layer.resource.native_bbox[0]
             lat = layer.resource.native_bbox[2]
-            zoom = 15
+            zoom =15
 
+            # print(lon , lat)
+            if lay.name == "States and District":
+                lon = 78.6569
+                lat = 22.9734
+                zoom = 5
         else:
             
             lon = "78.6569"
             lat = "11.1271"
-            zoom = 7
+            zoom = 1
 
         # # print(check)
         # # print(dir(layer))
@@ -514,6 +521,7 @@ def delete_layer(id):
 
 
 dev = True
+# dev = False
 
 
 if __name__ == "__main__":

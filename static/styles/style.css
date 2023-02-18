@@ -199,7 +199,7 @@ background-color: rgba(22, 170, 35, 1);
   display: block;
   position: absolute;
   right: 10px;
-  top: 100px;
+  top: 70px;
 
 }
 
@@ -212,7 +212,7 @@ background-color: rgba(22, 170, 35, 1);
   display: block;
   position: absolute;
   right: 10px;
-  top: 130px;
+  top: 100px;
 }
 
   /* start : Measure styling */
@@ -266,7 +266,7 @@ background-color: rgba(22, 170, 35, 1);
     display: block;
     position: absolute;
     right: 10px;
-    top: 160px;
+    top: 130px;
   }
 
   .zoButtonDiv {
@@ -278,7 +278,7 @@ background-color: rgba(22, 170, 35, 1);
     display: block;
     position: absolute;
     right: 10px;
-    top: 190px;
+    top: 160px;
   }
 
   .myButtonDiv {
@@ -290,7 +290,7 @@ background-color: rgba(22, 170, 35, 1);
     display: block;
     position: absolute;
     right: 10px;
-    top: 220px;
+    top: 290px;
   }
 
   .attQueryDiv {
