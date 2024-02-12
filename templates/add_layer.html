@@ -2,100 +2,66 @@
 
 {% block title %} Add Layer - Nevar-Systems {% endblock %}
 
-
 {% block body %}
 
 <div class="card w-90 bg-light" style="margin:1%; padding: 0.5%; ; ">
     <div class="card-body">
-      
-      <h5 class="card-title"> {{user.username}} </h5>
-      <p class="card-text">{{user.email}}</p>
-
+        <h5 class="card-title"> {{ user.username }} </h5>
+        <p class="card-text">{{ user.email }}</p>
     </div>
-  </div>
-  
-  
-  <div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
+</div>
+
+<div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
     <h2> Already Exists </h2>
     <div class="card-body">
-
         <div class="table-responsive">
-          
-          <table class="table">
-              <thead>
-                  <tr>
-                      <th>Name</th>
-                      <th> Delete </th>
-
-                  </tr>
-              </thead>
-              <tbody>
-
-                  {% for record in exisiting %}
-                  <tr>
-                      <td> {{ record.name }} </td>
-                      <td>  
-                      <a href="{{ url_for('delete_layer', id=record.id) }}" class="btn " data-confirm="Are you sure you want to delete this Layer?"><img src="{{url_for('static' , filename='images/delete1.png')}} " alt="Delete"></a>
-                      </td>
-
-                  </tr>
-                  {% endfor %}
-
-              </tbody>
-          </table>
-        
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in existing %}
+                    <tr>
+                        <td>{{ record.name }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_layer', id=record.id) }}" class="btn " data-confirm="Are you sure you want to delete this Layer?"><img src="{{ url_for('static', filename='images/delete1.png') }} " alt="Delete"></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-      
     </div>
-  </div>
-  
+</div>
 
-
-
-  <div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
+<div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
     <h2> Add Layer </h2>
-
     <div class="card-body">
-
-      <form method="POST" action="">
-
-        <div class="table-responsive">
-          
-          <table class="table">
-              <thead>
-                  <tr>
-                      <th>Select</th>
-                      <th>Name</th>
-
-                  </tr>
-              </thead>
-              <tbody>
-
-                  {% for record in lay.items() %}
-                  <tr>
-
-                    <td> <input type="checkbox" name="checkbox" value="{{ record[1] }}"> </td>
-                    <td>{{ record[1] }}</td>
-
-                  </tr>
-                  {% endfor %}
-
-                  
-                  
-
-              </tbody>
-          </table>
-
-          <input type="submit"  class="btn btn-primary" value="Add selected records">
-        
-        </div>
-      </form>
-      
+        <form method="POST" action="">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for layer_name, layer_title in lay.items() %}
+                        <tr>
+                            <td><input type="checkbox" name="checkbox" value="{{ layer_title }}"></td>
+                            <td>{{ layer_title }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <input type="submit" class="btn btn-primary" value="Add selected records">
+            </div>
+        </form>
     </div>
-  </div>
-  
-
-
-
+</div>
 
 {% endblock %}

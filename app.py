@@ -29,7 +29,11 @@ ngrok_ip = "http://127.0.0.1:8080"
 
 # id 2 Admin hariharan141200@gmail.com 
 # cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
-cat = Catalog( ngrok_ip + "/geoserver/rest/", username="admin", password="geoserver")
+#cat = Catalog( ngrok_ip + "/geoserver/rest/", username="admin", password="geoserver")
+geoserver_url = "http://localhost:8080/geoserver/rest/"
+username = "admin"
+password = "geoserver"
+cat = Catalog(geoserver_url, username=username, password=password)
 
 
 # print("GEOSERVER URL : ", cat.get_info())
@@ -41,7 +45,9 @@ ADMIN = 2
 app = Flask(__name__)
 
 # database_ip = "192.168.1.65:8080"
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@localhost/test'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/loginNevar'
+
+
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@localhost/nevarSystems'
 # app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@' + database_ip + '/nevarSystems'
 app.config['SECRET_KEY'] = "SECRET KEY"
@@ -99,11 +105,10 @@ def admin_required(func):
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    workspaces = cat.get_workspaces()
+    return render_template("index.html", workspaces=workspaces)
 
 @app.route('/register' , methods=('GET' , 'POST'))
-@login_required
-@admin_required
 def register():
 
     email = None
@@ -121,10 +126,11 @@ def register():
             email = RegisterForm.email.data
             username = RegisterForm.username.data
             psw = RegisterForm.password.data
+            #can use it later after i finished
+            #hashed_pw = generate_password_hash(psw, method='pbkdf2:sha256')
 
-            hashed_pw = generate_password_hash(psw  , "sha256")
             
-            user = User(email=email , username=username , password=hashed_pw)
+            user = User(email=email , username=username , password=psw)
             db.session.add(user)
             db.session.commit()
 
@@ -146,15 +152,15 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/login' , methods=('GET' , 'POST'))
-def login():
 
+@app.route('/login', methods=('GET', 'POST'))
+
+def login():
     email = None
     password = None
     LoginForm = loginForm()
 
     if LoginForm.validate_on_submit():
-
         email = LoginForm.email.data
         password = LoginForm.password.data
 
@@ -163,31 +169,21 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        if user is not None:
-            
-            if check_password_hash(user.password, password):
-                
-                login_user(user)
-                flash(" logged in successfully !! ", "success")
+        if user is not None and user.password == password:
+            login_user(user)
+            flash("Logged in successfully!", "success")
 
-                if password == "default":
-                    
-                    return redirect(url_for('changePassword'))
-                    
+            if password == "default":
+                return redirect(url_for('changePassword'))
 
-                if user.role == "admin":
-                    return redirect(url_for('users'))
-                else:
-                    return redirect(url_for('dashboard'))
-            
+            if user.role == "admin":
+                return redirect(url_for('status', id=current_user.id))
             else:
-                flash(" Invalid Email/Password !! " , "error_msg")
+                return redirect(url_for('dashboard'))
         
-        else:
-            flash(" Invalid Email/Password !! " , "error_msg")            
-        
+        flash("Invalid Email/Password!", "error_msg")
 
-    return render_template("login.html" , LoginForm=LoginForm)
+    return render_template("login.html", LoginForm=LoginForm)
 
 @app.route('/changePassword' , methods=('GET' , 'POST'))
 @login_required
@@ -257,44 +253,32 @@ def status(id):
     else:
         return render_template("status.html" , user=user , projects=projects , ProjectName=ProjectName)
 
-@app.route('/status/project/<int:id>' , methods=('GET' , 'POST'))
+@app.route('/status/project/<int:id>', methods=('GET', 'POST'))
 @login_required
 @admin_required
 def add_layer(id):
-    
     pro = Project.query.get_or_404(id)
-    
     layers = cat.get_layers()
-    workspace = pro.user.username
-
     lay = {}
-
-    already_exists =[i.name for i in pro.data]
+    already_exists = [i.name for i in pro.data]
 
     for layer in layers:
-
-        if workspace in layer.name : #WORKSAPE FILTER
+        workspace = layer.name.split(":")[0]
+        if workspace in layer.name:
             x_ = layer.name.split(":")[1]
-
             if x_ not in already_exists:
                 lay[layer.name] = x_
 
-
     if request.method == 'POST':
         selected_ids = request.form.getlist('checkbox')
-
-        data = [Data(name=item , project_id=pro.id) for item in selected_ids]
+        data = [Data(name=item, project_id=pro.id) for item in selected_ids]
         db.session.add_all(data)
         db.session.commit()
-        
-        flash(" Layer Added to the Project " , "success")
+        flash("Layer Added to the Project", "success")
         return redirect(request.referrer)
-    
 
-    print("EXISTA : " , already_exists)
-  
-    return render_template("add_layer.html" , user=pro.user , lay=lay , exisiting=pro.data)
-    
+    return render_template("add_layer.html", user=pro.user, lay=lay, existing=pro.data)
+
 
 @app.route('/dashboard/application/<int:id>')
 @login_required
@@ -303,37 +287,38 @@ def project(id):
     workspace = current_user.username
     
     lay = Project.query.get_or_404(id)
-
+    
                 
     if lay.user.username == current_user.username:     
 
         workspace_name = current_user.username
-        
+   
         check = []
         for i in lay.data:
             check.append(i.name)
-
+            print("name",lay)
             layer_name = i.name
 
         if check:
 
 
             layer = cat.get_layer(layer_name)
-        
+            
             lon = layer.resource.native_bbox[0]
             lat = layer.resource.native_bbox[2]
-            zoom =15
+            zoom =11
+            print("lat an long", lon,lat,zoom)
 
             # print(lon , lat)
             if lay.name == "States and District":
                 lon = 78.6569
                 lat = 22.9734
-                zoom = 5
+                zoom = 11
         else:
             
-            lon = "78.6569"
-            lat = "11.1271"
-            zoom = 1
+            lon = "79.808289"
+            lat = "11.941552"
+            zoom = 10
 
         # # print(check)
         # # print(dir(layer))
@@ -525,6 +510,8 @@ dev = True
 
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
 
     if dev:
         app.run(host="0.0.0.0", debug=True, port=5000)
