@@ -5,13 +5,14 @@ from wtforms.validators import DataRequired , Email , EqualTo,  Length
 
 
 class loginForm(FlaskForm):
-    email = StringField("Email", [validators.DataRequired(), validators.Email(message="Invalid email address")], render_kw={"autocomplete": "email"})
-    password = PasswordField("Password", validators=[DataRequired()], render_kw={"autocomplete": "current-password"})
-    submit = SubmitField("Login")
+    email = StringField("")
+    password = PasswordField("")
+    submit = SubmitField("Sign in")
 
 class registerForm(FlaskForm):
     email = StringField("Email", [validators.DataRequired(), validators.Email()], render_kw={"autocomplete": "email"})
     username = StringField("Username", [validators.DataRequired()], render_kw={"autocomplete": "username"})
+    lastname = StringField("lastname", [validators.DataRequired()], render_kw={"autocomplete": "username"})
     password = PasswordField("Password", validators=[DataRequired(), EqualTo('password2', message="Passwords Must Match ")], render_kw={"autocomplete": "new-password"})
     password2 = PasswordField("Confirm Password", validators=[DataRequired()], render_kw={"autocomplete": "new-password"})
     submit = SubmitField("Register")

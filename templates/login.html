@@ -1,66 +1,45 @@
-{% extends 'base.html' %}
-
-{% block title %} Login - Nevar-Systems {% endblock %}
+<!-- login.html -->
 
 
-{% block body %}
+{% extends 'lbody.html' %}
+<head>
+    <title>Welcome</title>
+    
+</head>
 
-
-<section class="h-100 login-container">
-  <div class="container h-100">
-    <div class="row justify-content-sm-center h-100">
-      <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
-        
-        <div class="text-center my-5" >
-          <img src=" {{url_for('static' , filename='images/nevar-systems.png')}}" alt="nevar-systems" width="100" >
-        </div>
-        
-        <div class="card shadow-lg">
-          <div class="card-body p-5">
-            <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
-            
-            <form method="POST" class="needs-validation" novalidate="" autocomplete="off" >
-              {{LoginForm.hidden_tag()}} 
-
-                  <div class="mb-3">
-                    <label class="mb-2" for="form2Example18" >E-Mail </label>
-                  {{LoginForm.email(type="email", id="form2Example18", class="form-control")}}
-                  <div class="invalid-feedback">
-                    Email is invalid
-                  </div>
-                    
-                  {% for error in LoginForm.email.errors %}
-                  <span style="color:red;">
-         
-                      {{error}}
-                  </span>
-                  {% endfor %}
-
-                </div>
-
-                <div class="mb-3">
-                  <div class="mb-2 w-100">
-                    <label class="" for="password">Password</label>
-                  </div>
-                  {{LoginForm.password( id="form2Example28" , class="form-control" )}}
-                    <div class="invalid-feedback">
-                      Password is required
-                    </div>
-                </div>
-
-                <!-- <div class="d-flex align-items-center" style="display: flex; align-items:center;"> -->
-                <div style="display: flex; justify-content:center;">
-                  <div class="form-check">
-                    {{LoginForm.submit(class="btn btn-primary ")}}
-                  </div>
-                </div>
-            </form>
-          </div>
-        
-        </div>
-        
-      </div>
+{% block login %}
+<div class="form-group">
+<form class="form" id="form" method="POST" action="/login">
+  {{LoginForm.hidden_tag()}} 
+    <div class="image-container">
+        <img class='logo' src="static\images\logo.jpg">
     </div>
-  </div>
-</section>
+    <p class="title">Welcome</p>
+    
+    <div class="flex input-control">
+        <label>
+            
+            {{ LoginForm.email(id="email",class="input",type="email", placeholder="",required="",autocomplete="email") }}
+
+            <span>Email</span>
+        </label>
+    </div>
+
+    <div class="flex input-control">
+        <label>
+            {{ LoginForm.password(id="password",class="input",type="password", placeholder="",required="",autocomplete="password") }}
+
+            <span>Password</span>
+        </label>
+    </div>
+
+    <div class="signin-container" >
+        {{LoginForm.submit(id="sign",class="button",type="submit")}}
+    </div>
+
+    
+</form>
+</div>
+
+
 {% endblock %}

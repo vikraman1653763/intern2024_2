@@ -6,23 +6,28 @@
 
 <div class="container-fluid"  >
     <div class="row">
+        
         <div class="col-sm-2" id="sidebar" style="position:relative ; z-index: 23;background-color: white;border:1px solid blue; ">
-            <h3>Layers</h3>
-
-            <input type="checkbox" style="margin: 20px auto 20px 10px;" value="Open Street Map" checked onchange="toggleLayer(event)">
-            <label for="Open Street Map"> Open Street Map</label>
+            <h2>Layers</h2>
+            <div class="checkbox-wrapper">
+                <input id="Open Street Map" type="checkbox" value="Open Street Map" checked onchange="toggleLayer(event)">
+                <label for="Open Street Map"><div class="tick_mark"></div></label>
+                <span>Open Map</span>
+            </div>
             <br>
-            
-            <input type="checkbox" style="margin: 20px auto 20px 10px;" value="satellite" checked onchange="toggleLayer(event)">
-            <label for="satellite"> satellite</label>
-            <br>
-
+            <div class="checkbox-wrapper">
+            <input id="satellite"type="checkbox"  value="satellite" checked onchange="toggleLayer(event)">
+            <label for="satellite"><div class="tick_mark"></div></label>
+            <span>satellite</span>
+            </div>
+            <BR>
             {% for l in layer_list %}
-
-                <input type="checkbox" style="margin: 20px auto 20px 10px;" value="{{l}}" checked onchange="toggleLayer(event)">
-                <label for="{{l}}"> {{l}}</label>
-                <br>
-
+            <div class="checkbox-wrapper">
+                <input id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
+                <label for="{{ l }}"><div class="tick_mark"></div></label>
+                <span>{{ l }}</span>
+            </div>
+            <br>
             {% endfor %}
            
         </div>
@@ -33,8 +38,12 @@
 
             <button id="toggle-btn" style="position:relative; z-index: 2;background-color: transparent;border: none;"> 
                 
-                <img src="/static/images/layers.png" style="width: 40px;height: 40px;" alt="" srcset=""></i>
-              </button>
+                <img src="\static\resources\images\layers.svg" style="width: 40px; height: 40px;" alt="">
+            </button>
+            <button id="edit-btn" style="position:relative; z-index: 2;background-color: transparent;border: none;"> 
+                
+                <img src="\static\resources\images\edit.svg" style="width: 40px; height: 40px;" alt="">
+            </button>
 
            
         </div>
@@ -47,40 +56,13 @@
 
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
-
-<!-- 
-    <div class="attQueryDiv" id="attQueryDiv">
-        <div class="headerDiv" id="headerDiv">
-            <label for="">Attribute Query</label>
-        </div><br>
-        <label for="">Select Layer</label>
-        <select name="selectLayer" id="selectLayer">
-        </select><br><br>
-
-        <label for="">Select Attribute</label>
-        <select name="selectAttribute" id="selectAttribute">
-        </select><br><br>
-
-        <label for="">Select Operator</label>
-        <select name="selectOperator" id="selectOperator">
-        </select><br><br>
-
-        <label for="">Enter Value</label>
-        <input type="text" name="enterValue" id="enterValue">
-        </select><br><br>
-
-        <button type="button" id="attQryRun" class="attQryRun" onclick="attributeQuery()">Run</button>
-    </div>
-
-    <div class="attListDiv" id="attListDiv">
-    </div> -->
- 
-
 </div> 
+<link rel="stylesheet" href="/static/styles/mapstyle.css">
 
 <script src="/static/resources/ol/ol.js"></script>
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
-
+<script src="/static/js/MapView.js"></script>
+<script src="/static/js/controls.js"></script>
 <script  type="text/javascript">
 
   
@@ -89,6 +71,7 @@
                 $("#sidebar").toggle();
             });   
         });
+        
 
         function toggleLayer(eve){
 
@@ -116,102 +99,16 @@
             });
             
         }
-                        
-        var lay = JSON.parse('{{ lay | safe }}')
-        var workspace = JSON.parse('{{ workspace | safe}}')
-        var ngrok_ip = JSON.parse('{{ ngrok_ip | safe}}')
 
-        var lon = JSON.parse('{{ lon | safe }}')
-        var lat = JSON.parse('{{ lat | safe }}')
-        var zoom_ = JSON.parse('{{ zoom | safe }}')
-
-
-        var mapView = new ol.View({
-            center: ol.proj.fromLonLat([lon, lat]),
-            zoom: zoom_
-        });
-
-
-        var map = new ol.Map({
-            target: 'map',
-            view: mapView,
-            controls: []
-        });
-
-        var noneTile = new ol.layer.Tile({
-            title: 'None',
-            type: 'base',
-            visible: false
-        });
-
-        var osmTile = new ol.layer.Tile({
-            title: 'Open Street Map',
-            visible: true,
-            type: 'base',
-            source: new ol.source.OSM()
-        });
-
-        
-        var satellite = new ol.layer.Tile({
-            
-            title: 'satellite',
-            
-            source: new ol.source.XYZ({
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                maxZoom: 19
-            })
-        });
-        
-        map.addLayer(satellite);
-        
-        map.addLayer(osmTile);
-
-        var layer_names = [];
-
-        var lyr = {}
-
-        for(let i = 0; i < lay.length ; i++){
-                  
-            
-            lyr[lay[i]] = new ol.layer.Tile({
-                
-                title: lay[i],
-                source: new ol.source.TileWMS({
-                    url: ngrok_ip + '/geoserver/' + workspace  + '/wms',
-                    
-                    params: {'LAYERS': workspace + ':' + lay[i], 'TILED': 'true'},
-                    serverType: 'geoserver',
-                    visible: true
-                })
-                
-            });
-            
-            
-            console.log(lay[i]) 
-            // console.log(workspace + ':' + lay[i])
-            // console.log(ngrok_ip + '/geoserver/' + workspace  + '/wms') 
-            
-            
-            // console.log("Layer ", lyr[lay[i]])
-            
-            layer_names.push(lay[i])
-            
-            map.addLayer(lyr[lay[i]]);
-            console.log('\n')
-
-        }
-
-        console.log("Layer Names ",layer_names)
-
-        
-        var mousePosition = new ol.control.MousePosition({
-            className: 'mousePosition',
-            projection:'EPSG:4326', 
-            coordinateFormat: function(coordinate) {return ol.coordinate.format(coordinate , '{y} , {x}',6)}
-        });
-
-        map.addControl(mousePosition);
-
+        //mapView             
+        var map = mapView(
+            JSON.parse('{{ lay | safe }}'),
+            JSON.parse('{{ workspace | safe }}'),
+            JSON.parse('{{ ngrok_ip | safe }}'),
+            JSON.parse('{{ lon | safe }}'),
+            JSON.parse('{{ lat | safe }}'),
+            JSON.parse('{{ zoom | safe }}')
+        );
         var scaleControl  = new ol.control.ScaleLine({
             bar: true,
             text: true
@@ -240,270 +137,16 @@
             return false;
         };
 
-        var homeButton = document.createElement('button');
-        homeButton.innerHTML = '<img src="/static/resources/images/home.svg" alt="" style="width:20px;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        homeButton.className = 'myButton';
-
-        var homeElement = document.createElement('div');
-        homeElement.className = 'homeButtonDiv';
-        homeElement.appendChild(homeButton);
-
-        var homeControl = new ol.control.Control({
-            element: homeElement
-        })
-
-        homeButton.addEventListener("click", () => {
-            location.href = "{{url_for('dashboard')}}";
-        })
-
-        map.addControl(homeControl);
-
-        // end : home Control
-
-        // start : full screen Control
+        var dashboardUrl = "{{ url_for('dashboard') }}";
 
 
-        var fsButton = document.createElement('button');
-        fsButton.innerHTML = '<img src="/static/resources/images/fullscreen.svg" alt="" style="width:20px;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        fsButton.className = 'myButton';
-
-        var fsElement = document.createElement('div');
-        fsElement.className = 'fsButtonDiv';
-        fsElement.appendChild(fsButton);
-
-        var fsControl = new ol.control.Control({
-            element: fsElement
-        })
-        fsButton.addEventListener("click", () => {
-            var mapEle = document.getElementById("map");
-            if (mapEle.requestFullscreen) {
-                mapEle.requestFullscreen();
-            } else if (mapEle.msRequestFullscreen) {
-                mapEle.msRequestFullscreen();
-            } else if (mapEle.mozRequestFullscreen) {
-                mapEle.mozRequestFullscreen();
-            } else if (mapEle.webkitRequestFullscreen) {
-                mapEle.webkitRequestFullscreen();
-            }
-        })
-
-        map.addControl(fsControl);
-
-        // end : full screen Control
-
-        // start : zoomIn Control
-
-        var zoomInInteraction = new ol.interaction.DragBox();
-
-        zoomInInteraction.on('boxend', function () {
-            var zoomInExtent = zoomInInteraction.getGeometry().getExtent();
-            map.getView().fit(zoomInExtent);
-        });
-
-        var ziButton = document.createElement('button');
-        ziButton.innerHTML = '<img src="/static/resources/images/zoomIn.svg" alt="" style="width:18px;height:18px;transform: rotate(270deg);filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        ziButton.className = 'myButton';
-        ziButton.id = 'ziButton';
-
-        var ziElement = document.createElement('div');
-        ziElement.className = 'ziButtonDiv';
-        ziElement.appendChild(ziButton);
-
-        var ziControl = new ol.control.Control({
-            element: ziElement
-        })
-
-        var zoomInFlag = false;
-        ziButton.addEventListener("click", () => {
-            ziButton.classList.toggle('clicked');
-            zoomInFlag = !zoomInFlag;
-            if (zoomInFlag) {
-                document.getElementById("map").style.cursor = "zoom-in";
-                map.addInteraction(zoomInInteraction);
-            } else {
-                map.removeInteraction(zoomInInteraction);
-                document.getElementById("map").style.cursor = "default";
-            }
-        })
-
-        map.addControl(ziControl);
-
-        // end : zoomIn Control
-
-        // start : zoomOut Control
-
-        var zoomOutInteraction = new ol.interaction.DragBox();
-
-        zoomOutInteraction.on('boxend', function () {
-            var zoomOutExtent = zoomOutInteraction.getGeometry().getExtent();
-            map.getView().setCenter(ol.extent.getCenter(zoomOutExtent));
-
-            mapView.setZoom(mapView.getZoom() - 1)
-        });
-
-        var zoButton = document.createElement('button');
-        zoButton.innerHTML = '<img src="/static/resources/images/zoomOut.png" alt="" style="width:18px;height:18px;transform: rotate(270deg);filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        zoButton.className = 'myButton';
-        zoButton.id = 'zoButton';
-
-        var zoElement = document.createElement('div');
-        zoElement.className = 'zoButtonDiv';
-        zoElement.appendChild(zoButton);
-
-        var zoControl = new ol.control.Control({
-            element: zoElement
-        })
-
-        var zoomOutFlag = false;
-        zoButton.addEventListener("click", () => {
-            zoButton.classList.toggle('clicked');
-            zoomOutFlag = !zoomOutFlag;
-            if (zoomOutFlag) {
-                document.getElementById("map").style.cursor = "zoom-out";
-                map.addInteraction(zoomOutInteraction);
-            } else {
-                map.removeInteraction(zoomOutInteraction);
-                document.getElementById("map").style.cursor = "default";
-            }
-        })
-
-        map.addControl(zoControl);
-
-        // end : zoomOut Control
-
-        // start : FeatureInfo Control
-
-        // var featureInfoButton = document.createElement('button');
-        // featureInfoButton.innerHTML = '<img src="/static/resources/images/identify.svg" alt="" style="width:20x;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        // featureInfoButton.className = 'myButton';
-        // featureInfoButton.id = 'featureInfoButton';
-
-        // var featureInfoElement = document.createElement('div');
-        // featureInfoElement.className = 'featureInfoDiv';
-        // featureInfoElement.appendChild(featureInfoButton);
-
-        // var featureInfoControl = new ol.control.Control({
-        //     element: featureInfoElement
-        // })
-
-        // var featureInfoFlag = false;
-        // featureInfoButton.addEventListener("click", () => {
-        //     featureInfoButton.classList.toggle('clicked');
-        //     featureInfoFlag = !featureInfoFlag;
-        // })
-
-        // map.addControl(featureInfoControl);
-
-        // map.on('singleclick', function (evt) {
-            
-            
-            
-        //     featureInfoFlag = true; //change this
-
-
-        //     if (featureInfoFlag) {
-
-        //         content.innerHTML = '';
-        //         var resolution = mapView.getResolution();
-                      
-                
-        //         for(let i =0; i < layer_names.length ; i++){
-
-        //             var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(evt.coordinate, resolution, 'EPSG:3857', {
-        //                 'INFO_FORMAT': 'application/json',
-        //                 'propertyName': 'layer,gm_type'
-        //             });
-                    
-                    
-        //             console.log(layer_names[i] , url)
-                    
-        //             if (url) {
-        //                 $.getJSON(url, function (data) {
-        //                     var feature = data.features[0];
-        //                     var props = feature.properties;
-        //                     content.innerHTML = "<h3> State : </h3> <p>" + props.layer.toUpperCase() + "</p> <br> <h3> District : </h3> <p>" +
-        //                         props.gm_type.toUpperCase() + "</p>";
-        //                         popup.setPosition(evt.coordinate);
-        //                     })
-                            
-        //                 } else {
-        //                     popup.setPosition(undefined);
-                            
-        //                     document.get
-
-        //                 }
-        //             }
-        //         }
-        // });
-
-        // start : Length and Area Measurement Control
-
-        var lengthButton = document.createElement('button');
-        lengthButton.innerHTML = '<img src="/static/resources/images/measure-length.png" alt="" style="width:17px;height:17px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        lengthButton.className = 'myButton';
-        lengthButton.id = 'lengthButton';
-
-        var lengthElement = document.createElement('div');
-        lengthElement.className = 'lengthButtonDiv';
-        lengthElement.appendChild(lengthButton);
-
-        var lengthControl = new ol.control.Control({
-            element: lengthElement
-        })
-
-        var lengthFlag = false;
-        lengthButton.addEventListener("click", () => {
-            // disableOtherInteraction('lengthButton');
-            lengthButton.classList.toggle('clicked');
-            lengthFlag = !lengthFlag;
-            document.getElementById("map").style.cursor = "default";
-            if (lengthFlag) {
-                map.removeInteraction(draw);
-                addInteraction('LineString');
-            } else {
-                map.removeInteraction(draw);
-                source.clear();
-                const elements = document.getElementsByClassName("ol-tooltip ol-tooltip-static");
-                while (elements.length > 0) elements[0].remove();
-            }
-
-        })
-
-        map.addControl(lengthControl);
-
-        var areaButton = document.createElement('button');
-        areaButton.innerHTML = '<img src="/static/resources/images/measure-area.png" alt="" style="width:17px;height:17px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        areaButton.className = 'myButton';
-        areaButton.id = 'areaButton';
-
-
-        var areaElement = document.createElement('div');
-        areaElement.className = 'areaButtonDiv';
-        areaElement.appendChild(areaButton);
-
-        var areaControl = new ol.control.Control({
-            element: areaElement
-        })
-
-        var areaFlag = false;
-        areaButton.addEventListener("click", () => {
-            // disableOtherInteraction('areaButton');
-            areaButton.classList.toggle('clicked');
-            areaFlag = !areaFlag;
-            document.getElementById("map").style.cursor = "default";
-            if (areaFlag) {
-                map.removeInteraction(draw);
-                addInteraction('Polygon');
-            } else {
-                map.removeInteraction(draw);
-                source.clear();
-                const elements = document.getElementsByClassName("ol-tooltip ol-tooltip-static");
-                while (elements.length > 0) elements[0].remove();
-            }
-        })
-
-        map.addControl(areaControl);
-
+        // home Control
+        
+       
+        
+        
+       
+        createControls();
         /**
         * Message to show when the user is drawing a polygon.
         * @type {string}
@@ -741,187 +384,7 @@
             return output;
         };
 
-        // end : Length and Area Measurement Control
-
-        // start : attribute query
-
-        // var geojson;
-        // var featureOverlay;
-
-        // var qryButton = document.createElement('button');
-        // qryButton.innerHTML = '<img src="/static/resources/images/query.svg" alt="" style="width:17px;height:17px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        // qryButton.className = 'myButton';
-        // qryButton.id = 'qryButton';
-
-        // var qryElement = document.createElement('div');
-        // qryElement.className = 'myButtonDiv';
-        // qryElement.appendChild(qryButton);
-
-        // var qryControl = new ol.control.Control({
-        //     element: qryElement
-        // })
-
-        // var qryFlag = false;
-        // qryButton.addEventListener("click", () => {
-        //     // disableOtherInteraction('lengthButton');
-        //     qryButton.classList.toggle('clicked');
-        //     qryFlag = !qryFlag;
-        //     document.getElementById("map").style.cursor = "default";
-        //     if (qryFlag) {
-        //         if (geojson) {
-        //             geojson.getSource().clear();
-        //             map.removeLayer(geojson);
-        //         }
-
-        //         if (featureOverlay) {
-        //             featureOverlay.getSource().clear();
-        //             map.removeLayer(featureOverlay);
-        //         }
-        //         document.getElementById("attQueryDiv").style.display = "block";
-
-        //         bolIdentify = false;
-
-        //         addMapLayerList();
-        //     } else {
-        //         document.getElementById("attQueryDiv").style.display = "none";
-        //         document.getElementById("attListDiv").style.display = "none";
-
-        //         if (geojson) {
-        //             geojson.getSource().clear();
-        //             map.removeLayer(geojson);
-        //         }
-
-        //         if (featureOverlay) {
-        //             featureOverlay.getSource().clear();
-        //             map.removeLayer(featureOverlay);
-        //         }
-        //     }
-
-        // })
-
-        // map.addControl(qryControl);
-
-        // function addMapLayerList() {
-        //     $(document).ready(function () {
-        //         $.ajax({
-        //             type: "GET",
-        //             url: "http://localhost:8080/geoserver/wfs?request=getCapabilities",
-        //             dataType: "xml",
-        //             success: function (xml) {
-        //                 var select = $('#selectLayer');
-        //                 select.append("<option class='ddindent' value=''></option>");
-        //                 $(xml).find('FeatureType').each(function () {
-        //                     $(this).find('Name').each(function () {
-        //                         var value = $(this).text();
-        //                         select.append("<option class='ddindent' value='" + value + "'>" + value + "</option>");
-        //                     });
-        //                 });
-        //             }
-        //         });
-        //     });
-
-        // };
-
-        // $(function () {
-        //     document.getElementById("selectLayer").onchange = function () {
-        //         var select = document.getElementById("selectAttribute");
-        //         while (select.options.length > 0) {
-        //             select.remove(0);
-        //         }
-        //         var value_layer = $(this).val();
-        //         $(document).ready(function () {
-        //             $.ajax({
-        //                 type: "GET",
-        //                 url: "http://localhost:8080/geoserver/wfs?service=WFS&request=DescribeFeatureType&version=1.1.0&typeName=" + value_layer,
-        //                 dataType: "xml",
-        //                 success: function (xml) {
-
-        //                     var select = $('#selectAttribute');
-        //                     //var title = $(xml).find('xsd\\:complexType').attr('name');
-        //                     //  alert(title);
-        //                     select.append("<option class='ddindent' value=''></option>");
-        //                     $(xml).find('xsd\\:sequence').each(function () {
-
-        //                         $(this).find('xsd\\:element').each(function () {
-        //                             var value = $(this).attr('name');
-        //                             //alert(value);
-        //                             var type = $(this).attr('type');
-        //                             //alert(type);
-        //                             if (value != 'geom' && value != 'the_geom') {
-        //                                 select.append("<option class='ddindent' value='" + type + "'>" + value + "</option>");
-        //                             }
-        //                         });
-
-        //                     });
-        //                 }
-        //             });
-        //         });
-        //     }
-        //     document.getElementById("selectAttribute").onchange = function () {
-        //         var operator = document.getElementById("selectOperator");
-        //         while (operator.options.length > 0) {
-        //             operator.remove(0);
-        //         }
-
-        //         var value_type = $(this).val();
-        //         // alert(value_type);
-        //         var value_attribute = $('#selectAttribute option:selected').text();
-        //         operator.options[0] = new Option('Select operator', "");
-
-        //         if (value_type == 'xsd:short' || value_type == 'xsd:int' || value_type == 'xsd:double') {
-        //             var operator1 = document.getElementById("selectOperator");
-        //             operator1.options[1] = new Option('Greater than', '>');
-        //             operator1.options[2] = new Option('Less than', '<');
-        //             operator1.options[3] = new Option('Equal to', '=');
-        //         }
-        //         else if (value_type == 'xsd:string') {
-        //             var operator1 = document.getElementById("selectOperator");
-        //             operator1.options[1] = new Option('Like', 'Like');
-        //             operator1.options[2] = new Option('Equal to', '=');
-        //         }
-        //     }
-
-        //     document.getElementById('attQryRun').onclick = function () {
-        //         map.set("isLoading", 'YES');
-
-        //         if (featureOverlay) {
-        //             featureOverlay.getSource().clear();
-        //             map.removeLayer(featureOverlay);
-        //         }
-
-        //         var layer = document.getElementById("selectLayer");
-        //         var attribute = document.getElementById("selectAttribute");
-        //         var operator = document.getElementById("selectOperator");
-        //         var txt = document.getElementById("enterValue");
-
-        //         if (layer.options.selectedIndex == 0) {
-        //             alert("Select Layer");
-        //         } else if (attribute.options.selectedIndex == -1) {
-        //             alert("Select Attribute");
-        //         } else if (operator.options.selectedIndex <= 0) {
-        //             alert("Select Operator");
-        //         } else if (txt.value.length <= 0) {
-        //             alert("Enter Value");
-        //         } else {
-        //             var value_layer = layer.options[layer.selectedIndex].value;
-        //             var value_attribute = attribute.options[attribute.selectedIndex].text;
-        //             var value_operator = operator.options[operator.selectedIndex].value;
-        //             var value_txt = txt.value;
-        //             if (value_operator == 'Like') {
-        //                 value_txt = "%25" + value_txt + "%25";
-        //             }
-        //             else {
-        //                 value_txt = value_txt;
-        //             }
-        //             var url = "http://localhost:8080/geoserver/GISSimplified/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" + value_layer + "&CQL_FILTER=" + value_attribute + "+" + value_operator + "+'" + value_txt + "'&outputFormat=application/json"
-        //             // console.log(url);
-        //             newaddGeoJsonToMap(url);
-        //             newpopulateQueryTable(url);
-        //             setTimeout(function () { newaddRowHandlers(url); }, 300);
-        //             map.set("isLoading", 'NO');
-        //         }
-        //     }
-        // });
+       
 
         function newaddGeoJsonToMap(url) {
 

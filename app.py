@@ -71,6 +71,7 @@ class User(db.Model , UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), nullable=False , unique=True)
     username = db.Column(db.String(100), nullable=False , unique=True)
+    lastname = db.Column(db.String(80), nullable=True)
     role = db.Column(db.String(100))
     password = db.Column(db.String(200), nullable=False)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
@@ -108,41 +109,26 @@ def index():
     workspaces = cat.get_workspaces()
     return render_template("index.html", workspaces=workspaces)
 
+
+
 @app.route('/register' , methods=('GET' , 'POST'))
 def register():
+    if request.method == 'POST':
+        error_message = request.form.get('errorMessage')
+        flash(error_message, "error_msg")
+        print(error_message, 'error')   
+        print("")
+        print("")
+        return jsonify({'status': 'success'}), 200
+    
+    else:
+        action='register'
+        return render_template('register.html', action=action)
 
-    email = None
-    psw = None
-    username = None
 
-    RegisterForm = registerForm()
-
-    if RegisterForm.validate_on_submit():
-
-        user = User.query.filter_by(email=RegisterForm.email.data).first()
-
-        if user is None:
-            
-            email = RegisterForm.email.data
-            username = RegisterForm.username.data
-            psw = RegisterForm.password.data
-            #can use it later after i finished
-            #hashed_pw = generate_password_hash(psw, method='pbkdf2:sha256')
-
-            
-            user = User(email=email , username=username , password=psw)
-            db.session.add(user)
-            db.session.commit()
-
-            cat.create_workspace(username, username)
-
-            flash(" User Added Successfully !!! ")
-        RegisterForm.email.data = ''
-        RegisterForm.username.data = ''
-        RegisterForm.password.data = ''
-
-    return render_template("register.html" , RegisterForm=RegisterForm )
-
+@app.route('/success')
+def success():
+    return render_template('success.html')
 
 @app.route('/logout' , methods=('GET' , 'POST'))
 @login_required
@@ -153,37 +139,48 @@ def logout():
 
 
 
-@app.route('/login', methods=('GET', 'POST'))
-
+@app.route('/login' , methods=('GET' , 'POST'))
 def login():
+
     email = None
     password = None
     LoginForm = loginForm()
 
     if LoginForm.validate_on_submit():
+
         email = LoginForm.email.data
         password = LoginForm.password.data
-
+        print(email,password)
         LoginForm.email.data = ''
         LoginForm.password.data = ''
 
         user = User.query.filter_by(email=email).first()
 
-        if user is not None and user.password == password:
-            login_user(user)
-            flash("Logged in successfully!", "success")
+        if user is not None:
+            
+            if user.password == password:
+                
+                login_user(user)
+                flash(" logged in successfully !! ", "success")
 
-            if password == "default":
-                return redirect(url_for('changePassword'))
+                if password == "default":
+                    
+                    return redirect(url_for('changePassword'))
+                    
 
-            if user.role == "admin":
-                return redirect(url_for('status', id=current_user.id))
+                if user.role == "admin":
+                    return redirect(url_for('users'))
+                else:
+                    return redirect(url_for('dashboard'))
+            
             else:
-                return redirect(url_for('dashboard'))
+                flash(" Invalid Email/Password !! " , "error_msg")
         
-        flash("Invalid Email/Password!", "error_msg")
+        else:
+            flash(" Invalid Email/Password !! " , "error_msg")            
+        
 
-    return render_template("login.html", LoginForm=LoginForm)
+    return render_template("login.html" , LoginForm=LoginForm)
 
 @app.route('/changePassword' , methods=('GET' , 'POST'))
 @login_required
@@ -372,7 +369,7 @@ def update(id):
         name_to_update.email =  RegisterForm.email.data
         hashed_pw = generate_password_hash(RegisterForm.password.data  , "sha256")
 
-        name_to_update.password = hashed_pw
+        name_to_update.password = RegisterForm.password.data 
 
         RegisterForm.email.data = ''
         RegisterForm.password.data = ''

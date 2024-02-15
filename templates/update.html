@@ -1,63 +1,57 @@
-{% extends 'base.html' %}
+{% extends 'lbody.html' %}
 
 {% block title %} Update - Nevar-Systems {% endblock %}
 
 
-{% block body %}
+{% block login %}
 
-
-<div>
-
-  <section class="h-100 login-container">
-  <!-- <section class="h-100 "> -->
-    <div class="container h-100">
-      <div class="row justify-content-sm-center h-100">
-        <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
-          
-          <div class="text-center my-5" >
-
-            <img src=" {{url_for('static' , filename='images/nevar-systems.png')}}" alt="nevar-systems" width="100" >
-  
-          </div>
-          
-          <div class="card shadow-lg">
-            <div class="card-body p-5">
-              <h1 class="fs-4 card-title fw-bold mb-4">Add User</h1>
-              
-              <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+     
+          <div class="form-group">
+              <form method="POST" class="needs-validation form" id="form" novalidate="" autocomplete="off">
                 {{RegisterForm.hidden_tag()}}   
-                
-                <div class="mb-3">
-                  <label class="mb-2 " for="form2Example18">Username</label>
-                    
-                  {{RegisterForm.username( type="text" ,class="form-control" , value=user.username)}}
-  
-                </div>
-  
+                <div class="image-container">
+                  <img class='logo' src="/static/images/nevarblack.png">
 
-                <div class="mb-3">
-                  <label class="mb-2 " for="form2Example18">E-Mail Address</label>
-                  
-                  {{RegisterForm.email(id="form2Example18", class="form-control" , value=user.email)}}
-  
-                  <div class="invalid-feedback">
-                    Email is invalid
-                  </div>
+              </div>
+              <p class="title">Update</p>
+
+                <div class="flex input-control">
+                    <label >
+                      
+                      {{RegisterForm.username( type="text" ,class="form-control input", id=username, value=user.username ,required="", autocomplete="username", placeholder="", required="")}}
+                      <span>Firstname</span>
+                    </label>
+                </div>
+                
+
+                <div class=" flex input-control">
+                    <label >
+              
+                      {{RegisterForm.email(id="form2Example18", class="form-control input " , value=user.email, placeholder="", required="")}}
+                      <span>Email</span>
+                    </label>
+                    <div class="invalid-feedback">
+                          Email is invalid
+                    </div>
                 </div>
                             
+               
+                    <div class=" flex input-control">
+                      <label >
+
+                          {{RegisterForm.password( id="form2Example28" , class="input", placeholder="", required="" )}}
+                          <span>Password</span>
+                      </label>
+                    </div>
+                    
                 <div class="mb-3">
-                  <div class="mb-2 w-100">
-                    <label for="password">Password</label>
+                  <div class=" flex input-control">
+                    <label>
+
+                      {{RegisterForm.password2( id="form2Example28" , class="input", placeholder="", required="" )}}
+                      <span>confirm</span>
+                    </label>
                   </div>
-                  {{RegisterForm.password( id="form2Example28" , class="form-control" )}}
-  
-                
-                <div class="mb-3">
-                  <div class="mb-2 w-100">
-                    <label for="password">Password</label>
-                  </div>
-                  {{RegisterForm.password2( id="form2Example28" , class="form-control " )}}
-                      
                     {% for error in RegisterForm.password.errors %}
                     <span style="color:red;">
           
@@ -70,7 +64,7 @@
                 <div style="display: flex; justify-content:center;">
                   <div class="form-check"> 
                     
-                     {{RegisterForm.submit(class="btn btn-outline-primary " , value="Update")}} 
+                     {{RegisterForm.submit(class="btn btn-outline-primary " , value="Update",id="sign" ,class="button")}} 
 
                   </div>
                 </div>
@@ -79,9 +73,11 @@
           
           </div>
           
-        </div>
-      </div>
-    </div>
+        
   </section>
-
+<style>
+  img{
+    
+  }
+</style>
 {% endblock %}
