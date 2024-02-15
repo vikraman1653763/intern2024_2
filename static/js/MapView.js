@@ -18,7 +18,7 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
 
     var osmTile = new ol.layer.Tile({
         title: 'Open Street Map',
-        visible: true,
+        
         type: 'base',
         source: new ol.source.OSM()
     });
@@ -35,9 +35,11 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
     map.addLayer(osmTile);
 
     var layer_names = [];
+    console.log(layer_names);
     var lyr = {};
 
     for (let i = 0; i < lay.length; i++) {
+        
         lyr[lay[i]] = new ol.layer.Tile({
             title: lay[i],
             source: new ol.source.TileWMS({
@@ -47,6 +49,10 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
                 visible: true
             })
         });
+        console.log(workspace);
+        console.log(lyr[lay[i]]);
+       console.log("osm",osmTile);
+
         layer_names.push(lay[i]);
         map.addLayer(lyr[lay[i]]);
     }

@@ -1,5 +1,10 @@
 //contianer
 var container;
+var zoImage = document.querySelector('#zoButton img'); // Get the image inside the button
+var ziImage = document.querySelector('#ziButton img');
+var leImage = document.querySelector('#lengthButton img');
+var arImage = document.querySelector('#areaButton img');
+
 function createButtonContainer() {
     container = document.createElement('div');
     container.id = 'buttonContainer'; // You can assign an ID to this container for styling or manipulation
@@ -7,219 +12,178 @@ function createButtonContainer() {
     return container;
 }
 //home control
-function homeControl(dashboardUrl ,container){
-    var homeButton = document.createElement('button');
-        homeButton.innerHTML = '<img src="/static/resources/images/home.svg" alt="" style="width:20px;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        homeButton.className = 'myButton';
+function homeControl(dashboardUrl) {
+    // Select the existing button by its ID
+    var homeButton = document.getElementById('homeButton');
 
-        var homeElement = document.createElement('div');
-        homeElement.className = 'homeButtonDiv';
-        homeElement.appendChild(homeButton);
-
-        var homeControl = new ol.control.Control({
-            element: homeElement
-        })
-
-        homeButton.addEventListener("click", () => {
-            location.href = dashboardUrl;
-        })
-
-        map.addControl(homeControl);
-        container.appendChild(homeElement);
-    }
+    // Add onclick event directly to the button element
+    homeButton.onclick = function() {
+        location.href = dashboardUrl;
+    };
+}
 
 // start : zoomOut Control
-function zoomOut(container){
-                // Define the DragBox interaction for zooming out
-        var zoomOutInteraction = new ol.interaction.DragBox();
+function zoomOut() {
+    // Get the existing zoom out button
+    var zoButton = document.getElementById('zoButton');
 
-        zoomOutInteraction.on('boxend', function (event) {
-            var zoomOutExtent = event.target.getGeometry().getExtent();
-            map.getView().setCenter(ol.extent.getCenter(zoomOutExtent));
-            map.getView().setZoom(map.getView().getZoom() - 1);
-            zoomOutInteraction.setActive(false);
-            zoomOutInteraction.setActive(true);
-        });
+    zoButton.addEventListener("click", function() {
+    
+    zoImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
+});
+    // Define the DragBox interaction for zooming out
+    var zoomOutInteraction = new ol.interaction.DragBox();
 
-        // Create the zoom out button
-        var zoButton = document.createElement('button');
-        zoButton.innerHTML = '<img src="/static/resources/images/zoomOut.png" alt="" style="width:18px;height:18px;transform: rotate(270deg);filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        zoButton.className = 'myButton';
-        zoButton.id = 'zoButton';
+    zoomOutInteraction.on('boxend', function(event) {
+        var zoomOutExtent = event.target.getGeometry().getExtent();
+        map.getView().setCenter(ol.extent.getCenter(zoomOutExtent));
+        map.getView().setZoom(map.getView().getZoom() - 1);
+        zoomOutInteraction.setActive(false);
+        zoomOutInteraction.setActive(true);
+    });
 
-        // Add a click event listener to toggle the zoom out interaction and update button class
-        zoButton.addEventListener("click", function() {
-            zoButton.classList.toggle('clicked');
-            if (zoButton.classList.contains('clicked')) {
-                document.getElementById("map").style.cursor = "zoom-out";
-                map.addInteraction(zoomOutInteraction);
-            } else {
-                map.removeInteraction(zoomOutInteraction);
-                document.getElementById("map").style.cursor = "default";
-            }
-        });
+    // Add a click event listener to toggle the zoom out interaction and update button class
+    zoButton.addEventListener("click", function() {
+        zoButton.classList.toggle('clicked');
+        if (zoButton.classList.contains('clicked')) {
+            document.getElementById("map").style.cursor = "zoom-out";
+            map.addInteraction(zoomOutInteraction);
+        } else {
+            map.removeInteraction(zoomOutInteraction);
+            document.getElementById("map").style.cursor = "default";
+        }
+    });
+}
 
-        // Create the control element
-        var zoElement = document.createElement('div');
-        zoElement.className = 'zoButtonDiv';
-        zoElement.appendChild(zoButton);
 
-        // Create the zoom out control
-        var zoControl = new ol.control.Control({
-            element: zoElement
-        });
-
-        // Add the zoom out control to the map
-        map.addControl(zoControl);
-        container.appendChild(zoElement);
-
-    }
         // end : zoomOut Control
 
  // start : zoomIn Control
-function zoomIn(container){
- var zoomInInteraction = new ol.interaction.DragBox();
+ function zoomIn() {
+    // Get the existing zoom in button
+    var ziButton = document.getElementById('ziButton');
 
- zoomInInteraction.on('boxend', function () {
-     var zoomInExtent = zoomInInteraction.getGeometry().getExtent();
-     map.getView().fit(zoomInExtent);
- });
+    ziButton.addEventListener("click", function() {
+    
+        ziImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
+    });
+    // Define the DragBox interaction for zooming in
+    var zoomInInteraction = new ol.interaction.DragBox();
 
- var ziButton = document.createElement('button');
- ziButton.innerHTML = '<img src="/static/resources/images/zoomIn.svg" alt="" style="width:18px;height:18px;transform: rotate(270deg);filter:brightness(0) invert(1);vertical-align:middle"></img>';
- ziButton.className = 'myButton';
- ziButton.id = 'ziButton';
+    zoomInInteraction.on('boxend', function () {
+        var zoomInExtent = zoomInInteraction.getGeometry().getExtent();
+        map.getView().fit(zoomInExtent);
+    });
 
- var ziElement = document.createElement('div');
- ziElement.className = 'ziButtonDiv';
- ziElement.appendChild(ziButton);
-
- var ziControl = new ol.control.Control({
-     element: ziElement
- })
-
- var zoomInFlag = false;
- ziButton.addEventListener("click", () => {
-     ziButton.classList.toggle('clicked');
-     zoomInFlag = !zoomInFlag;
-     if (zoomInFlag) {
-         document.getElementById("map").style.cursor = "zoom-in";
-         map.addInteraction(zoomInInteraction);
-     } else {
-         map.removeInteraction(zoomInInteraction);
-         document.getElementById("map").style.cursor = "default";
-     }
- })
-
- map.addControl(ziControl);
- container.appendChild(ziElement);
+    // Add a click event listener to toggle the zoom in interaction and update button class
+    ziButton.addEventListener("click", function () {
+        ziButton.classList.toggle('clicked');
+        if (ziButton.classList.contains('clicked')) {
+            document.getElementById("map").style.cursor = "zoom-in";
+            map.addInteraction(zoomInInteraction);
+        } else {
+            map.removeInteraction(zoomInInteraction);
+            document.getElementById("map").style.cursor = "default";
+        }
+    });
 }
+
 
 // start : full screen Control
+function fullScreen() {
+    // Get the existing full screen button
+    var fsButton = document.getElementById('fsButton');
 
-function fullScreen(container){
-var fsButton = document.createElement('button');
-fsButton.innerHTML = '<img src="/static/resources/images/fullscreen.svg" alt="" style="width:20px;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-fsButton.className = 'myButton';
-
-var fsElement = document.createElement('div');
-fsElement.className = 'fsButtonDiv';
-fsElement.appendChild(fsButton);
-
-var fsControl = new ol.control.Control({
-    element: fsElement
-})
-fsButton.addEventListener("click", () => {
-    var mapEle = document.getElementById("map");
-    if (mapEle.requestFullscreen) {
-        mapEle.requestFullscreen();
-    } else if (mapEle.msRequestFullscreen) {
-        mapEle.msRequestFullscreen();
-    } else if (mapEle.mozRequestFullscreen) {
-        mapEle.mozRequestFullscreen();
-    } else if (mapEle.webkitRequestFullscreen) {
-        mapEle.webkitRequestFullscreen();
-    }
-})
-
-map.addControl(fsControl);
-container.appendChild(fsElement);
+    // Add a click event listener to handle full screen functionality
+    fsButton.addEventListener("click", function () {
+        var mapEle = document.getElementById("map");
+        if (mapEle.requestFullscreen) {
+            mapEle.requestFullscreen();
+        } else if (mapEle.msRequestFullscreen) {
+            mapEle.msRequestFullscreen();
+        } else if (mapEle.mozRequestFullscreen) {
+            mapEle.mozRequestFullscreen();
+        } else if (mapEle.webkitRequestFullscreen) {
+            mapEle.webkitRequestFullscreen();
+        }
+    });
 }
+
 // end : full screen Control
 
-function lengthControl(container){
-var lengthButton = document.createElement('button');
-        lengthButton.innerHTML = '<img src="/static/resources/images/measure-length.png" alt="" style="width:17px;height:17px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        lengthButton.className = 'myButton';
-        lengthButton.id = 'lengthButton';
+function lengthControl() {
+    // Get the existing length button
+    var lengthButton = document.getElementById('lengthButton');
 
-        var lengthElement = document.createElement('div');
-        lengthElement.className = 'lengthButtonDiv';
-        lengthElement.appendChild(lengthButton);
+    lengthButton.addEventListener("click", function() {
+    
+        leImage.classList.toggle('clicked-image-border');
 
-        var lengthControl = new ol.control.Control({
-            element: lengthElement
-        })
+         // Toggle the class for the image
+    });
 
-        var lengthFlag = false;
-        lengthButton.addEventListener("click", () => {
-            // disableOtherInteraction('lengthButton');
-            lengthButton.classList.toggle('clicked');
-            lengthFlag = !lengthFlag;
-            document.getElementById("map").style.cursor = "default";
-            if (lengthFlag) {
-                map.removeInteraction(draw);
-                addInteraction('LineString');
-            } else {
-                map.removeInteraction(draw);
-                source.clear();
-                const elements = document.getElementsByClassName("ol-tooltip ol-tooltip-static");
-                while (elements.length > 0) elements[0].remove();
-            }
-
-        })
-
-        map.addControl(lengthControl);
-        container.appendChild(lengthElement);
-
-    }
-
-    function areaControl(container){
-        var areaButton = document.createElement('button');
-        areaButton.innerHTML = '<img src="/static/resources/images/measure-area.png" alt="" style="width:17px;height:17px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-        areaButton.className = 'myButton';
-        areaButton.id = 'areaButton';
+    // Add a click event listener to toggle the length interaction and update button class
+    lengthButton.addEventListener("click", function () {
+        // disableOtherInteraction('lengthButton');
+        lengthButton.classList.toggle('clicked');
+        var lengthFlag = lengthButton.classList.contains('clicked');
+        document.getElementById("map").style.cursor = "default";
+        if (lengthFlag) {
+            map.removeInteraction(draw);
+            addInteraction('LineString');
+        } else {
+            map.removeInteraction(draw);
+            // source.clear();
+            // const elements = document.getElementsByClassName("ol-tooltip ol-tooltip-static");
+            // while (elements.length > 0) elements[0].remove();
+        }
+    });
+}
 
 
-        var areaElement = document.createElement('div');
-        areaElement.className = 'areaButtonDiv';
-        areaElement.appendChild(areaButton);
+function areaControl() {
+    // Get the existing area button
+    var areaButton = document.getElementById('areaButton');
+    areaButton.addEventListener("click", function() {
+    
+        arImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
+    });
+    // Add a click event listener to toggle the area interaction and update button class
+    areaButton.addEventListener("click", function () {
+        // Toggle the 'clicked' class
+        areaButton.classList.toggle('clicked');
+        
+        // Check if the area button is clicked
+        var areaFlag = areaButton.classList.contains('clicked');
+        
+        // Set the cursor style
+        document.getElementById("map").style.cursor = "default";
 
-        var areaControl = new ol.control.Control({
-            element: areaElement
-        })
+        // Toggle the area interaction based on the button state
+        if (areaFlag) {
+            map.removeInteraction(draw);
+            addInteraction('Polygon');
+        } else {
+            // If area button is clicked again, do nothing (optional)
+            map.removeInteraction(draw);
+            // source.clear();
+            // const elements = document.getElementsByClassName("ol-tooltip ol-tooltip-static");
+            // while (elements.length > 0) elements[0].remove();
+        }
+    });
+}
 
-        var areaFlag = false;
-        areaButton.addEventListener("click", () => {
-            // disableOtherInteraction('areaButton');
-            areaButton.classList.toggle('clicked');
-            areaFlag = !areaFlag;
-            document.getElementById("map").style.cursor = "default";
-            if (areaFlag) {
-                map.removeInteraction(draw);
-                addInteraction('Polygon');
-            } else {
-                map.removeInteraction(draw);
-                source.clear();
-                const elements = document.getElementsByClassName("ol-tooltip ol-tooltip-static");
-                while (elements.length > 0) elements[0].remove();
-            }
-        })
 
-        map.addControl(areaControl);
-        container.appendChild(areaElement);
 
-    }
+
+
+
+
+
+
+
+
+
     
     function createControls() {
         var container = createButtonContainer();

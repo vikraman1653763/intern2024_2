@@ -7,7 +7,7 @@
 <div class="container-fluid"  >
     <div class="row">
         
-        <div class="col-sm-2" id="sidebar" style="position:relative ; z-index: 23;background-color: white;border:1px solid blue; ">
+        <div class="col-sm-2" id="sidebar"  style="position:relative ; z-index: 23;background-color: white;border:1px solid blue; ">
             <h2>Layers</h2>
             <div class="checkbox-wrapper">
                 <input id="Open Street Map" type="checkbox" value="Open Street Map" checked onchange="toggleLayer(event)">
@@ -31,27 +31,52 @@
             {% endfor %}
            
         </div>
+        
+
+
 
         <div class="col-sm-10" style="padding: 0%; margin: 0%;">
             <div id="map"></div>
             
-
-            <button id="toggle-btn" style="position:relative; z-index: 2;background-color: transparent;border: none;"> 
+            <div class="btnn">
+            
+            <button id="toggle-btn" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none;  "> 
                 
-                <img src="\static\resources\images\layers.svg" style="width: 40px; height: 40px;" alt="">
+                <img src="\static\resources\images\layers.svg"  alt="">
             </button>
-            <button id="edit-btn" style="position:relative; z-index: 2;background-color: transparent;border: none;"> 
-                
-                <img src="\static\resources\images\edit.svg" style="width: 40px; height: 40px;" alt="">
+            
+            <button id="homeButton" class="myButton"style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
+                <img src="/static/resources/images/homebtn.svg" alt="" ></img>
             </button>
-
-           
+            <!-- Zoom Out Button -->
+            <button id="zoButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
+                <img src="/static/resources/images/zoomminus.svg" alt="" ></img>
+            </button>
+            <!-- Zoom In Button -->
+            <button id="ziButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
+                <img src="/static/resources/images/zoomplus.svg" alt="" ></img>
+            </button>
+            <!-- Length Control Button -->
+            <button id="lengthButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
+                <img src="/static/resources/images/scale.svg" alt="" ></img>
+            </button>
+            <!-- Area Control Button -->
+            <button id="areaButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
+                <img src="/static/resources/images/area.svg" alt="" ></img>
+            </button>
+            <!-- Full Screen Button -->
+            <button id="fsButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
+                <img src="/static/resources/images/full.svg" alt="" ></img>
+            </button>
+        </div>
         </div>
 
     </div>
 </div>
 
-
+<style>
+    
+</style>
 <div id="popup" class="ol-popup">
 
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -71,7 +96,11 @@
                 $("#sidebar").toggle();
             });   
         });
-        
+        $(document).ready(function() {
+            $("#edit-btn").click(function() {
+                $("#sidebtn").toggle();
+            });   
+        });
 
         function toggleLayer(eve){
 
