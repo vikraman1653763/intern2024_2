@@ -1,0 +1,45 @@
+<button id="toggleButton" class="myButton bigbtn"><img src="\static\resources\images\edit.svg"  alt=""></button>
+<div class="tooly">
+    <button id="homeButton" class="myButton"><img src="/static/resources/images/homebtn.svg" alt=""></button>
+    <!-- Zoom Out Button -->
+    <button id="zoButton" class="myButton"><img src="/static/resources/images/zoomminus.svg" alt=""></button>
+    <!-- Zoom In Button -->
+    <button id="ziButton" class="myButton"><img src="/static/resources/images/zoomplus.svg" alt=""></button>
+    <!-- Length Control Button -->
+    <button id="lengthButton" class="myButton"><img src="/static/resources/images/scale.svg" alt=""></button>
+    <!-- Area Control Button -->
+    <button id="areaButton" class="myButton"><img src="/static/resources/images/area.svg" alt=""></button>
+    <!-- Full Screen Button -->
+    <button id="fsButton" class="myButton"><img src="/static/resources/images/full.svg" alt=""></button>
+</div>
+<style>
+    .tooly {
+        position: relative;
+        z-index: 2;
+        display: none; /* Initially hide the .tooly div */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        padding-left: 5px;
+        opacity: 0; /* Initially set opacity to 0 */
+        transition: opacity 3s ease; /* Smooth transition for opacity */
+        
+    }
+    
+    .tooly.show {
+        display: flex; /* Show the .tooly div */
+        opacity: 1; /* Change opacity to 1 */
+       
+    }
+    
+</style>
+<script>
+    var toggleButton = document.getElementById('toggleButton');
+var toolyDiv = document.querySelector('.tooly');
+
+toggleButton.addEventListener('click', function() {
+    toolyDiv.classList.toggle('show');
+});
+
+</script>

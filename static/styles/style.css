@@ -46,12 +46,12 @@
     width: 100vw;
     /* column-width: 100vw; */
     height: 100vh;
-
+    left: 1px;
     margin: 0%;
     padding: 0%;
+z-index: 1;
 
-
-    left: 0;
+   
 
 }
 
@@ -125,29 +125,13 @@
     content: "✖";
   }
 
-  .myButton {
-    background-color:rgba(245, 202, 10, 0.927);
-    color: rgb(0, 0, 0);
-    font-weight: 700;
-    text-align: center;
-    height: 40px;
-    width: 40px;
-    border-radius: 2px;
-    border: 10px solid black;
-    align-items: center;
-}
 
-.myButton:hover{
-  background-color: rgb(0, 60, 136, 1);
-}
 
-.myButton.clicked{
-  background-color: rgba(22, 170, 35, 0.8);
-}
 
-.myButton.clicked:hover{
-background-color: rgba(22, 170, 35, 1);
-}
+
+
+
+
 
 /* U R D L */
 

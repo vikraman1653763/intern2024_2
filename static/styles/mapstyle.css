@@ -1,19 +1,38 @@
 
-#sidebar{
-        
-        height:90vh;
-        border-radius:0px 10PX 10PX 0px;
-        overflow:auto;
-        border: 1px solid white;
-        box-shadow: inset rgba(244, 244, 244, 0.3) -10px 0px 30px, inset rgba(6, 6, 6, 0.947) -10px 0px 20px;
-   
-      }
+#sidebar {
+  height: 90vh;
+  border-radius: 0px 10px 10px 0px;
+  overflow: fixed;
+  border: 1px solid white;
+  box-shadow: inset rgba(244, 244, 244, 0.3) -10px 0px 30px, inset rgba(6, 6, 6, 0.947) -10px 0px 20px;
+  width: 200px;
+  z-index: 23;
+  background-color: rgba(225, 234, 234, 0.5);
+  position: relative;
+  flex-direction: column;
+  transition: transform .3s ease-in-out; /* Smooth transition for visibility */
 
+}
+
+.row {
+  background: transparent;
+  flex-wrap: nowrap;
+  width: 200px;
+  transition: transform 1s ease-in-out; /* Add transition for transform property */
+}
+.row.hidden-row {
+  transform: translateX(-100%);
+}
+
+
+.sidebar-visible {
+  transform: translateX(-200px); /* Hide the sidebar */
+}
+.sidebar-visible .myButton {
+  left: 20px; /* Adjust the left position based on sidebar width */
+}
     
-
-    .row{
-        color:#36f1c5fa;
-    }
+    
     h2{
         font-family:monospace;
         font-weight: bold;
@@ -140,22 +159,80 @@
     color: #000; /* Adjust the color of the text if necessary */
 }
 
-.myButton{
-  padding:10px;
-  border:2px solid #1695f0;
+.myButton {
+  padding: 15px;
+  z-index: 2;
+  background-color: transparent;
+  border: none;
+  font-weight: 700;
+  height: 40px;
+  width: 40px;
 
+  
+  left: 0;
+  transition: left 0.3s ease; /* Add transition for smoother movement */
+}
+
+img{
+height:25px;
+border-radius: 20px;
+width:25px;
+box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px;
+left: 0%;
 
 }
-img{
-height:30px;
-border-radius: 20px;
-width:30px;
-box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px;
-
-
+.bigbtn img{
+  width: 35px;
+  height: 35px;
+  
 }
 .clicked-image-border {
-  border: 4px dashed rgb(253, 155, 8); /* Change to the desired border color and width */
+  border: 4px dashed rgb(253, 155, 8); 
   border-radius: 20px;
 
 }
+
+#toggleButton{
+  width:40px;
+  z-index: 2;
+
+  background:transparent !important;
+
+}
+
+.container {
+  position: relative;
+  height: 200px;
+  width: 10px;
+  visibility: hidden;
+}
+
+.tooly {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 200px; 
+  height: 100%; 
+
+}
+
+/* CSS to show the .tooly div */
+.tooly.show {
+  z-index: 2;
+    display: flex; 
+    visibility: visible;
+    
+    transform: translateY(5%);
+} 
+
+.tooly.hide {
+  z-index: 2;
+  display: flex; 
+  
+  transition: transform .4s ease-in-out, visibility .15s ease-in-out;
+    visibility: hidden;
+    transform: translateY(-100%);
+}
+

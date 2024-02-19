@@ -4,10 +4,10 @@
 {% block body %}
 
 
-<div class="container-fluid"  >
+<div>
     <div class="row">
         
-        <div class="col-sm-2" id="sidebar"  style="position:relative ; z-index: 23;background-color: white;border:1px solid blue; ">
+        <div id="sidebar" >
             <h2>Layers</h2>
             <div class="checkbox-wrapper">
                 <input id="Open Street Map" type="checkbox" value="Open Street Map" checked onchange="toggleLayer(event)">
@@ -16,9 +16,9 @@
             </div>
             <br>
             <div class="checkbox-wrapper">
-            <input id="satellite"type="checkbox"  value="satellite" checked onchange="toggleLayer(event)">
-            <label for="satellite"><div class="tick_mark"></div></label>
-            <span>satellite</span>
+                <input id="satellite"type="checkbox"  value="satellite" checked onchange="toggleLayer(event)">
+                <label for="satellite"><div class="tick_mark"></div></label>
+                <span>satellite</span>
             </div>
             <BR>
             {% for l in layer_list %}
@@ -31,43 +31,48 @@
             {% endfor %}
            
         </div>
-        
+      
 
 
 
-        <div class="col-sm-10" style="padding: 0%; margin: 0%;">
+        <div class="col-sm-10" style="padding: 0%;margin: 0%; width:10px;">
             <div id="map"></div>
             
             <div class="btnn">
             
-            <button id="toggle-btn" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none;  "> 
+            <button id="toggle-btn" class="myButton bigbtn" > 
                 
                 <img src="\static\resources\images\layers.svg"  alt="">
             </button>
-            
-            <button id="homeButton" class="myButton"style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
-                <img src="/static/resources/images/homebtn.svg" alt="" ></img>
+            <button id="toggleButton" onclick="toggleTooly()" class="myButton bigbtn"><img src="\static\resources\images\edit.svg"  alt="">
             </button>
-            <!-- Zoom Out Button -->
-            <button id="zoButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
-                <img src="/static/resources/images/zoomminus.svg" alt="" ></img>
-            </button>
-            <!-- Zoom In Button -->
-            <button id="ziButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
-                <img src="/static/resources/images/zoomplus.svg" alt="" ></img>
-            </button>
-            <!-- Length Control Button -->
-            <button id="lengthButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
-                <img src="/static/resources/images/scale.svg" alt="" ></img>
-            </button>
-            <!-- Area Control Button -->
-            <button id="areaButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
-                <img src="/static/resources/images/area.svg" alt="" ></img>
-            </button>
-            <!-- Full Screen Button -->
-            <button id="fsButton" class="myButton" style="position:relative; z-index: 2;background-color: transparent;border: none; width:40px; ">
-                <img src="/static/resources/images/full.svg" alt="" ></img>
-            </button>
+                <div class="container">
+                    <div class="tooly">
+                        <button id="homeButton" class="myButton" >
+                            <img src="/static/resources/images/homebtn.svg" alt="" ></img>
+                        </button>
+                        <!-- Zoom Out Button -->
+                        <button id="zoButton" class="myButton"  >
+                            <img src="/static/resources/images/zoomminus.svg" alt="" ></img>
+                        </button>
+                        <!-- Zoom In Button -->
+                        <button id="ziButton" class="myButton"  >
+                            <img src="/static/resources/images/zoomplus.svg" alt="" ></img>
+                        </button>
+                        <!-- Length Control Button -->
+                        <button id="lengthButton" class="myButton"  >
+                            <img src="/static/resources/images/scale.svg" alt="" ></img>
+                        </button>
+                        <!-- Area Control Button -->
+                        <button id="areaButton" class="myButton"  >
+                            <img src="/static/resources/images/area.svg" alt="" ></img>
+                        </button>
+                        <!-- Full Screen Button -->
+                        <button id="fsButton" class="myButton"  >
+                            <img src="/static/resources/images/full.svg" alt="" ></img>
+                        </button>
+                    </div >
+                </div>
         </div>
         </div>
 
@@ -76,6 +81,16 @@
 
 <style>
     
+       
+    
+        .rightcls {
+            margin-right: -100px; /* Move the button to the left side */
+            transition: margin-right 0.3s ease-in-out; /* Adjust transition property */
+        }
+        
+     
+
+
 </style>
 <div id="popup" class="ol-popup">
 
@@ -90,17 +105,42 @@
 <script src="/static/js/controls.js"></script>
 <script  type="text/javascript">
 
+    function toggleTooly() {
+        var toolyDiv = document.querySelector('.tooly');
+        var togImage = document.querySelector('#toggleButton img');
+
+        if (toolyDiv.classList.contains('show')) {
+            toolyDiv.classList.remove('show'); 
+            toolyDiv.classList.add('hide');
+            togImage.classList.remove('clicked-image-border'); // Remove border from the image
+        } else {
+            toolyDiv.classList.remove('hide');
+            toolyDiv.classList.add('show'); 
+            
+            togImage.classList.add('clicked-image-border'); // Add border to the image
+        }
+    };
+
+   
   
-        $(document).ready(function() {
-            $("#toggle-btn").click(function() {
-                $("#sidebar").toggle();
-            });   
-        });
-        $(document).ready(function() {
-            $("#edit-btn").click(function() {
-                $("#sidebtn").toggle();
-            });   
-        });
+    $(document).ready(function() {
+        var mybtnDiv = $('.myButton');
+        var homeButton = $('#homeButton'); // Select the homeButton element
+        
+        $("#toggle-btn").click(function() {
+            $("#sidebar").toggleClass("sidebar-visible"); 
+            
+            // Toggle class for myButton elements
+            mybtnDiv.each(function() {
+                $(this).toggleClass("rightcls");
+            });
+            
+            // Toggle class for the homeButton element
+            homeButton.toggleClass("rightcls");
+        });   
+    });
+    
+    
 
         function toggleLayer(eve){
 
@@ -110,7 +150,7 @@
 
             // var lyrList = layer_names;
 
-            console.log("layer name ",lyername);
+            console.log("layername ",lyername);
             console.log("checked ", checkedStatus);
             console.log("lyrList ", lyrList);
 

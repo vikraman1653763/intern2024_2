@@ -18,7 +18,8 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
 
     var osmTile = new ol.layer.Tile({
         title: 'Open Street Map',
-        
+        visible: true,
+
         type: 'base',
         source: new ol.source.OSM()
     });
@@ -27,12 +28,13 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
         title: 'satellite',
         source: new ol.source.XYZ({
             url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-            maxZoom: 19
+            maxZoom: 50
         })
     });
 
     map.addLayer(satellite);
     map.addLayer(osmTile);
+    map.addLayer(noneTile);
 
     var layer_names = [];
     console.log(layer_names);
