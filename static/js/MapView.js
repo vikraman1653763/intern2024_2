@@ -1,7 +1,7 @@
 function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
     var mapView = new ol.View({
         center: ol.proj.fromLonLat([lon, lat]),
-        zoom: zoom
+        zoom: 16
     });
 
     var map = new ol.Map({
@@ -24,20 +24,32 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
         source: new ol.source.OSM()
     });
 
-    var satellite = new ol.layer.Tile({
-        title: 'satellite',
+ 
+
+    
+
+    var googleMaps = new ol.layer.Tile({
+        title: 'Google Maps',
         source: new ol.source.XYZ({
-            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-            maxZoom: 50
+            url: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
         })
     });
-
-    map.addLayer(satellite);
+    
+    var googleSatellite = new ol.layer.Tile({
+        title: 'Google Satellite',
+        source: new ol.source.XYZ({
+            url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+        })
+    });
+    
+    
     map.addLayer(osmTile);
     map.addLayer(noneTile);
+    map.addLayer(googleMaps);
+    map.addLayer(googleSatellite);
 
     var layer_names = [];
-    console.log(layer_names);
+    
     var lyr = {};
 
     for (let i = 0; i < lay.length; i++) {
@@ -51,9 +63,7 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
                 visible: true
             })
         });
-        console.log(workspace);
-        console.log(lyr[lay[i]]);
-       console.log("osm",osmTile);
+        
 
         layer_names.push(lay[i]);
         map.addLayer(lyr[lay[i]]);

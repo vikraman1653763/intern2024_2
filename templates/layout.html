@@ -4,9 +4,50 @@
 {% block body %}
 
 
-<div>
-    <div class="row">
+<div class="row">
+    <div class="col-sm-10 allbuttons">
+       
+        <button id="togglelayer" class="myButton" ><img src="\static\resources\images\layers.svg"alt=""><span class="tooltip">Layers</span></button>
+        <button id="toggleButton" onclick="toggleTooly()" class="myButton"><img src="\static\resources\images\edit.svg" alt=""><span class="tooltip">Tools</span></button>
+        <div class="tooly">
+            <button id="homeButton" class="myButton toolbtn">
+                <img src="/static/resources/images/homebtn.svg" alt="" />
+                <span class="tooltip">home</span>
+            </button>
+            <!-- Zoom Out Button -->
+            <button id="zoButton" class="myButton toolbtn">
+                <img src="/static/resources/images/zoomminus.svg" alt="" />
+                <span class="tooltip">ZoomOut</span>
+            </button>
+            <!-- Zoom In Button -->
+            <button id="ziButton" class="myButton toolbtn">
+                <img src="/static/resources/images/zoomplus.svg" alt="" />
+                <span class="tooltip">ZoomIn</span>
+            </button>
+            <!-- Length Control Button -->
+            <button id="lengthButton" class="myButton toolbtn">
+                <img src="/static/resources/images/scale.svg" alt="" />
+                <span class="tooltip">Length</span>
+            </button>
+            <!-- Area Control Button -->
+            <button id="areaButton" class="myButton toolbtn">
+                <img src="/static/resources/images/area.svg" alt="" />
+                <span class="tooltip">Area</span>
+            </button>
+            <!-- Full Screen Button -->
+            <button id="fsButton" class="myButton toolbtn">
+                <img src="/static/resources/images/full.svg" alt="" />
+                <span class="tooltip">Fullscreen</span>
+            </button>
+            <button id="ptButton" class="myButton toolbtn">
+                <img src="/static/resources/images/pointer.svg" alt="" />
+                <span class="tooltip">pointer</span>
+            </button>
+        </div>
         
+        
+        </div>
+        <div id="map"></div>
         <div id="sidebar" >
             <h2>Layers</h2>
             <div class="checkbox-wrapper">
@@ -16,88 +57,51 @@
             </div>
             <br>
             <div class="checkbox-wrapper">
-                <input id="satellite"type="checkbox"  value="satellite" checked onchange="toggleLayer(event)">
-                <label for="satellite"><div class="tick_mark"></div></label>
-                <span>satellite</span>
-            </div>
-            <BR>
-            {% for l in layer_list %}
-            <div class="checkbox-wrapper">
-                <input id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
-                <label for="{{ l }}"><div class="tick_mark"></div></label>
-                <span>{{ l }}</span>
+                <input id="googleMaps" type="checkbox" value="Google Maps" checked onchange="toggleLayer(event)">
+                <label for="googleMaps"><div class="tick_mark"></div></label>
+                <span>Google Maps</span>
             </div>
             <br>
-            {% endfor %}
-           
-        </div>
-      
-
-
-
-        <div class="col-sm-10" style="padding: 0%;margin: 0%; width:10px;">
-            <div id="map"></div>
+            <div class="checkbox-wrapper">
+                <input id="googleSatellite" type="checkbox" value="Google Satellite" checked onchange="toggleLayer(event)">
+                <label for="googleSatellite"><div class="tick_mark"></div></label>
+                <span>Satellite</span>
+            </div>
             
-            <div class="btnn">
-            
-            <button id="toggle-btn" class="myButton bigbtn" > 
-                
-                <img src="\static\resources\images\layers.svg"  alt="">
-            </button>
-            <button id="toggleButton" onclick="toggleTooly()" class="myButton bigbtn"><img src="\static\resources\images\edit.svg"  alt="">
-            </button>
-                <div class="container">
-                    <div class="tooly">
-                        <button id="homeButton" class="myButton" >
-                            <img src="/static/resources/images/homebtn.svg" alt="" ></img>
-                        </button>
-                        <!-- Zoom Out Button -->
-                        <button id="zoButton" class="myButton"  >
-                            <img src="/static/resources/images/zoomminus.svg" alt="" ></img>
-                        </button>
-                        <!-- Zoom In Button -->
-                        <button id="ziButton" class="myButton"  >
-                            <img src="/static/resources/images/zoomplus.svg" alt="" ></img>
-                        </button>
-                        <!-- Length Control Button -->
-                        <button id="lengthButton" class="myButton"  >
-                            <img src="/static/resources/images/scale.svg" alt="" ></img>
-                        </button>
-                        <!-- Area Control Button -->
-                        <button id="areaButton" class="myButton"  >
-                            <img src="/static/resources/images/area.svg" alt="" ></img>
-                        </button>
-                        <!-- Full Screen Button -->
-                        <button id="fsButton" class="myButton"  >
-                            <img src="/static/resources/images/full.svg" alt="" ></img>
-                        </button>
-                    </div >
+                <br>
+                {% for l in layer_list %}
+                <div class="checkbox-wrapper">
+                    <input id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
+                    <label for="{{ l }}"><div class="tick_mark"></div></label>
+                    <span>{{ l }}</span>
                 </div>
-        </div>
-        </div>
-
-    </div>
-</div>
-
-<style>
-    
-       
-    
-        .rightcls {
-            margin-right: -100px; /* Move the button to the left side */
-            transition: margin-right 0.3s ease-in-out; /* Adjust transition property */
-        }
+                <br>
+                {% endfor %}
+            </div>
+        </div>     
         
-     
+        
+        <div id="popupDialog" class="popup">
+            <div class="popup-content">
+                <span class="popup-close">&times;</span>
+                <p class="popup-p">Enter pointer name:</p>
+                <div class="popup-in">
+                    <input class="popup-input" type="text" id="pointerName" placeholder="Pointer Name">
+                    <button id='submitName'class="popup-button"><span>Submit</span></button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <style>
 
-
-</style>
+        </style>
 <div id="popup" class="ol-popup">
 
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
 </div> 
 <link rel="stylesheet" href="/static/styles/mapstyle.css">
+<link rel="stylesheet" href="/static/styles/popup.css">
 
 <script src="/static/resources/ol/ol.js"></script>
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
@@ -105,69 +109,61 @@
 <script src="/static/js/controls.js"></script>
 <script  type="text/javascript">
 
-    function toggleTooly() {
+   
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initially show the tooly
         var toolyDiv = document.querySelector('.tooly');
         var togImage = document.querySelector('#toggleButton img');
+    
+        toolyDiv.classList.add('show');
+        togImage.classList.add('clicked-image-border'); // Initially remove the class
 
-        if (toolyDiv.classList.contains('show')) {
-            toolyDiv.classList.remove('show'); 
-            toolyDiv.classList.add('hide');
-            togImage.classList.remove('clicked-image-border'); // Remove border from the image
-        } else {
-            toolyDiv.classList.remove('hide');
-            toolyDiv.classList.add('show'); 
-            
-            togImage.classList.add('clicked-image-border'); // Add border to the image
-        }
-    };
+        // Toggle the tooly visibility on button click
+        document.querySelector('#toggleButton').addEventListener('click', function() {
+            toolyDiv.classList.toggle('hide');
+            togImage.classList.toggle('clicked-image-border'); // Initially remove the class
+
+        });
+    });
+    
+      
 
    
   
     $(document).ready(function() {
-        var mybtnDiv = $('.myButton');
-        var homeButton = $('#homeButton'); // Select the homeButton element
-        
-        $("#toggle-btn").click(function() {
+        $("#togglelayer").click(function() {
             $("#sidebar").toggleClass("sidebar-visible"); 
-            
-            // Toggle class for myButton elements
-            mybtnDiv.each(function() {
-                $(this).toggleClass("rightcls");
-            });
-            
-            // Toggle class for the homeButton element
-            homeButton.toggleClass("rightcls");
         });   
     });
     
     
 
-        function toggleLayer(eve){
-
-            var lyername = eve.target.value;
-            var checkedStatus = eve.target.checked;
-            var lyrList = map.getLayers();
-
-            // var lyrList = layer_names;
-
-            console.log("layername ",lyername);
-            console.log("checked ", checkedStatus);
-            console.log("lyrList ", lyrList);
-
-
-            lyrList.forEach(function(element) {
-                
-                // console.log(element.get('title'));
-                if(lyername == element.get('title')){
-
-                    // console.log(element.get('title'));
-
-                    element.setVisible(checkedStatus);
+    function toggleLayer(event) {
+        var layerName = event.target.value;
+        var checkedStatus = event.target.checked;
+        var layers = map.getLayers().getArray();
+    
+        if (layerName === "Google Maps" || layerName === "Google Satellite") {
+            // Find the Google Maps and Google Satellite layers by title
+            var googleMapsLayer = layers.find(layer => layer.get('title') === "Google Maps");
+            var googleSatelliteLayer = layers.find(layer => layer.get('title') === "Google Satellite");
+            if (layerName === "Google Maps" && googleMapsLayer) {
+                googleMapsLayer.setVisible(checkedStatus);
+            }
+            if (layerName === "Google Satellite" && googleSatelliteLayer) {
+                googleSatelliteLayer.setVisible(checkedStatus);
+            }
+        } else {
+            // Toggle other layers
+            layers.forEach(function (layer) {
+                if (layer.get('title') === layerName) {
+                    layer.setVisible(checkedStatus);
                 }
-                
             });
-            
         }
+    }
+    
+    
 
         //mapView             
         var map = mapView(
@@ -235,7 +231,7 @@
             source: source,
             style: new ol.style.Style({
                 fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)',
+                    color: 'rgba(200, 200, 200, 0.6',
                 }),
                 stroke: new ol.style.Stroke({
                     color: '#ffcc33',
@@ -263,7 +259,7 @@
                     }),
                     stroke: new ol.style.Stroke({
                         color: 'rgba(0, 0, 0, 0.5)',
-                        lineDash: [10, 10],
+                        lineDash: [1, 20],
                         width: 2,
                     }),
                     image: new ol.style.Circle({
@@ -406,6 +402,7 @@
         function createMeasureTooltip() {
             if (measureTooltipElement) {
                 measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+                console.log("MeasureTooltip", measureTooltipElement);
             }
             measureTooltipElement = document.createElement('div');
             measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
@@ -632,7 +629,8 @@
             }
         }
 
-        // end : attribute query        
+        // end : attribute query   
+
 </script>
 
     

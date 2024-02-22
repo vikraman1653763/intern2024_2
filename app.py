@@ -48,8 +48,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/loginNevar'
 
 
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@localhost/nevarSystems'
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:hari1412@' + database_ip + '/nevarSystems'
 app.config['SECRET_KEY'] = "SECRET KEY"
 
 

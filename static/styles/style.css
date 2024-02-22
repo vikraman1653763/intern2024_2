@@ -37,23 +37,11 @@
   grid-area: right;
   width: 80vw;
   height: 100vh;
-  border: 5px solid blue;
+  border: 5px solid rgba(82, 253, 104, 0.5);
 }
 
 
-#map {
-    position: fixed; 
-    width: 100vw;
-    /* column-width: 100vw; */
-    height: 100vh;
-    left: 1px;
-    margin: 0%;
-    padding: 0%;
-z-index: 1;
 
-   
-
-}
 
 .mousePosition {
     position: fixed;

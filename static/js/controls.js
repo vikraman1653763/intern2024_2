@@ -4,13 +4,9 @@ var zoImage = document.querySelector('#zoButton img'); // Get the image inside t
 var ziImage = document.querySelector('#ziButton img');
 var leImage = document.querySelector('#lengthButton img');
 var arImage = document.querySelector('#areaButton img');
+var ptImage = document.querySelector('#ptButton img');
 
-function createButtonContainer() {
-    container = document.createElement('div');
-    container.id = 'buttonContainer'; // You can assign an ID to this container for styling or manipulation
-    container.className = 'button-container'; // You can assign a class for styling
-    return container;
-}
+
 //home control
 function homeControl(dashboardUrl) {
     // Select the existing button by its ID
@@ -27,13 +23,10 @@ function zoomOut() {
     // Get the existing zoom out button
     var zoButton = document.getElementById('zoButton');
 
-    zoButton.addEventListener("click", function() {
-    
-    zoImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
-});
+
     // Define the DragBox interaction for zooming out
     var zoomOutInteraction = new ol.interaction.DragBox();
-
+    
     zoomOutInteraction.on('boxend', function(event) {
         var zoomOutExtent = event.target.getGeometry().getExtent();
         map.getView().setCenter(ol.extent.getCenter(zoomOutExtent));
@@ -41,9 +34,10 @@ function zoomOut() {
         zoomOutInteraction.setActive(false);
         zoomOutInteraction.setActive(true);
     });
-
+    
     // Add a click event listener to toggle the zoom out interaction and update button class
     zoButton.addEventListener("click", function() {
+        zoImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
         zoButton.classList.toggle('clicked');
         if (zoButton.classList.contains('clicked')) {
             document.getElementById("map").style.cursor = "zoom-out";
@@ -63,10 +57,7 @@ function zoomOut() {
     // Get the existing zoom in button
     var ziButton = document.getElementById('ziButton');
 
-    ziButton.addEventListener("click", function() {
-    
-        ziImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
-    });
+   
     // Define the DragBox interaction for zooming in
     var zoomInInteraction = new ol.interaction.DragBox();
 
@@ -77,6 +68,8 @@ function zoomOut() {
 
     // Add a click event listener to toggle the zoom in interaction and update button class
     ziButton.addEventListener("click", function () {
+        ziImage.classList.toggle('clicked-image-border'); // Toggle the class for the image
+
         ziButton.classList.toggle('clicked');
         if (ziButton.classList.contains('clicked')) {
             document.getElementById("map").style.cursor = "zoom-in";
@@ -115,15 +108,12 @@ function lengthControl() {
     // Get the existing length button
     var lengthButton = document.getElementById('lengthButton');
 
-    lengthButton.addEventListener("click", function() {
     
-        leImage.classList.toggle('clicked-image-border');
-
-         // Toggle the class for the image
-    });
 
     // Add a click event listener to toggle the length interaction and update button class
     lengthButton.addEventListener("click", function () {
+        leImage.classList.toggle('clicked-image-border');
+
         // disableOtherInteraction('lengthButton');
         lengthButton.classList.toggle('clicked');
         var lengthFlag = lengthButton.classList.contains('clicked');
@@ -173,29 +163,98 @@ function areaControl() {
     });
 }
 
+//poniter fucntion with popup box
 
+var draw;
+        function addPointer() {
+            draw = new ol.interaction.Draw({
+                source: new ol.source.Vector(),
+                type: 'Point'
+            });
+            map.addInteraction(draw);
+            draw.on('drawend', function(event) {
+                document.getElementById('pointerName').value = '';
+                document.getElementById('popupDialog').style.display = 'block';
+                var nameInput = document.getElementById('pointerName');
+                var submitButton = document.getElementById('submitName');
+                submitButton.onclick = function() {
+                    var name = nameInput.value.trim();
+                    if (name) {
+                        var coordinates = event.feature.getGeometry().getCoordinates();
+                        var marker = new ol.Feature({
+                            geometry: new ol.geom.Point(coordinates),
+                            name: name
+                        });
+                        var textStyle = new ol.style.Text({
+                            text: name,
+                            font: "18px sans-serif",
+                            fill: new ol.style.Fill({ color: 'white' }),
+                            offsetX: 0,
+                            offsetY: -25,
+                            textAlign: 'center'
+                        });
+                        var iconStyle = new ol.style.Style({
+                            image: new ol.style.Icon({
+                                src: '/static/resources/images/mappt.svg',
+                                scale: 0.5, // Adjust the scale as needed
+                                opacity: 1
+                            }),
+                            text: textStyle
+                        });
 
+                        marker.setStyle(iconStyle);
 
+                        // Add the marker to a vector source
+                        var vectorSource = new ol.source.Vector({
+                            features: [marker]
+                        });
 
+                        // Add the vector source to a vector layer
+                        var vectorLayer = new ol.layer.Vector({
+                            source: vectorSource
+                        });
 
+                        // Add the vector layer to the map
+                        map.addLayer(vectorLayer);
 
-
-
-
-
-
+                        // Hide the popup dialog box after adding the pointer
+                        document.getElementById('popupDialog').style.display = 'none';
+                    }
+                };
+            });
+        }
+        function removePointer() {
+            map.removeInteraction(draw);
+        }
+        function handleClick() {
+            ptImage.classList.toggle('clicked-image-border');
+            ptButton.classList.toggle('active');
+            if (ptButton.classList.contains('active')) {
+                addPointer();
+            } else {
+                removePointer();
+            }
+        }
+        function addPt() {
+        var ptButton = document.getElementById('ptButton');
+        if (ptButton) {
+            ptButton.addEventListener('click', handleClick);
+        }
+        var closePopup = document.getElementsByClassName('popup-close')[0];
+        closePopup.onclick = function() {
+            document.getElementById('popupDialog').style.display = 'none';
+        }
+    }
     
     function createControls() {
-        var container = createButtonContainer();
+        
+        homeControl(dashboardUrl );
+        zoomOut();
+        zoomIn();
+        fullScreen();
+        lengthControl();
+        areaControl();
+        addPt();
+        
     
-        homeControl(dashboardUrl ,container);
-        zoomOut(container);
-        zoomIn(container);
-        fullScreen(container);
-        lengthControl(container);
-        areaControl(container);
-    
-        // Append the container to the map's target element
-        var mapTarget = document.getElementById('map');
-        mapTarget.appendChild(container);
     }
