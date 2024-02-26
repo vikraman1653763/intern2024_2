@@ -123,7 +123,26 @@ def register():
         action='register'
         return render_template('register.html', action=action)
 
+@app.route('/verify_otp', methods=['POST'])
+def verify_otp():
+    try:
+        # Retrieve user details from the request
+        data = request.get_json()
+        username = data.get('username')
+        lastname = data.get('lastname')
+        email = data.get('email')
+        password = data.get('password')
+        
+        # Save user details to the database
+        new_user = User(username=username, lastname=lastname, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
 
+        return jsonify({'success': True, 'message': 'User registered successfully'})
+    except Exception as e:
+        print(e)
+        return jsonify({'success': False, 'error': 'Error saving user details'})
+    
 @app.route('/success')
 def success():
     return render_template('success.html')

@@ -5,19 +5,19 @@
   /* column-width: 100vw; */
   height: 100vh;
   left: 1px;
-  margin: 0;
+  margin-top: -65px;
   padding: 0%;
   z-index: 0;
 }
 #sidebar {
-  height: 100vh;
+  height: 115vh;
   border-radius: 0px 10px 10px 0px;
   overflow: fixed;
   border: none;
-  box-shadow: inset rgba(0, 0, 0, 0.3) -30px 0px 30px;
+  box-shadow: inset rgba(0, 0, 0, 0.3) -10px 0px 10px;
   width: 200px;
   z-index: 1;
-  background-image: linear-gradient(43deg, #ededed 0%, #bfc2c1fa 56%, #e4e8e8 0%);
+  background: rgb(245, 245, 245);
   position: relative;
   flex-direction: column;
   transition: transform .7s ease-in-out; /* Smooth transition for visibility */
@@ -71,7 +71,7 @@
     height: var(--size);
     margin: 0 auto;
     background-color: #4158D0;
-    background-image: linear-gradient(43deg, #4158D0 0%, #36f1c5fa, #FFCC70 100%);
+    background-image: linear-gradient(43deg, #5cf5d1fa 0%, #36f1c5fa, #5cf5d1fa 100%);
     border-radius: 50%;
     box-shadow: 0 var(--shadow) #ffbeb8;
     cursor: pointer;
@@ -95,7 +95,7 @@
     background-color: #fff;
     transform: translateY(-50%);
     border-radius: 50%;
-    box-shadow: inset 0 var(--shadow) #ffbeb8;
+    box-shadow: inset 0 var(--shadow) #a1a4a4;
     transition: 0.2s ease width, 0.2s ease height;
   }
   
@@ -151,7 +151,7 @@
   
   .checkbox-wrapper input[type="checkbox"]:checked + label {
     background-color: #4158D0;
-    background-image: linear-gradient(43deg, #1695f0 0%, #36f1c5fa 46%, #21aeff 100%);
+    background-image: #36f1c5fa;
     box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px;
   }
   
@@ -197,11 +197,19 @@ z-index: inherit;
 }
 .nav-img{
   box-shadow: none;
-}
-.navbar{
-  z-index: 2;
-}
+  background-image: url('/static/images/nevarblack.png');
 
+}
+nav{
+  z-index: 2;
+  background:rgb(207, 207, 207);
+  box-shadow: rgba(17, 17, 17, 0.3) -5px 5px 5px;
+  color: #000;
+  
+}
+.nav-link{
+  color: black;
+}
 #togglelayer img,#toggleButton img{
   width: 30px;
   height: 30px;
@@ -258,14 +266,16 @@ z-index: inherit;
 }
 
 
-.allbuttons{
-  
-  height:100vh;
-  z-index: 10;
-  background-image: linear-gradient(43deg, #ededed 0%, #bfc2c1fa 73.2%, #e4e8e8 0%);
-  width:80px;
-  border: none;
+.allbuttons {
+  box-shadow: rgba(113, 113, 113, 0.5) 4px 4px 5px;/* Right and bottom */
+             /* Left and top */
+  height: 115vh;
+  z-index: 3;
+  background: rgb(207, 207, 207);
+  width: 80px;
+  border-top: none repeat;
 }
+
 .myButton .tooltip {
   position: absolute;
   top: 73%;

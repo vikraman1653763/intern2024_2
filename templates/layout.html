@@ -17,12 +17,12 @@
             <!-- Zoom Out Button -->
             <button id="zoButton" class="myButton toolbtn">
                 <img src="/static/resources/images/zoomminus.svg" alt="" />
-                <span class="tooltip">ZoomOut</span>
+                <span class="tooltip">Zoom&nbsp;Out</span>
             </button>
             <!-- Zoom In Button -->
             <button id="ziButton" class="myButton toolbtn">
                 <img src="/static/resources/images/zoomplus.svg" alt="" />
-                <span class="tooltip">ZoomIn</span>
+                <span class="tooltip">Zoom&nbsp;In</span>
             </button>
             <!-- Length Control Button -->
             <button id="lengthButton" class="myButton toolbtn">
@@ -49,12 +49,15 @@
         </div>
         <div id="map"></div>
         <div id="sidebar" >
-            <h2>Layers</h2>
             <div class="checkbox-wrapper">
-                <input id="Open Street Map" type="checkbox" value="Open Street Map" checked onchange="toggleLayer(event)">
-                <label for="Open Street Map"><div class="tick_mark"></div></label>
-                <span>Open Map</span>
+                <h2>Layers</h2>
+                
+            <input type="checkbox" class="tick_mark" checked='checked' id="toggleAllLayers"> 
+            <label for="toggleAllLayers"><div class="tick_mark"></div></label>
+            
+
             </div>
+            
             <br>
             <div class="checkbox-wrapper">
                 <input id="googleMaps" type="checkbox" value="Google Maps" checked onchange="toggleLayer(event)">
@@ -71,7 +74,7 @@
                 <br>
                 {% for l in layer_list %}
                 <div class="checkbox-wrapper">
-                    <input id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
+                    <input class="layer-checkbox" id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
                     <label for="{{ l }}"><div class="tick_mark"></div></label>
                     <span>{{ l }}</span>
                 </div>
@@ -84,7 +87,7 @@
         <div id="popupDialog" class="popup">
             <div class="popup-content">
                 <span class="popup-close">&times;</span>
-                <p class="popup-p">Enter pointer name:</p>
+                <p class="popup-p">Enter&nbsp;pointer&nbsp;name:</p>
                 <div class="popup-in">
                     <input class="popup-input" type="text" id="pointerName" placeholder="Pointer Name">
                     <button id='submitName'class="popup-button"><span>Submit</span></button>
@@ -107,6 +110,17 @@
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
 <script src="/static/js/MapView.js"></script>
 <script src="/static/js/controls.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var currentPage = window.location.pathname; // Get the current page URL path
+        var navbarImage = document.getElementById("navbar-image"); // Get the navbar image element
+
+        if (currentPage.includes("/dashboard/application/")) {
+            navbarImage.src = "/static/images/nevarblack.png"; // Change the src attribute
+        }
+    });
+</script>
+
 <script  type="text/javascript">
 
    
@@ -210,7 +224,7 @@
        
         
         
-       
+        updateToggleAllLayersCheckbox();
         createControls();
         /**
         * Message to show when the user is drawing a polygon.
@@ -231,16 +245,16 @@
             source: source,
             style: new ol.style.Style({
                 fill: new ol.style.Fill({
-                    color: 'rgba(200, 200, 200, 0.6',
+                    color: 'teal',
                 }),
                 stroke: new ol.style.Stroke({
-                    color: '#ffcc33',
+                    color: 'white',
                     width: 2,
                 }),
                 image: new ol.style.Circle({
                     radius: 7,
                     fill: new ol.style.Fill({
-                        color: '#ffcc33',
+                        color: 'white',
                     }),
                 }),
             }),
@@ -555,16 +569,16 @@
 
         var highlightStyle = new ol.style.Style({
             fill: new ol.style.Fill({
-            color: 'rgba(255,0,255,0.3)',
+            color: 'red',
             }),
             stroke: new ol.style.Stroke({
-                color: '#FF00FF',
+                color: 'red',
                 width: 3,
             }),
             image: new ol.style.Circle({
                 radius: 10,
                 fill: new ol.style.Fill({
-                    color: '#FF00FF'
+                    color: 'red'
                 })
             })
         });

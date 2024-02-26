@@ -17,10 +17,9 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
     });
 
     var osmTile = new ol.layer.Tile({
-        title: 'Open Street Map',
+        title: 'OpenStreetMap',
         visible: true,
-
-        type: 'base',
+        type: 'base', // Set a type for base layers
         source: new ol.source.OSM()
     });
 
@@ -81,3 +80,38 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
 
     return map;
 }
+
+// Function to update the state of the "Toggle All Layers" button based on the state of layer checkboxes
+function updateToggleAllLayersCheckbox() {
+    var layerCheckboxes = document.querySelectorAll('.layer-checkbox');
+    var allChecked = Array.from(layerCheckboxes).every(function(checkbox) {
+        return checkbox.checked;
+    });
+    document.getElementById('toggleAllLayers').checked = allChecked;
+}
+
+// Add an event listener to layer checkboxes to update the "Toggle All Layers" button
+var layerCheckboxes = document.querySelectorAll('.layer-checkbox');
+layerCheckboxes.forEach(function(checkbox) {
+    checkbox.addEventListener('change', updateToggleAllLayersCheckbox);
+});
+
+// Add an event listener to the "Toggle All Layers" checkbox
+document.getElementById('toggleAllLayers').addEventListener('change', function() {
+    var isChecked = this.checked; // Check if the checkbox is checked
+
+    // Loop through checkboxes within the loop
+    var layerCheckboxes = document.querySelectorAll('.layer-checkbox');
+    layerCheckboxes.forEach(function(checkbox) {
+        checkbox.checked = isChecked; // Update the state of the checkbox
+        
+        var layerName = checkbox.value; // Get the layer name associated with the checkbox
+        var layer = map.getLayers().getArray().find(function(layer) {
+            return layer.get('title') === layerName; // Find the layer by its title
+        });
+        
+        if (layer) {
+            layer.setVisible(isChecked); // Set the visibility based on the checkbox state
+        }
+    });
+});

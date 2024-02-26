@@ -1,33 +1,36 @@
 
 
-    .popup-p {
-        font-size: 20px;
-        height: 10px;
-        font-weight: bold;
-        font-family: 'Rubik', sans-serif;
-    }
 
-    .popup {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        
-        backdrop-filter: blur(1.6px);
-    }
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    backdrop-filter: blur(1.6px);
+    transition: 500ms ease-in-out;
+    transform: scale(1.05);
 
-    .popup-content {
-        background-color: #c7c6c6;
-        margin: 15% auto;
-        padding: 10px;
-        border: 1px solid #0bebc6;
-        width: 20%;
-        border-radius: 20px;
-    }
+}
+
+.popup-content {
+    background-color: #c7c6c6;
+    margin: 15% auto;
+    padding: 10px;
+    border: 1px solid #0bebc6;
+    width: 30%; /* Adjust the width as needed */
+    border-radius: 20px;
+}
+.popup-p {
+    font-size: 15px;
+    font-weight: bold;
+    font-family: 'Rubik', sans-serif;
+    word-wrap: break-word;
+}
+
 
     .popup-close {
         color: black;
@@ -37,6 +40,7 @@
         border-radius: 50px;
         padding: 0px;
         margin: 0px;
+       
     }
 
     .popup-close:hover,
@@ -67,13 +71,13 @@
         padding: 1em;
         background-color: #ccc;
         box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
-        transition: 300ms ease-in-out;
+        transition: 500ms ease-in-out;
     }
 
     .popup-input:focus {
-        background-color: white;
+        background-color: rgb(224, 222, 222);
         transform: scale(1.05);
-        box-shadow: 13px 13px 100px #969696, -13px -13px 100px #ffffff;
+        box-shadow: 13px 13px 50px #969696, -13px -13px 50px #dddbdb;
     }
 
     /* From uiverse.io by @Ali-Tahmazi99 */
@@ -87,8 +91,8 @@
         transition: all 0.5s ease-in;
         z-index: 1;
         border-radius: 43px;
-background-color: #ccc;
-        box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
+        background-color: #0bebc6;
+        box-shadow:  2px 5px 10px rgba(0, 0, 0, 0.3);
     }
 
     .popup-button::before,
@@ -110,8 +114,8 @@ background-color: #ccc;
     }
 
     .popup-button::after {
-        right: -10px;
-        background: rgb(11, 242, 146);
+        right: -40px;
+        background: rgb(253, 177, 36);
     }
 
     .popup-button:hover::before,
@@ -132,13 +136,32 @@ background-color: #ccc;
 
     @media only screen and (max-width: 600px) {
         .popup-content {
-            width: 80%; /* Adjust width for smaller screens */
+            width: 90%;
+          
+        }
+        .popup-p {
+            font-size: 1px !important; /* Decrease font size for smaller screens */
+        }
+        .popup-input {
+            padding: 0.8em; /* Adjust input padding for smaller screens */
+        }
+        .popup-button {
+            width: 80px; /* Adjust button width for smaller screens */
         }
     }
-
+    
     @media only screen and (max-width: 400px) {
         .popup-content {
             width: 90%; /* Adjust width for even smaller screens */
         }
+        .popup-p {
+            font-size: 10px !important; /* Further decrease font size for even smaller screens */
+        }
+        .popup-input {
+            padding: 0.6em; /* Further adjust input padding for even smaller screens */
+        }
+        .popup-button {
+            width: 70px; /* Further adjust button width for even smaller screens */
+        }
     }
-
+    
