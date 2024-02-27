@@ -91,7 +91,7 @@
         transition: all 0.5s ease-in;
         z-index: 1;
         border-radius: 43px;
-        background-color: #0bebc6;
+        background-color: #c7c6c6;
         box-shadow:  2px 5px 10px rgba(0, 0, 0, 0.3);
     }
 
@@ -109,13 +109,13 @@
     }
 
     .popup-button::before {
-        left: -1px;
+        left: -5px;
         background: #0bebc6;
     }
 
     .popup-button::after {
-        right: -40px;
-        background: rgb(253, 177, 36);
+        right: -5px;
+        background: #0bebc6;
     }
 
     .popup-button:hover::before,
@@ -165,3 +165,32 @@
         }
     }
     
+    #pointerDialog {
+        position: fixed;
+        display:none;
+        top: 10%;
+        right: 0;
+        max-width: 300px; 
+        overflow: hidden; 
+        background-color: #ccc;
+        border: 1px solid #ffffff ;
+        border-radius: 5px;
+        padding: 20px;
+        z-index: 1000;
+    }
+    
+    .pointer-close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: #888;
+    }
+    
+    .pointer-info {
+        margin-top: 10px;
+    }
+    
+    .pointer-info p {
+        margin-bottom: 5px;
+    }

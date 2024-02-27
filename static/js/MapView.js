@@ -1,8 +1,13 @@
 function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
     var mapView = new ol.View({
         center: ol.proj.fromLonLat([lon, lat]),
-        zoom: 16
+        zoom: 16,
+        minZoom: 4,
+        maxZoom: 22, 
+        constrainResolution: false, 
+        duration: 500 
     });
+    
 
     var map = new ol.Map({
         target: 'map',

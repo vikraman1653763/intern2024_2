@@ -96,8 +96,21 @@
         </div>
         </div>
         <style>
-
+            
+            
+            
+            
         </style>
+        <div id="pointerDialog" class="pointerup">
+            <div class="point-content">
+                <span class="pointer-close">&times;</span>
+                <div class="pointer-info">
+                    <p id="pointerNameDisplay"></p>
+                    <p id="pointerLongitudeDisplay"></p>
+                    <p id="pointerLatitudeDisplay"></p>
+                </div>
+            </div>
+        </div>
 <div id="popup" class="ol-popup">
 
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
@@ -110,6 +123,7 @@
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
 <script src="/static/js/MapView.js"></script>
 <script src="/static/js/controls.js"></script>
+<script src="/static/js/pointer.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var currentPage = window.location.pathname; // Get the current page URL path
@@ -140,10 +154,6 @@
         });
     });
     
-      
-
-   
-  
     $(document).ready(function() {
         $("#togglelayer").click(function() {
             $("#sidebar").toggleClass("sidebar-visible"); 
