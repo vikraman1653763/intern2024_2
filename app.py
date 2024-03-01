@@ -556,6 +556,26 @@ def save_pointer():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/get-pointers', methods=['GET'])
+def get_pointers():
+    # Query the database to retrieve pointer data
+    pointers = Drawnpt.query.all()
+    
+    # Serialize the pointer data into JSON format
+    pointer_data = []
+    for pointer in pointers:
+        if pointer.ptdata:
+            print(pointer.ptdata)
+            print(" ")
+            pointer_data.append({
+                'name': pointer.name,
+                'coordinates': pointer.ptdata
+            })
+        
+    # Send the JSON data to the client-side
+    return jsonify({'pointers': pointer_data})
+    
+
 dev = True
 # dev = False
 

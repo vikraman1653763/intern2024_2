@@ -82,7 +82,7 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
     });
 
     map.addControl(mousePosition);
-
+    pointSave();
     return map;
 }
 
@@ -147,4 +147,3 @@ function toggleLayer(event) {
         });
     }
 }
-

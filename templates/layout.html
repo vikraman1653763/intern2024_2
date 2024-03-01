@@ -125,6 +125,8 @@
 <script src="/static/js/controls.js"></script>
 <script src="/static/js/pointer.js"></script>
 <script src="/static/js/savegjson.js"></script>
+<script src="/static/js/savepointer.js"></script>
+
 
 
 <script  type="text/javascript">
@@ -448,6 +450,7 @@
         function newaddGeoJsonToMap(url) {
 
             if (geojson) {
+                console.log("newaddgeojson",geojson);
                 geojson.getSource().clear();
                 map.removeLayer(geojson);
             }
