@@ -195,11 +195,14 @@ left: 0%;
 z-index: inherit;
 
 }
-.nav-img{
-  box-shadow: none;
-  background-image: url('/static/images/nevarblack.png');
 
-}
+  .nav-img {
+    box-shadow: none;
+   
+    filter: invert(0%);
+    /* mix-blend-mode: screen; */
+    
+  }
 nav{
   z-index: 2;
   background:rgb(207, 207, 207);

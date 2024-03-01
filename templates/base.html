@@ -41,11 +41,11 @@
         <!-- <a class="navbar-brand" href="{{url_for('index')}}">NEVAR SYSTEMS</a> -->
         
         <a class="navbar-brand" " href="{{url_for('index')}}">
-          <img  class="nav-img"style="filter: invert(100%);width: 120%; height:3rem; margin-top:-10px;" src="{{url_for('static', filename='images/nevar-systems.png')}}" alt="NEVAR SYSTEMS">
+          <img  class="nav-img"style="width: 120%; height:3rem; margin-top:-10px;" src="{{url_for('static', filename='images/nevar-systems.png')}}" alt="NEVAR SYSTEMS">
         </a>
       
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"> </span>
+          <span class="navbar-toggler-icon"style="color:red;"> </span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav"  style="display: flex; justify-content:flex-end;width: 100%; gap:1rem">
@@ -164,10 +164,20 @@
             
           }
           nav{
-            background: black;
+            z-index: 2;
+            background:rgb(207, 207, 207);
+            box-shadow: rgba(17, 17, 17, 0.3) -5px 5px 5px;
+            color: #000;
+            
           }
           .nav-link{
-            color: white;
+            color: black;
+          }
+          .nav-img{
+            
+          }
+          .navbar-toggler-icon{
+            color: black;
           }
         </style>
 

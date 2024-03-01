@@ -120,3 +120,31 @@ document.getElementById('toggleAllLayers').addEventListener('change', function()
         }
     });
 });
+
+
+
+function toggleLayer(event) {
+    var layerName = event.target.value;
+    var checkedStatus = event.target.checked;
+    var layers = map.getLayers().getArray();
+
+    if (layerName === "Google Maps" || layerName === "Google Satellite") {
+        // Find the Google Maps and Google Satellite layers by title
+        var googleMapsLayer = layers.find(layer => layer.get('title') === "Google Maps");
+        var googleSatelliteLayer = layers.find(layer => layer.get('title') === "Google Satellite");
+        if (layerName === "Google Maps" && googleMapsLayer) {
+            googleMapsLayer.setVisible(checkedStatus);
+        }
+        if (layerName === "Google Satellite" && googleSatelliteLayer) {
+            googleSatelliteLayer.setVisible(checkedStatus);
+        }
+    } else {
+        // Toggle other layers
+        layers.forEach(function (layer) {
+            if (layer.get('title') === layerName) {
+                layer.setVisible(checkedStatus);
+            }
+        });
+    }
+}
+

@@ -124,16 +124,8 @@
 <script src="/static/js/MapView.js"></script>
 <script src="/static/js/controls.js"></script>
 <script src="/static/js/pointer.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var currentPage = window.location.pathname; // Get the current page URL path
-        var navbarImage = document.getElementById("navbar-image"); // Get the navbar image element
+<script src="/static/js/savegjson.js"></script>
 
-        if (currentPage.includes("/dashboard/application/")) {
-            navbarImage.src = "/static/images/nevarblack.png"; // Change the src attribute
-        }
-    });
-</script>
 
 <script  type="text/javascript">
 
@@ -159,34 +151,6 @@
             $("#sidebar").toggleClass("sidebar-visible"); 
         });   
     });
-    
-    
-
-    function toggleLayer(event) {
-        var layerName = event.target.value;
-        var checkedStatus = event.target.checked;
-        var layers = map.getLayers().getArray();
-    
-        if (layerName === "Google Maps" || layerName === "Google Satellite") {
-            // Find the Google Maps and Google Satellite layers by title
-            var googleMapsLayer = layers.find(layer => layer.get('title') === "Google Maps");
-            var googleSatelliteLayer = layers.find(layer => layer.get('title') === "Google Satellite");
-            if (layerName === "Google Maps" && googleMapsLayer) {
-                googleMapsLayer.setVisible(checkedStatus);
-            }
-            if (layerName === "Google Satellite" && googleSatelliteLayer) {
-                googleSatelliteLayer.setVisible(checkedStatus);
-            }
-        } else {
-            // Toggle other layers
-            layers.forEach(function (layer) {
-                if (layer.get('title') === layerName) {
-                    layer.setVisible(checkedStatus);
-                }
-            });
-        }
-    }
-    
     
 
         //mapView             
@@ -227,6 +191,7 @@
         };
 
         var dashboardUrl = "{{ url_for('dashboard') }}";
+        var projectId={{ id }};
 
 
         // home Control
@@ -234,7 +199,6 @@
        
         
         
-        updateToggleAllLayersCheckbox();
         createControls();
         /**
         * Message to show when the user is drawing a polygon.
@@ -255,7 +219,7 @@
             source: source,
             style: new ol.style.Style({
                 fill: new ol.style.Fill({
-                    color: 'teal',
+                    color: 'rgba(102, 255, 232,.5)',
                 }),
                 stroke: new ol.style.Stroke({
                     color: 'white',
@@ -264,7 +228,7 @@
                 image: new ol.style.Circle({
                     radius: 7,
                     fill: new ol.style.Fill({
-                        color: 'white',
+                        color: 'rgba(102, 255, 232,.2)',
                     }),
                 }),
             }),
@@ -273,6 +237,7 @@
         map.addLayer(vector);
 
         function addInteraction(intType) {
+            map.removeInteraction(draw);
 
             draw = new ol.interaction.Draw({
                 source: source,
@@ -361,6 +326,7 @@
             });
 
             draw.on('drawend', function () {
+                var feature = event.feature;
                 measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
                 measureTooltip.setOffset([0, -7]);
                 // unset sketch
@@ -369,9 +335,12 @@
                 measureTooltipElement = null;
                 createMeasureTooltip();
                 //ol.Observable.unByKey(listener);
+               
             });
         }
+        
 
+         
 
         /**
         * The help tooltip element.

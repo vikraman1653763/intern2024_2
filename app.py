@@ -86,6 +86,7 @@ class Project(db.Model):
     name = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     data = db.relationship('Data', backref='project') 
+    Drawnpt = db.relationship('Drawnpt', backref='project') 
 
 class Data(db.Model):
 
@@ -93,6 +94,14 @@ class Data(db.Model):
     name = db.Column(db.String)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
+
+class Drawnpt(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    ptdata = db.Column(db.JSON) 
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+
+    
 
 def admin_required(func):
     @wraps(func)
@@ -310,7 +319,7 @@ def project(id):
         check = []
         for i in lay.data:
             check.append(i.name)
-            print("name",lay)
+           
             layer_name = i.name
 
         if check:
@@ -352,7 +361,7 @@ def project(id):
         # print("LATITUDE : " , layer.resource.native_bbox[2])
 
 
-        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom))
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id)
 
     else:
         abort(403)
@@ -517,6 +526,34 @@ def delete_layer(id):
     else:
         flash("Layer Not Found" , "info")
         return redirect(request.referrer)
+
+
+
+
+@app.route('/save-pointer', methods=['POST'])
+def save_pointer():
+    # Extract pointer data from the request
+    data = request.get_json()
+    name = data.get('properties').get('name')
+    coordinates = data.get('geometry').get('coordinates')
+    project_id = data.get('project_id')  # Assuming you receive data_id from the client
+    print("Savingname",name)
+    print("Savingcoord",coordinates)
+    print("Saving id",project_id)
+    print("Savingssssssssssss")
+    # Create a new Drawnpt object and add it to the database session
+    pointer = Drawnpt(name=name, ptdata={'coordinates': coordinates}, project_id=project_id)
+    db.session.add(pointer)
+    
+
+    try:
+        # Commit the session to save the pointer to the database
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Pointer saved successfully'})
+    except Exception as e:
+        # Handle errors and rollback the session if needed
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 dev = True

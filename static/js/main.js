@@ -35,7 +35,7 @@ map.addLayer(baseGroup);
 var India_state = new ol.layer.Tile({
     title: 'India States',
     source: new ol.source.TileWMS({
-      url: 'http://127.0.0.1:8080/geoserver/GISSimplified/wms',
+      url: 'http://127.0.0.1:8080/geoserver/wms',
       params: {'LAYERS': 'GISSimplified:admin2', 'TILED': 'true'},
       serverType: 'geoserver',
       visible: true
