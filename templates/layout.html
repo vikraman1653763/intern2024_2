@@ -124,8 +124,8 @@
 <script src="/static/js/MapView.js"></script>
 <script src="/static/js/controls.js"></script>
 <script src="/static/js/pointer.js"></script>
-<script src="/static/js/savegjson.js"></script>
-<script src="/static/js/savepointer.js"></script>
+<script src="/static/js/showmetric.js"></script>
+<script src="/static/js/storepolyline.js"></script>
 
 
 
@@ -136,25 +136,21 @@
         // Initially show the tooly
         var toolyDiv = document.querySelector('.tooly');
         var togImage = document.querySelector('#toggleButton img');
-    
-        toolyDiv.classList.add('show');
-        togImage.classList.add('clicked-image-border'); // Initially remove the class
-
-        // Toggle the tooly visibility on button click
-        document.querySelector('#toggleButton').addEventListener('click', function() {
-            toolyDiv.classList.toggle('hide');
-            togImage.classList.toggle('clicked-image-border'); // Initially remove the class
-
+        var toggleButton = document.querySelector('#toggleButton');
+        var sidebar = document.getElementById('sidebar');
+        
+        toggleButton.addEventListener('click', function() {
+            document.querySelector('.tooly').classList.toggle('hide');
+            this.querySelector('img').classList.toggle('clicked-image-border');
+        });
+        document.getElementById('togglelayer').addEventListener('click', function() {
+            sidebar.classList.toggle('sidebar-visible');
         });
     });
     
-    $(document).ready(function() {
-        $("#togglelayer").click(function() {
-            $("#sidebar").toggleClass("sidebar-visible"); 
-        });   
-    });
     
-
+    
+    var projectId={{ id }};
         //mapView             
         var map = mapView(
             JSON.parse('{{ lay | safe }}'),
@@ -162,8 +158,10 @@
             JSON.parse('{{ ngrok_ip | safe }}'),
             JSON.parse('{{ lon | safe }}'),
             JSON.parse('{{ lat | safe }}'),
-            JSON.parse('{{ zoom | safe }}')
+            JSON.parse('{{ zoom | safe }}'),
+            projectId
         );
+
         var scaleControl  = new ol.control.ScaleLine({
             bar: true,
             text: true
@@ -193,8 +191,7 @@
         };
 
         var dashboardUrl = "{{ url_for('dashboard') }}";
-        var projectId={{ id }};
-
+        
 
         // home Control
         
@@ -268,7 +265,10 @@
 
             createMeasureTooltip();
             createHelpTooltip();
-
+            storePolygonAndLine();
+  
+   
+    
             /**
             * Currently drawn feature.
             * @type {import("../src/ol/Feature.js").default}
@@ -367,7 +367,7 @@
             helpTooltipElement.className = 'ol-tooltip hidden';
             helpTooltip = new ol.Overlay({
                 element: helpTooltipElement,
-                offset: [15, 0],
+                offset: [15, 10],
                 positioning: 'center-left',
             });
             map.addOverlay(helpTooltip);

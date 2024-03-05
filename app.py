@@ -59,10 +59,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
+
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
-
+    session = db.session()
+    return session.get(User, int(user_id))
 
 class User(db.Model , UserMixin):
 
@@ -101,7 +103,13 @@ class Drawnpt(db.Model):
     ptdata = db.Column(db.JSON) 
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
-    
+class MapData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    type = db.Column(db.String)
+    metrics = db.Column(db.String)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+
 
 def admin_required(func):
     @wraps(func)
@@ -330,7 +338,7 @@ def project(id):
             lon = layer.resource.native_bbox[0]
             lat = layer.resource.native_bbox[2]
             zoom =11
-            print("lat an long", lon,lat,zoom)
+            
 
             # print(lon , lat)
             if lay.name == "States and District":
@@ -537,10 +545,7 @@ def save_pointer():
     name = data.get('properties').get('name')
     coordinates = data.get('geometry').get('coordinates')
     project_id = data.get('project_id')  # Assuming you receive data_id from the client
-    print("Savingname",name)
-    print("Savingcoord",coordinates)
-    print("Saving id",project_id)
-    print("Savingssssssssssss")
+    
     # Create a new Drawnpt object and add it to the database session
     pointer = Drawnpt(name=name, ptdata={'coordinates': coordinates}, project_id=project_id)
     db.session.add(pointer)
@@ -556,25 +561,96 @@ def save_pointer():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/get-pointers', methods=['GET'])
+@app.route('/save-feature', methods=['POST'])
+def save_mapdata():
+    data = request.json
+    name = data.get('name')
+    geojson = json.loads(data.get('geoJSON'))  # Parse the JSON string
+    type = geojson.get('type')
+    coordinates = geojson.get('coordinates')
+    project_id = data.get('project_id')
+    # Assuming you have defined the MapData model as mentioned before
+    mapdata = MapData(name=name, type=type, metrics=coordinates, project_id=project_id)
+    db.session.add(mapdata)
+    db.session.commit()
+
+    return jsonify({'message': 'Map data saved successfully'})
+
+@app.route('/get-pointers', methods=['GET','POST'])
 def get_pointers():
-    # Query the database to retrieve pointer data
-    pointers = Drawnpt.query.all()
-    
+    # Get the project ID from the query parameters
+    project_id = request.args.get('project_id')
+    # Query the database to retrieve pointer data filtered by project ID
+    pointers = Drawnpt.query.filter_by(project_id=project_id).all()
+
     # Serialize the pointer data into JSON format
     pointer_data = []
     for pointer in pointers:
         if pointer.ptdata:
-            print(pointer.ptdata)
-            print(" ")
             pointer_data.append({
                 'name': pointer.name,
                 'coordinates': pointer.ptdata
             })
-        
+
     # Send the JSON data to the client-side
     return jsonify({'pointers': pointer_data})
+
+@app.route('/get-polygons', methods=['GET'])
+def get_polygons():
+    project_id = request.args.get('project_id')
+    print("project_id: ", project_id)
+    print("project_id: ", project_id)
+    print("project_id: ", project_id)
+    print("project_id: ", project_id)
+    print("project_id: ", project_id)
+    # Query the database to retrieve polygon data
+    polygons = MapData.query.filter_by(type='Polygon',project_id=project_id).all()  # Filter only polygons
     
+    # Serialize the polygon data into JSON format
+    polygon_data = []
+    for polygon in polygons:
+        if polygon.metrics:
+            # Assuming metrics store the polygon coordinates
+            coordinates = polygon.metrics.strip('{}').split('},{')
+            polygon_coordinates = []
+            for coord in coordinates:
+                x, y = coord.split(',')
+                polygon_coordinates.append([float(x), float(y)])
+            
+            polygon_data.append({
+                'name': polygon.name,
+                'coordinates': [polygon_coordinates]  # Wrap in an array as OpenLayers expects an array of linear rings
+            })
+    # Send the JSON data to the client-side
+    return jsonify({'polygons': polygon_data})
+
+
+@app.route('/get-linestrings', methods=['GET'])
+def get_linestrings():
+    project_id = request.args.get('project_id')
+
+    # Query the database to retrieve LineString data
+    linestrings = MapData.query.filter_by(type='LineString',project_id=project_id).all()
+    
+    # Serialize the LineString data into JSON format
+    linestring_data = []
+    for linestring in linestrings:
+        if linestring.metrics:
+            coordinates = linestring.metrics.strip('{}').split('},{')
+            linestring_coordinates = []
+            for coord in coordinates:
+                x, y = coord.split(',')
+                linestring_coordinates.append([float(x), float(y)])
+            
+            linestring_data.append({
+                'name': linestring.name,
+                'type': linestring.type,
+                'coordinates': linestring_coordinates
+            })
+
+    # Send the JSON data to the client-side
+    return jsonify({'linestrings': linestring_data})
+
 
 dev = True
 # dev = False

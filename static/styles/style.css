@@ -161,7 +161,7 @@
     font-weight: bold;
   }
   .ol-tooltip-static {
-    background-color: #0beefe;
+    background-color: rgb(11, 238, 254);
     color: black;
     border: 1px solid white;
   }

@@ -1,4 +1,4 @@
-function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
+function mapView(lay, workspace, ngrok_ip, lon, lat) {
     var mapView = new ol.View({
         center: ol.proj.fromLonLat([lon, lat]),
         zoom: 16,
@@ -73,18 +73,23 @@ function mapView(lay, workspace, ngrok_ip, lon, lat, zoom) {
         map.addLayer(lyr[lay[i]]);
     }
 
-    var mousePosition = new ol.control.MousePosition({
-        className: 'mousePosition',
-        projection: 'EPSG:4326',
-        coordinateFormat: function (coordinate) {
-            return ol.coordinate.format(coordinate, '{y} , {x}', 6)
-        }
-    });
-
+    
+    
     map.addControl(mousePosition);
-    pointSave();
+    
+    createPoint();
+    createPolygon();
+    createLine();
     return map;
 }
+
+var mousePosition = new ol.control.MousePosition({
+    className: 'mousePosition',
+    projection: 'EPSG:4326',
+    coordinateFormat: function (coordinate) {
+        return ol.coordinate.format(coordinate, 'lat&nbsp    :{y} <br/> long:{x}', 5)
+    }
+});
 
 // Function to update the state of the "Toggle All Layers" button based on the state of layer checkboxes
 function updateToggleAllLayersCheckbox() {
@@ -126,24 +131,10 @@ document.getElementById('toggleAllLayers').addEventListener('change', function()
 function toggleLayer(event) {
     var layerName = event.target.value;
     var checkedStatus = event.target.checked;
-    var layers = map.getLayers().getArray();
-
-    if (layerName === "Google Maps" || layerName === "Google Satellite") {
-        // Find the Google Maps and Google Satellite layers by title
-        var googleMapsLayer = layers.find(layer => layer.get('title') === "Google Maps");
-        var googleSatelliteLayer = layers.find(layer => layer.get('title') === "Google Satellite");
-        if (layerName === "Google Maps" && googleMapsLayer) {
-            googleMapsLayer.setVisible(checkedStatus);
-        }
-        if (layerName === "Google Satellite" && googleSatelliteLayer) {
-            googleSatelliteLayer.setVisible(checkedStatus);
-        }
-    } else {
-        // Toggle other layers
-        layers.forEach(function (layer) {
-            if (layer.get('title') === layerName) {
-                layer.setVisible(checkedStatus);
-            }
-        });
+    var layer = map.getLayers().getArray().find(function(layer) {
+        return layer.get('title') === layerName;
+    });
+    if (layer) {
+        layer.setVisible(checkedStatus);
     }
 }
