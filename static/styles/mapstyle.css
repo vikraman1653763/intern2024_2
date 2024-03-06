@@ -21,7 +21,7 @@
   position: relative;
   flex-direction: column;
   transition: transform .7s ease-in-out; /* Smooth transition for visibility */
-  margin-left: px;
+ 
 }
 
 .row {
@@ -38,17 +38,17 @@
 
 
 .sidebar-visible {
-  transform: translateX(-400px); 
+  transform: translateX(-500px); 
   z-index: 0;
 }
 
     
     
-    h2{
-        font-family:monospace;
-        font-weight: bold;
-        color:black;
-    }
+h2{
+    font-family:monospace;
+    font-weight: bold;
+    color:rgb(72, 71, 71);
+}
 
 /* check box */
 .checkbox-wrapper * {
@@ -173,17 +173,11 @@
 
 
 .myButton {
-  padding: 15px 15px 15px 15px;
   z-index:3;
   background-color: transparent;
   border: none;
   font-weight: 700;
-  height: 40px;
-  width: 40px;
-  margin-left: 0px;
-  left: 0;
   transition: left 0.3s ease;
-  
 }
 
 img{
@@ -200,7 +194,7 @@ z-index: inherit;
     box-shadow: none;
    
     filter: invert(0%);
-    /* mix-blend-mode: screen; */
+   
     
   }
 nav{
@@ -213,9 +207,9 @@ nav{
 .nav-link{
   color: black;
 }
-#togglelayer img,#toggleButton img{
-  width: 30px;
-  height: 30px;
+#togglelayer img,#toggleButton img,#metricButton img{
+  width: 35px;
+  height: 35px;
   
 }
 .clicked-image-border {
@@ -224,17 +218,8 @@ nav{
   background-color: #36f1c5fa;
 }
 
-#togglelayer{
-  position: absolute;
-  z-index: 100; 
-  
-}
-#toggleButton {
-  top: 15%;
-  position: absolute;
-  z-index: 100; 
-  
-}
+
+
 
 .container {
   position: relative;
@@ -247,32 +232,34 @@ nav{
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 22%; /* Start off-screen at the top */
+  top: 250px; /* Start off-screen at the top */
   left: 0;
   width: 40px;
-  height: 100%;
+  margin-left:13px ;
   z-index: 3;
   transition: left 0.7s ease-in-out; /* Smooth transition for top property */
+  background: rgb(252, 252, 252);
+  border-radius: 30px;
 }
 
 /* CSS to show the .tooly div */
 .tooly.show {
-  top: 22%; /* Move the .tooly div down */
+  top: 250px; /* Move the .tooly div down */
   z-index: 3;
 }
 
 /* CSS to hide the .tooly div */
 .tooly.hide {
-  top: 22%;
+  top: 250px;
   left: -10%; /* Move the .tooly div back up */
   transition: left 0.7s ease-in-out; /* Smooth transition for top property */
 }
 
 
-.allbuttons {
+.allButtonBar {
   box-shadow: rgba(113, 113, 113, 0.5) 4px 4px 5px;/* Right and bottom */
              /* Left and top */
-  height: 115vh;
+  height: 100vh;
   z-index: 3;
   background: rgb(207, 207, 207);
   width: 80px;
@@ -281,7 +268,7 @@ nav{
 
 .myButton .tooltip {
   position: absolute;
-  top: 73%;
+  top: 50%;
   left: calc(100% + 1px);
   transform: translateY(-50%);
   padding: 0.3em 0.6em;
@@ -306,4 +293,116 @@ nav{
 .toolbtn:hover .tooltip {
   opacity: 1;
   pointer-events: auto;
+}
+
+
+.metricbar {
+  position: fixed;
+  top: 65px;
+  right: 0; 
+  width: auto; 
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out; /* Smooth transition for transform property */
+  max-height: 100%; /* Setting maximum height to make it scrollable */
+  overflow-y: auto; /* Making it scrollable */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: inset rgba(0, 0, 0, 0.3) 10px 0px 10px;
+  background: rgb(245, 245, 245);
+}
+
+.metricbar.hidden {
+  transform: translateX(0%); /* Slide out to the right when hidden */
+}
+
+
+
+.metricbar div {
+  margin-bottom: 10px;
+}
+
+.metric-section {
+  margin-bottom: 20px;
+}
+
+.metric-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 150px; /* Adjust the max-height according to your needs */
+  overflow-y: auto; /* Making it scrollable */
+  padding-right: 15px; /* Adjusting for scrollbar */
+}
+/* Hide scrollbar for Firefox */
+.metric-list::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Hide scrollbar for IE, Edge and Safari */
+.metric-list {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.metric-checkbox {
+  margin-right: 10px;
+}
+
+.metric-name {
+  margin-right: auto;
+}
+
+.delmetric {
+  border: none;
+}
+
+.btnBar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(160, 159, 159);
+  border-radius: 30px;
+  padding: 5px;
+  margin: 5px  4px;
+
+}
+
+.toolbtn{
+  margin: 0px 5px 0px 5px;
+    padding: 5px;
+
+}
+.mainbtnBar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(160, 159, 159);
+  border-radius: 10px 10px 30px 30px;
+  padding: 5px;
+  
+  margin-left:10px ;
+
+}
+.mainBtn{
+    padding: 10px;
+}
+
+.metimg{
+  background:transparent;
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+}
+
+.metric-list{
+  font-size: 12px;
 }

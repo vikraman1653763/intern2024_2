@@ -13,7 +13,7 @@ import folium
 from folium.raster_layers import WmsTileLayer , ImageOverlay
 
 
-from waitress import serve 
+from waitress import serve
 
 
 # TODO: 
@@ -589,7 +589,8 @@ def get_pointers():
         if pointer.ptdata:
             pointer_data.append({
                 'name': pointer.name,
-                'coordinates': pointer.ptdata
+                'coordinates': pointer.ptdata,
+                'id': pointer.id
             })
 
     # Send the JSON data to the client-side
@@ -619,7 +620,8 @@ def get_polygons():
             
             polygon_data.append({
                 'name': polygon.name,
-                'coordinates': [polygon_coordinates]  # Wrap in an array as OpenLayers expects an array of linear rings
+                'coordinates': [polygon_coordinates],
+                'id': polygon.id
             })
     # Send the JSON data to the client-side
     return jsonify({'polygons': polygon_data})
@@ -645,12 +647,43 @@ def get_linestrings():
             linestring_data.append({
                 'name': linestring.name,
                 'type': linestring.type,
-                'coordinates': linestring_coordinates
+                'coordinates': linestring_coordinates,
+                'id': linestring.id
             })
 
     # Send the JSON data to the client-side
     return jsonify({'linestrings': linestring_data})
 
+
+@app.route('/delete-pointer/<int:pointer_id>', methods=['DELETE'])
+def delete_pointer(pointer_id):
+    pointer = Drawnpt.query.get_or_404(pointer_id)
+    if pointer:
+        db.session.delete(pointer)
+        db.session.commit()
+        return jsonify({'message': 'Pointer deleted successfully'}), 200
+    else:
+        return jsonify({'error': 'Pointer not found'}), 404
+
+@app.route('/delete-polygon/<int:id>', methods=['DELETE'])
+def delete_polygon(id):
+    poly = MapData.query.get_or_404(id)
+    if poly:
+        db.session.delete(poly)
+        db.session.commit()
+        return jsonify({'message': 'Pointer deleted successfully'}), 200
+    else:
+        return jsonify({'error': 'Pointer not found'}), 404
+
+@app.route('/delete-line/<int:id>', methods=['DELETE'])
+def delete_line(id):
+    line = MapData.query.get_or_404(id)
+    if line:
+        db.session.delete(line)
+        db.session.commit()
+        return jsonify({'message': 'Pointer deleted successfully'}), 200
+    else:
+        return jsonify({'error': 'Pointer not found'}), 404
 
 dev = True
 # dev = False

@@ -5,49 +5,58 @@
 
 
 <div class="row">
-    <div class="col-sm-10 allbuttons">
-       
-        <button id="togglelayer" class="myButton" ><img src="\static\resources\images\layers.svg"alt=""><span class="tooltip">Layers</span></button>
-        <button id="toggleButton" onclick="toggleTooly()" class="myButton"><img src="\static\resources\images\edit.svg" alt=""><span class="tooltip">Tools</span></button>
+    <div class="col-sm-10 allButtonBar">
+        <div class='mainbtnBar'>
+        <button id="togglelayer" class="myButton mainBtn toolbtn" ><img src="\static\resources\images\layers.svg"alt=""><span class="tooltip">Layers</span></button>
+        <button id="metricButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\book.svg" alt=""><span class="tooltip">Metrics</span></button>
+        <button id="toggleButton" onclick="toggleTooly()" class="myButton mainBtn toolbtn"><img src="\static\resources\images\edit.svg" alt=""><span class="tooltip">Tools</span></button>
+        </div>
         <div class="tooly">
+            <div class="btnBar">
             <button id="homeButton" class="myButton toolbtn">
                 <img src="/static/resources/images/homebtn.svg" alt="" />
-                <span class="tooltip">home</span>
+                <span class="tooltip">Home</span>
             </button>
-            <!-- Zoom Out Button -->
-            <button id="zoButton" class="myButton toolbtn">
-                <img src="/static/resources/images/zoomminus.svg" alt="" />
-                <span class="tooltip">Zoom&nbsp;Out</span>
-            </button>
-            <!-- Zoom In Button -->
-            <button id="ziButton" class="myButton toolbtn">
-                <img src="/static/resources/images/zoomplus.svg" alt="" />
-                <span class="tooltip">Zoom&nbsp;In</span>
-            </button>
-            <!-- Length Control Button -->
-            <button id="lengthButton" class="myButton toolbtn">
-                <img src="/static/resources/images/scale.svg" alt="" />
-                <span class="tooltip">Length</span>
-            </button>
-            <!-- Area Control Button -->
-            <button id="areaButton" class="myButton toolbtn">
-                <img src="/static/resources/images/area.svg" alt="" />
-                <span class="tooltip">Area</span>
-            </button>
-            <!-- Full Screen Button -->
             <button id="fsButton" class="myButton toolbtn">
                 <img src="/static/resources/images/full.svg" alt="" />
                 <span class="tooltip">Fullscreen</span>
             </button>
-            <button id="ptButton" class="myButton toolbtn">
+        </div>
+            <div class='btnBar'>
+            <!-- Zoom Out Button -->
+                <button id="zoButton" class=" myButton toolbtn">
+                    <img src="/static/resources/images/zoomminus.svg" alt="" />
+                    <span class="tooltip">Zoom&nbsp;Out</span>
+                </button>
+                <!-- Zoom In Button -->
+                <button id="ziButton" class="  myButton toolbtn">
+                    <img src="/static/resources/images/zoomplus.svg" alt="" />
+                    <span class="tooltip">Zoom&nbsp;In</span>
+                </button>
+            </div>
+            <div class='btnBar'>
+            <!-- Length Control Button -->
+            <button id="lengthButton" class=" myButton toolbtn">
+                <img src="/static/resources/images/scale.svg" alt="" />
+                <span class="tooltip">Length</span>
+            </button>
+            <!-- Area Control Button -->
+            <button id="areaButton" class=" myButton toolbtn">
+                <img src="/static/resources/images/area.svg" alt="" />
+                <span class="tooltip">Area</span>
+            </button>
+            <!-- Full Screen Button -->
+            <button id="ptButton" class=" myButton toolbtn">
                 <img src="/static/resources/images/pointer.svg" alt="" />
                 <span class="tooltip">pointer</span>
             </button>
+        </div>
         </div>
         
         
         </div>
         <div id="map"></div>
+        
         <div id="sidebar" >
             <div class="checkbox-wrapper">
                 <h2>Layers</h2>
@@ -95,13 +104,27 @@
             </div>
         </div>
         </div>
-        <style>
+       
+            
+        <div class='metricbar'>
+            <div class="metric-section">
+                <h5><img class='metimg' src="\static\resources\images\ptmet.svg" alt="">Points</h5>
+                <div id="pointNames" class="metric-list"></div>
+            </div>
+            <div class="metric-section">
+                <h5><img class='metimg' src="\static\resources\images\areamet.svg" alt="">Polygon</h5>
+                <div id="polygonNames" class="metric-list"></div>
+            </div>
+            <div class="metric-section">
+                <h5><img class='metimg' src="\static\resources\images\lengthmet.svg" alt="">Line</h5>
+                <div id="lineNames" class="metric-list"></div>
+            </div>
+        </div>
+        
+        
             
             
-            
-            
-        </style>
-        <div id="pointerDialog" class="pointerup">
+           <div id="pointerDialog" class="pointerup">
             <div class="point-content">
                 <span class="pointer-close">&times;</span>
                 <div class="pointer-info">
@@ -111,7 +134,7 @@
                 </div>
             </div>
         </div>
-<div id="popup" class="ol-popup">
+<div id="popup"  class="ol-popup">
 
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
@@ -126,19 +149,35 @@
 <script src="/static/js/pointer.js"></script>
 <script src="/static/js/showmetric.js"></script>
 <script src="/static/js/storepolyline.js"></script>
+<script src="/static/js/deletemetrics.js"></script>
+<script>
+  
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initially hide the metricbar
+        // Add a class to initially hide the metricbar
+        
+        // Add event listener to the toggleButton
+        
+    });
 
-
+</script>
+<style>
+    
+    
+</style>
 
 <script  type="text/javascript">
+    var projectId={{ id }};
 
    
     document.addEventListener("DOMContentLoaded", function() {
         // Initially show the tooly
+        var metricBar = document.querySelector('.metricbar');
         var toolyDiv = document.querySelector('.tooly');
         var togImage = document.querySelector('#toggleButton img');
         var toggleButton = document.querySelector('#toggleButton');
         var sidebar = document.getElementById('sidebar');
-        
+        var isVisible = true;
         toggleButton.addEventListener('click', function() {
             document.querySelector('.tooly').classList.toggle('hide');
             this.querySelector('img').classList.toggle('clicked-image-border');
@@ -146,11 +185,23 @@
         document.getElementById('togglelayer').addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-visible');
         });
+
+        var toggleButton = document.getElementById('metricButton');
+        toggleButton.addEventListener('click', function() {
+            isVisible = !isVisible; 
+            this.querySelector('img').classList.toggle('clicked-image-border');
+            if (isVisible) {
+                metricBar.classList.remove('hidden'); // Remove hidden class to show metricbar
+            } else {
+                metricBar.classList.add('hidden'); // Add hidden class to hide metricbar
+            }
+        });
+
+        
     });
     
     
     
-    var projectId={{ id }};
         //mapView             
         var map = mapView(
             JSON.parse('{{ lay | safe }}'),

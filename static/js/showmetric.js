@@ -1,47 +1,53 @@
+var deleteBtn ='<img class="metricDelete" src="/static/resources/images/deletemetric.svg" alt="delete" />'
 
-function createPoint(){
-     // Fetch pointer data from the server
-     fetch(`/get-pointers?project_id=${projectId}`)
 
-     .then(response => response.json())
-     .then(data => {
-         // Loop through the pointer data and add markers to the map
-         data.pointers.forEach(pointer => {
-             var coordinates = pointer.coordinates;
-             var marker = new ol.Feature({
-                 geometry: new ol.geom.Point(coordinates.coordinates)
-             });
- 
-             var iconStyle = new ol.style.Style({
-                 image: new ol.style.Icon({
-                     src: '/static/resources/images/mappt.svg', // Example icon image
-                     scale: 0.5
-                 }),
-                 text: new ol.style.Text({
-                     text: pointer.name,
-                     offsetY:-25,
-                     font:'14px Arial',
-                     fill: new ol.style.Fill({
-                         color: 'white'
-                     })
-                 })
-             });
-             marker.setStyle(iconStyle);
- 
-             var vectorSource = new ol.source.Vector({
-                 features: [marker]
-             });
- 
-             var vectorLayer = new ol.layer.Vector({
-                 source: vectorSource
-             });
- 
-             map.addLayer(vectorLayer);
-         });
-     })
-     .catch(error => console.error('Error fetching pointer data:', error));
- 
+
+function createPoint() {
+    fetch(`/get-pointers?project_id=${projectId}`)
+        .then(response => response.json())
+        .then(data => {
+            data.pointers.forEach(pointer => {
+                var coordinates = pointer.coordinates;
+                
+                var marker = new ol.Feature({
+                    geometry: new ol.geom.Point(coordinates.coordinates)
+                });
+
+                var iconStyle = new ol.style.Style({
+                    image: new ol.style.Icon({
+                        src: '/static/resources/images/mappt.svg',
+                        scale: 0.5
+                    }),
+                    text: new ol.style.Text({
+                        text: pointer.name,
+                        offsetY: -25,
+                        font: '14px Arial',
+                        fill: new ol.style.Fill({
+                            color: 'white'
+                        })
+                    })
+                });
+                marker.setStyle(iconStyle);
+
+                var vectorSource = new ol.source.Vector({
+                    features: [marker]
+                });
+
+                var vectorLayer = new ol.layer.Vector({
+                    source: vectorSource
+                });
+
+                map.addLayer(vectorLayer);
+
+                // Update HTML content to show the point names
+                var pointNamesDiv = document.getElementById('pointNames');
+                var deleteButton = `<button class='delmetric' onclick="deletePointer(${pointer.id})">${deleteBtn}</button>`;
+                pointNamesDiv.innerHTML += `<div>${deleteButton}&nbsp;${pointer.name}</div>`;
+            });
+        })
+        .catch(error => console.error('Error fetching pointer data:', error));
 }
+
 function calculateCentroid(coordinates) {
     var centroidX = 0, centroidY = 0;
     for (var i = 0; i < coordinates[0].length; i++) {
@@ -53,7 +59,6 @@ function calculateCentroid(coordinates) {
     return [centroidX, centroidY];
 }
 
-
 function createPolygon() {
     fetch(`/get-polygons?project_id=${projectId}`)
         .then(response => response.json())
@@ -62,7 +67,7 @@ function createPolygon() {
             data.polygons.forEach(polygon => {
                 var coordinates = polygon.coordinates;
                 var centroid = calculateCentroid(coordinates);
-                var offsetX = 0; 
+                var offsetX = 0;
                 var offsetY = 0;
                 var textCoordinates = [centroid[0] + offsetX, centroid[1] + offsetY];
 
@@ -79,7 +84,6 @@ function createPolygon() {
                     text: polygon.name, // Set the text to the name of the polygon
                     offsetX: 0,
                     offsetY: 0,
-                     // Padding around the text
                 });
 
                 // Create feature for the text
@@ -127,6 +131,10 @@ function createPolygon() {
                 });
 
                 map.addLayer(vectorLayer);
+
+                var polygonNamesDiv = document.getElementById('polygonNames');
+                    var deleteButton = `<button class='delmetric' onclick="deletePolygon(${polygon.id})">${deleteBtn}</button>`;
+                    polygonNamesDiv.innerHTML += `<div>${deleteButton}&nbsp;${polygon.name}</div>`;
             });
         })
         .catch(error => console.error('Error fetching polygon data:', error));
@@ -134,12 +142,11 @@ function createPolygon() {
 
 
 
+
 function createLine() {
-    // Fetch LineString data from the server
     fetch(`/get-linestrings?project_id=${projectId}`)
         .then(response => response.json())
         .then(data => {
-            // Loop through the LineString data and add LineStrings to the map
             data.linestrings.forEach(linestring => {
                 var coordinates = linestring.coordinates;
 
@@ -147,8 +154,22 @@ function createLine() {
                     geometry: new ol.geom.LineString(coordinates)
                 });
 
-                // Add name as a property to the feature
                 linestringFeature.set('name', linestring.name);
+
+                var textStyle = new ol.style.Text({
+                    text: linestring.name,
+                    font: 'bold 12px Arial',
+                    fill: new ol.style.Fill({
+                        color: 'black'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 2
+                    }),
+                    offsetX: 0,
+                    offsetY: -10,
+                    textAlign: 'center'
+                });
 
                 var vectorSource = new ol.source.Vector({
                     features: [linestringFeature]
@@ -161,48 +182,20 @@ function createLine() {
                             color: "white",
                             width: 2,
                             lineDash: [1, 3]
-                        })
+                        }),
+                        text: textStyle
                     })
                 });
 
                 map.addLayer(vectorLayer);
 
-                // Add text labels for each LineString
-                var textStyle = new ol.style.Text({
-                    font: 'bold 14px Lucida Sans,Ebrima,Arial',
-                    fill: new ol.style.Fill({
-                        color: 'white'
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: 'black', // Border color
-                        width: 3 // Border width
-                    }),
-                    offsetY: 0,
-                    offsetX: 0, // Adjust the offset to position the text label appropriately
-                    textAlign: 'center',
-                    textBaseline: 'middle',
-                    text: linestring.name // Set the text to the name of the LineString
-                });
-
-                var textFeature = new ol.Feature({
-                    geometry: new ol.geom.Point(coordinates[0]) // Use the first coordinate of the LineString as the text label location
-                });
-
-                textFeature.setStyle(new ol.style.Style({
-                    text: textStyle
-                }));
-
-                var textSource = new ol.source.Vector({
-                    features: [textFeature]
-                });
-
-                var textLayer = new ol.layer.Vector({
-                    source: textSource
-                });
-
-                map.addLayer(textLayer);
+                var lineNamesDiv = document.getElementById('lineNames');
+                var deleteButton = `<button class='delmetric' onclick="deletePolygon(${linestring.id})">${deleteBtn}</button>`;
+                lineNamesDiv.innerHTML += `<div>${deleteButton}&nbsp;${linestring.name}</div>`;
             });
         })
         .catch(error => console.error('Error fetching LineString data:', error));
 }
+
+
 
