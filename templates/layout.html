@@ -1,10 +1,13 @@
 
 {% extends 'base.html' %}
-    
+
 {% block body %}
 
+<link rel="stylesheet" href="/static/styles/mapstyle.css">
+<link rel="stylesheet" href="/static/styles/popup.css">
 
 <div class="row">
+   
     <div class="col-sm-10 allButtonBar">
         <div class='mainbtnBar'>
         <button id="togglelayer" class="myButton mainBtn toolbtn" ><img src="\static\resources\images\layers.svg"alt=""><span class="tooltip">Layers</span></button>
@@ -60,43 +63,42 @@
         <div id="sidebar" >
             <div class="checkbox-wrapper">
                 <h2>Layers</h2>
-                
-            <input type="checkbox" class="tick_mark" checked='checked' id="toggleAllLayers"> 
-            <label for="toggleAllLayers"><div class="tick_mark"></div></label>
-            
-
+                <input type="checkbox" class="tick_mark" checked='checked' id="toggleAllLayers"> 
+                <label for="toggleAllLayers"><div class="tick_mark"></div></label>
             </div>
             
-            <br>
-            <div class="checkbox-wrapper">
-                <input id="googleMaps" type="checkbox" value="Google Maps" checked onchange="toggleLayer(event)">
-                <label for="googleMaps"><div class="tick_mark"></div></label>
-                <span>Google Maps</span>
-            </div>
-            <br>
-            <div class="checkbox-wrapper">
-                <input id="googleSatellite" type="checkbox" value="Google Satellite" checked onchange="toggleLayer(event)">
-                <label for="googleSatellite"><div class="tick_mark"></div></label>
-                <span>Satellite</span>
-            </div>
-            
+            <div class='layerNames'>
                 <br>
-                {% for l in layer_list %}
                 <div class="checkbox-wrapper">
-                    <input class="layer-checkbox" id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
-                    <label for="{{ l }}"><div class="tick_mark"></div></label>
-                    <span>{{ l }}</span>
+                    <input id="googleMaps" type="checkbox" value="Google Maps" checked onchange="toggleLayer(event)">
+                    <label for="googleMaps"><div class="tick_mark"></div></label>
+                    <span>Google Maps</span>
                 </div>
                 <br>
+                <div class="checkbox-wrapper">
+                    <input id="googleSatellite" type="checkbox" value="Google Satellite" checked onchange="toggleLayer(event)">
+                    <label for="googleSatellite"><div class="tick_mark"></div></label>
+                    <span>Satellite</span>
+                </div>
+                
+                <br>
+                {% for l in layer_list %}
+                    <div class="checkbox-wrapper">
+                        <input class="layer-checkbox" id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
+                        <label for="{{ l }}"><div class="tick_mark"></div></label>
+                        <span>{{ l }}</span>
+                    </div>
+                    <br>
                 {% endfor %}
             </div>
-        </div>     
+        </div>
+    </div>     
         
         
         <div id="popupDialog" class="popup">
             <div class="popup-content">
                 <span class="popup-close">&times;</span>
-                <p class="popup-p">Enter&nbsp;pointer&nbsp;name:</p>
+                <p class="popup-p">Enter&nbsp;name:</p>
                 <div class="popup-in">
                     <input class="popup-input" type="text" id="pointerName" placeholder="Pointer Name">
                     <button id='submitName'class="popup-button"><span>Submit</span></button>
@@ -121,7 +123,12 @@
             </div>
         </div>
         
-        
+        <div id="loadingPopup" class="loading-popup">
+            <div class="loading-content">
+                <div class="spinner"></div>
+            
+            </div>
+        </div>
             
             
            <div id="pointerDialog" class="pointerup">
@@ -139,9 +146,8 @@
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
 </div> 
-<link rel="stylesheet" href="/static/styles/mapstyle.css">
-<link rel="stylesheet" href="/static/styles/popup.css">
 
+<script src="/static/js/reload.js"></script>
 <script src="/static/resources/ol/ol.js"></script>
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
 <script src="/static/js/MapView.js"></script>
@@ -150,26 +156,18 @@
 <script src="/static/js/showmetric.js"></script>
 <script src="/static/js/storepolyline.js"></script>
 <script src="/static/js/deletemetrics.js"></script>
-<script>
-  
-    document.addEventListener("DOMContentLoaded", function() {
-        // Initially hide the metricbar
-        // Add a class to initially hide the metricbar
-        
-        // Add event listener to the toggleButton
-        
-    });
 
-</script>
+
 <style>
     
     
 </style>
 
 <script  type="text/javascript">
+    customReload();
     var projectId={{ id }};
-
-   
+    
+    
     document.addEventListener("DOMContentLoaded", function() {
         // Initially show the tooly
         var metricBar = document.querySelector('.metricbar');
@@ -677,7 +675,8 @@
         }
 
         // end : attribute query   
-
+       
+        
 </script>
 
     

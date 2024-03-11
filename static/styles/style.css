@@ -44,6 +44,7 @@
 
 
 .mousePosition {
+  display: block;
     position: fixed;
     top: auto;
     right: auto;
@@ -53,7 +54,7 @@
     /* border: 1px solid grey; */
     border-radius: 10px;
     padding: 5px;
-    background-color: rgba(9, 249, 249, 0.3);
+    background-color: rgba(250, 255, 255, 0.5);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 12px;
     font-weight: bolder;

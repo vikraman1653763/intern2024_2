@@ -10,9 +10,9 @@
   z-index: 0;
 }
 #sidebar {
-  height: 115vh;
+  height: clamp(91vh, 91vh, 91vh);
   border-radius: 0px 10px 10px 0px;
-  overflow: fixed;
+  
   border: none;
   box-shadow: inset rgba(0, 0, 0, 0.3) -10px 0px 10px;
   width: 200px;
@@ -21,8 +21,20 @@
   position: relative;
   flex-direction: column;
   transition: transform .7s ease-in-out; /* Smooth transition for visibility */
- 
 }
+.layerNames {
+  overflow-y: auto;
+  height: clamp(80vh, 91vh, 80vh);
+  background: rgb(245, 245, 245);
+  border-radius: 10px;
+  scrollbar-width: 20px;
+  scrollbar-color: #36f1c5fa rgb(245, 245, 245) ;
+}
+
+.layerNames::-webkit-scrollbar {
+  border-radius: 20px;
+}
+
 
 .row {
   background: transparent;
@@ -203,6 +215,7 @@ nav{
   box-shadow: rgba(17, 17, 17, 0.3) -5px 5px 5px;
   color: #000;
   
+  
 }
 .nav-link{
   color: black;
@@ -232,7 +245,7 @@ nav{
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 250px; /* Start off-screen at the top */
+  top: 280px; /* Start off-screen at the top */
   left: 0;
   width: 40px;
   margin-left:13px ;
@@ -244,13 +257,13 @@ nav{
 
 /* CSS to show the .tooly div */
 .tooly.show {
-  top: 250px; /* Move the .tooly div down */
+  top: 280px; /* Move the .tooly div down */
   z-index: 3;
 }
 
 /* CSS to hide the .tooly div */
 .tooly.hide {
-  top: 250px;
+  top: 280px;
   left: -10%; /* Move the .tooly div back up */
   transition: left 0.7s ease-in-out; /* Smooth transition for top property */
 }
@@ -258,8 +271,8 @@ nav{
 
 .allButtonBar {
   box-shadow: rgba(113, 113, 113, 0.5) 4px 4px 5px;/* Right and bottom */
-             /* Left and top */
-  height: 100vh;
+            
+  height: 91vh;
   z-index: 3;
   background: rgb(207, 207, 207);
   width: 80px;
@@ -405,4 +418,50 @@ nav{
 
 .metric-list{
   font-size: 12px;
+}
+
+.loading-popup {
+  display: none;
+  position: fixed; /* Change to fixed position */
+  top: 0;
+  left: 0;
+  width: 100%; /* Cover the entire width of the viewport */
+  height: 100%; /* Cover the entire height of the viewport */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 9999;
+}
+
+.loading-content {
+  position: absolute;
+  top: 50%; /* Center the popup vertically */
+  left: 50%; /* Center the popup horizontally */
+  transform: translate(-50%, -50%); /* Center the popup exactly in the middle */
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.loading-content .spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+h5 {
+  background: linear-gradient(70deg, #000000fa, #000000fa, #36f1c5fa,#000000fa);
+  -webkit-background-clip: text; 
+  background-clip: text;
+  color: transparent;
+  border-radius: 5px;
 }

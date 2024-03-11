@@ -41,7 +41,7 @@
         <!-- <a class="navbar-brand" href="{{url_for('index')}}">NEVAR SYSTEMS</a> -->
         
         <a class="navbar-brand" " href="{{url_for('index')}}">
-          <img  class="nav-img"style="width: 120%; height:3rem; margin-top:-10px;" src="{{url_for('static', filename='images/nevar-systems.png')}}" alt="NEVAR SYSTEMS">
+          <img  class="nav-img" src="{{url_for('static', filename='images/nevar-systems.png')}}" alt="NEVAR SYSTEMS">
         </a>
       
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -168,16 +168,19 @@
             background:rgb(207, 207, 207);
             box-shadow: rgba(17, 17, 17, 0.3) -5px 5px 5px;
             color: #000;
-            
+            height: 100px;
           }
           .nav-link{
             color: black;
           }
-          .nav-img{
-            
-          }
+         
           .navbar-toggler-icon{
             color: black;
+          }
+          .nav-img{
+            width: 8rem; 
+            height:6rem; 
+            margin-top:-10px;
           }
         </style>
 

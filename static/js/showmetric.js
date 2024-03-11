@@ -38,7 +38,7 @@ function createPoint() {
                 });
 
                 map.addLayer(vectorLayer);
-
+                
                 // Update HTML content to show the point names
                 var pointNamesDiv = document.getElementById('pointNames');
                 var deleteButton = `<button class='delmetric' onclick="deletePointer(${pointer.id})">${deleteBtn}</button>`;
