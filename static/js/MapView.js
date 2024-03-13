@@ -81,6 +81,7 @@ function mapView(lay, workspace, ngrok_ip, lon, lat) {
     createPolygon();
     createLine();
     
+    // filterAttributes();
     return map;
 }
 

@@ -163,6 +163,7 @@
 <script src="/static/js/storepolyline.js"></script>
 <script src="/static/js/deletemetrics.js"></script>
 <script src="/static/js/attributes.js"></script>
+<script src="/static/js/filter.js"></script>
 
 <style>
     
@@ -173,8 +174,8 @@
     var projectId={{ id }};
        var data = JSON.parse('{{ data | tojson | safe }}');
    
-    attributestable(data);
-
+    //attributestable(data);
+    //filter(data);
     document.addEventListener("DOMContentLoaded", function() {
         // Initially show the tooly
         var metricBar = document.querySelector('.metricbar');

@@ -4,10 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_migrate import Migrate
 from webforms import loginForm, registerForm, projectName, changeUserPassword, searchForm
-from datetime import datetime
 from functools import wraps 
 import requests
-
+from modeldb import User, admin_required,Project,Data,Drawnpt,MapData,db,login_manager,app
 from geoserver.catalog import Catalog
 import folium
 # from folium import plugins
@@ -24,13 +23,9 @@ from waitress import serve
     # - delete workspace if user is deleted
 
 
-# ngrok_ip = "https://9b06-61-2-143-247.in.ngrok.io/"
-# ngrok_ip = "http://192.168.1.75:8080"
+
 ngrok_ip = "http://127.0.0.1:8080"
 
-# id 2 Admin hariharan141200@gmail.com 
-# cat = Catalog("http://localhost:8080/geoserver/rest/", username="admin", password="geoserver")
-#cat = Catalog( ngrok_ip + "/geoserver/rest/", username="admin", password="geoserver")
 geoserver_url = "http://localhost:8080/geoserver/rest/"
 username = "admin"
 password = "geoserver"
@@ -43,82 +38,12 @@ cat = Catalog(geoserver_url, username=username, password=password)
 
 ADMIN = 2
 
-app = Flask(__name__)
-
-# database_ip = "192.168.1.65:8080"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/loginNevar'
-
-
-app.config['SECRET_KEY'] = "SECRET KEY"
-
-
-db = SQLAlchemy(app)
-migrate = Migrate(app , db)
-
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    session = db.session()
-    return session.get(User, int(user_id))
-
-class User(db.Model , UserMixin):
-
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), nullable=False , unique=True)
-    username = db.Column(db.String(100), nullable=False , unique=True)
-    lastname = db.Column(db.String(80), nullable=True)
-    role = db.Column(db.String(100))
-    password = db.Column(db.String(200), nullable=False)
-    date_added = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    project = db.relationship('Project', backref='user')
-
-    def __repr__(self):
-        return '<Name %%r>' % self.name
 
 
-class Project(db.Model):
-    
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    data = db.relationship('Data', backref='project') 
-    Drawnpt = db.relationship('Drawnpt', backref='project') 
 
-class Data(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
-
-
-class Drawnpt(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    ptdata = db.Column(db.JSON) 
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
-
-class MapData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    type = db.Column(db.String)
-    metrics = db.Column(db.String)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
-
-
-def admin_required(func):
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if current_user.role != 'admin':
-            abort(403)
-        return func(*args, **kwargs)
-    return decorated_view
 
 @app.route('/')
 def index():
@@ -132,9 +57,7 @@ def register():
     if request.method == 'POST':
         error_message = request.form.get('errorMessage')
         flash(error_message, "error_msg")
-        print(error_message, 'error')   
-        print("")
-        print("")
+        
         return jsonify({'status': 'success'}), 200
     
     else:
