@@ -10,19 +10,18 @@ function hideLoadingPopup() {
 }
 
 // Function to simulate a custom reload
-var reload = false; // Flag to track whether the page has been reloaded
 
 function customReload() {
+    var reload = false; // Flag to track whether the page has been reloaded
     if (!reload) { // Check if the page hasn't been reloaded yet
         // Show the loading popup with a message
         showLoadingPopup();
 
         // Hide the loading popup after a delay
-        setTimeout(function() {
+        window.onload = function() {
             hideLoadingPopup();
-           
-            reload = true; // Set the flag to true to indicate that the reload process has started
-        }, 1000); // Adjust the delay time (in milliseconds) as needed
+            reload = true; 
+        }; 
     } else {
         // If the page has already been reloaded, stop further reload attempts
         hideLoadingPopup();

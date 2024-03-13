@@ -130,7 +130,12 @@
             </div>
         </div>
             
-            
+        <div id="attributeContainer">
+            <div class="attributeHeader"></div>
+            <div class="attributeRows"></div>
+        </div>
+        
+
            <div id="pointerDialog" class="pointerup">
             <div class="point-content">
                 <span class="pointer-close">&times;</span>
@@ -140,6 +145,7 @@
                     <p id="pointerLatitudeDisplay"></p>
                 </div>
             </div>
+
         </div>
 <div id="popup"  class="ol-popup">
 
@@ -156,7 +162,7 @@
 <script src="/static/js/showmetric.js"></script>
 <script src="/static/js/storepolyline.js"></script>
 <script src="/static/js/deletemetrics.js"></script>
-
+<script src="/static/js/attributes.js"></script>
 
 <style>
     
@@ -164,10 +170,11 @@
 </style>
 
 <script  type="text/javascript">
-    customReload();
     var projectId={{ id }};
-    
-    
+       var data = JSON.parse('{{ data | tojson | safe }}');
+   
+    attributestable(data);
+
     document.addEventListener("DOMContentLoaded", function() {
         // Initially show the tooly
         var metricBar = document.querySelector('.metricbar');

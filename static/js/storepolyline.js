@@ -75,5 +75,6 @@ function saveFeatureToServer(featureData) {
             .catch(error => {
                 reject(error);
             });
+
     });
 }

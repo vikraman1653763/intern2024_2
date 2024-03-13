@@ -1,6 +1,7 @@
 body{
  
-    background: linear-gradient(160deg, #ADDEFF, #ADDEFF,#FFFFFF);
+    /* background: linear-gradient(160deg, #ADDEFF, #ADDEFF,#FFFFFF); */
+   
     width:100%;
     height:100%;
     font-family: 'Rubik', sans-serif;
@@ -37,7 +38,7 @@ body{
   min-width: auto;
 }
 .logo:hover{
-  box-shadow: 0 0 30px 10px rgba(13, 153, 241, 0.9); /* Adjust the color and other parameters for the hover effect */
+  box-shadow: 0 0 30px 10px #36f1c5fa; /* Adjust the color and other parameters for the hover effect */
 
 }
 
@@ -53,9 +54,9 @@ body{
   color: #fff;
   border: 1px solid rgb(231, 230, 230);
   box-shadow: 
-  0 5px 15px 1px #f0f4f4,
-  0 1px 15px 1px #18bacd,
-  0 1px 15px 1px #cdced0;
+  0 5px 15px 1px #c8e0dbfa,
+  0 1px 15px 1px #36f1c5fa,
+  0 1px 15px 1px #a1ebd9fa;
 }
 
 
@@ -67,7 +68,7 @@ body{
   display: flex;
   align-items: center;
   padding-left: 30px;
-  color: #1db7eb;
+  color: #36f1c5fa;
 }
 
 .title::before {
@@ -89,7 +90,7 @@ body{
   width: 16px;
   border-radius: 50%;
   left: 0px;
-  background: radial-gradient(#15030d, #0272a5, #f6f7f7);
+  background: radial-gradient(#15030d, #36f1c5fa, #f6f7f7);
 }
 
 .message, 
@@ -103,11 +104,11 @@ body{
 }
 
 .signin a:hover {
-  text-decoration: underline royalblue;
+  text-decoration: underline #36f1c5fa;
 }
 
 .signin a {
-  color: #00bfff;
+  color: #36f1c5fa;
 }
 
 .flex {

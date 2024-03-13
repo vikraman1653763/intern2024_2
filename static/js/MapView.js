@@ -80,6 +80,7 @@ function mapView(lay, workspace, ngrok_ip, lon, lat) {
     createPoint();
     createPolygon();
     createLine();
+    
     return map;
 }
 

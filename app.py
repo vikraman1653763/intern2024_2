@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from webforms import loginForm, registerForm, projectName, changeUserPassword, searchForm
 from datetime import datetime
 from functools import wraps 
+import requests
 
 from geoserver.catalog import Catalog
 import folium
@@ -314,20 +315,13 @@ def add_layer(id):
 @app.route('/dashboard/application/<int:id>')
 @login_required
 def project(id):
-
     workspace = current_user.username
-    
     lay = Project.query.get_or_404(id)
-    
-                
     if lay.user.username == current_user.username:     
-
         workspace_name = current_user.username
-   
         check = []
         for i in lay.data:
             check.append(i.name)
-           
             layer_name = i.name
 
         if check:
@@ -338,38 +332,40 @@ def project(id):
             lon = layer.resource.native_bbox[0]
             lat = layer.resource.native_bbox[2]
             zoom =11
-            
-
-            # print(lon , lat)
+            # Construct WFS GetFeature request
+            wfs_url = "http://localhost:8080/geoserver/wfs"
+            params = {
+                "service": "WFS",
+                "version": "1.1.0",
+                "request": "GetFeature",
+                "typeName": f"{workspace_name}:{layer_name}",
+                "outputFormat": "json",
+            }
+            response = requests.get(wfs_url, params=params)
+            # Check if the request was successful
+            if response.status_code == 200:
+                # Parse the response JSON to extract feature data
+                features = response.json()["features"]
+                
+                # Process feature attributes
+                attribute_data = []
+                for feature in features:
+                    properties = feature["properties"]
+                    feature_data = {}
+                    for attribute_name, attribute_value in properties.items():
+                        feature_data[attribute_name] = attribute_value
+                    attribute_data.append(feature_data)
+               
             if lay.name == "States and District":
                 lon = 78.6569
                 lat = 22.9734
                 zoom = 11
         else:
-            
             lon = "79.808289"
             lat = "11.941552"
             zoom = 10
-
-        # # print(check)
-        # # print(dir(layer))
-
-        # # a = dir(layer)
-        # # for i in a:
-        # #     print(f"ATTRIBUTE : {i}" , getattr(layer, i))
-
-
-        # # print(layer.resource)
-        # # print("RESOURCE : " , dir(layer.resource))
-
-        # # for val , i in enumerate(dir(layer.resource)):
-        # #     print(" RESOURCE : " , val , " attribute : " , i , getattr(layer.resource, i) )
-
-        # print("LONGITUDE : " , layer.resource.native_bbox[0])
-        # print("LATITUDE : " , layer.resource.native_bbox[2])
-
-
-        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id)
+       
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id,data=attribute_data)
 
     else:
         abort(403)
@@ -436,19 +432,7 @@ def delete(id):
 
     if user_to_delete:
 
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , user_to_delete.username)
-        print(" WORKSPACE : " , type(user_to_delete.username))
+       
                 
         # workspace_name = user_to_delete.username
 
@@ -599,11 +583,7 @@ def get_pointers():
 @app.route('/get-polygons', methods=['GET'])
 def get_polygons():
     project_id = request.args.get('project_id')
-    print("project_id: ", project_id)
-    print("project_id: ", project_id)
-    print("project_id: ", project_id)
-    print("project_id: ", project_id)
-    print("project_id: ", project_id)
+ 
     # Query the database to retrieve polygon data
     polygons = MapData.query.filter_by(type='Polygon',project_id=project_id).all()  # Filter only polygons
     
@@ -689,7 +669,7 @@ dev = True
 # dev = False
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     with app.app_context():
         db.create_all()
 
