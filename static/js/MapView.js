@@ -1,4 +1,4 @@
-function mapView(lay, workspace, ngrok_ip, lon, lat) {
+function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
     var mapView = new ol.View({
         center: ol.proj.fromLonLat([lon, lat]),
         zoom: 16,
@@ -45,14 +45,17 @@ function mapView(lay, workspace, ngrok_ip, lon, lat) {
             url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
         })
     });
-    
+    osmTile.setZIndex(0);
+    noneTile.setZIndex(0);
+    googleMaps.setZIndex(0);
+    googleSatellite.setZIndex(0);
     
     map.addLayer(osmTile);
     map.addLayer(noneTile);
     map.addLayer(googleMaps);
     map.addLayer(googleSatellite);
 
-    var layer_names = [];
+    layer_names = [];
     
     var lyr = {};
 
@@ -67,22 +70,28 @@ function mapView(lay, workspace, ngrok_ip, lon, lat) {
                 visible: true
             })
         });
-        
+         lyr[lay[i]].setZIndex(i + 1);
 
         layer_names.push(lay[i]);
         map.addLayer(lyr[lay[i]]);
-    }
 
+    }
+    console.log(layer_names);
     
     
     map.addControl(mousePosition);
+    map.addControl(scaleControl);
     
     createPoint();
     createPolygon();
     createLine();
+    createControls();
+    toggleSlide();
+    attributestable(data);
+
     
-    // filterAttributes();
     return map;
+    
 }
 
 var mousePosition = new ol.control.MousePosition({
@@ -91,6 +100,10 @@ var mousePosition = new ol.control.MousePosition({
     coordinateFormat: function (coordinate) {
         return ol.coordinate.format(coordinate, 'lat&nbsp    :{y} <br/> long:{x}', 5)
     }
+});
+var scaleControl  = new ol.control.ScaleLine({
+    bar: true,
+    text: true
 });
 
 // Function to update the state of the "Toggle All Layers" button based on the state of layer checkboxes

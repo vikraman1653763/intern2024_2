@@ -11,7 +11,8 @@ from geoserver.catalog import Catalog
 import folium
 # from folium import plugins
 from folium.raster_layers import WmsTileLayer , ImageOverlay
-
+from portal import register, verify_otp,success,login,logout,changePassword
+import geopandas as gpd
 
 from waitress import serve
 
@@ -49,128 +50,6 @@ ADMIN = 2
 def index():
     workspaces = cat.get_workspaces()
     return render_template("index.html", workspaces=workspaces)
-
-
-
-@app.route('/register' , methods=('GET' , 'POST'))
-def register():
-    if request.method == 'POST':
-        error_message = request.form.get('errorMessage')
-        flash(error_message, "error_msg")
-        
-        return jsonify({'status': 'success'}), 200
-    
-    else:
-        action='register'
-        return render_template('register.html', action=action)
-
-@app.route('/verify_otp', methods=['POST'])
-def verify_otp():
-    try:
-        # Retrieve user details from the request
-        data = request.get_json()
-        username = data.get('username')
-        lastname = data.get('lastname')
-        email = data.get('email')
-        password = data.get('password')
-        
-        # Save user details to the database
-        new_user = User(username=username, lastname=lastname, email=email, password=password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        return jsonify({'success': True, 'message': 'User registered successfully'})
-    except Exception as e:
-        print(e)
-        return jsonify({'success': False, 'error': 'Error saving user details'})
-    
-@app.route('/success')
-def success():
-    return render_template('success.html')
-
-@app.route('/logout' , methods=('GET' , 'POST'))
-@login_required
-def logout():
-    logout_user()
-    flash(" Loged Out Succesfully !! " , "info")
-    return redirect(url_for('login'))
-
-
-
-@app.route('/login' , methods=('GET' , 'POST'))
-def login():
-
-    email = None
-    password = None
-    LoginForm = loginForm()
-
-    if LoginForm.validate_on_submit():
-
-        email = LoginForm.email.data
-        password = LoginForm.password.data
-        print(email,password)
-        LoginForm.email.data = ''
-        LoginForm.password.data = ''
-
-        user = User.query.filter_by(email=email).first()
-
-        if user is not None:
-            
-            if user.password == password:
-                
-                login_user(user)
-                flash(" logged in successfully !! ", "success")
-
-                if password == "default":
-                    
-                    return redirect(url_for('changePassword'))
-                    
-
-                if user.role == "admin":
-                    return redirect(url_for('users'))
-                else:
-                    return redirect(url_for('dashboard'))
-            
-            else:
-                flash(" Invalid Email/Password !! " , "error_msg")
-        
-        else:
-            flash(" Invalid Email/Password !! " , "error_msg")            
-        
-
-    return render_template("login.html" , LoginForm=LoginForm)
-
-@app.route('/changePassword' , methods=('GET' , 'POST'))
-@login_required
-def changePassword():
-
-    pwd_to_update = current_user
-    Change_pwd = changeUserPassword()
-
-        
-    if Change_pwd.validate_on_submit():
-        
-        hashed_pw = generate_password_hash(Change_pwd.password_1.data  , "sha256")
-
-        pwd_to_update.password = hashed_pw
-        Change_pwd.password_1.data = ''
-
-        try:
-
-            db.session.commit()
-            flash("Password updated successfully", "success")
-
-            return redirect(url_for('dashboard'))
-
-        except:
-            
-            flash(" Some Occurred Please try again " , "error")
-            return redirect(url_for('dashboard'))
-
-    else:
-    
-    
-        return render_template('change_password.html' , Change_pwd=Change_pwd)
 
 
 @app.route('/dashboard')
@@ -244,6 +123,8 @@ def project(id):
         workspace_name = current_user.username
         check = []
         for i in lay.data:
+            
+            print(i.metadata)
             check.append(i.name)
             layer_name = i.name
 
@@ -251,9 +132,32 @@ def project(id):
 
 
             layer = cat.get_layer(layer_name)
+            print(cat)
+            print("________________________________")
+            if layer:
+                # Print layer name
+                print("Layer Name:", layer.name)
+                
+                # Access resource of the layer
+                resource = layer.resource
+                
+                # Get the directory of attributes and methods for the resource
+                directory = dir(resource)
+              
+                # Print each attribute and method in the directory with their index/key
+                print("Attributes and Methods of the Resource:")
+                for item in directory:
+                    value = getattr(resource, item)
+                    print(f"{value}: {item}")
+                    print(value)
+
+            else:
+                print(f"Layer '{layer_name}' not found.")
+            print("________________________________")
             
             lon = layer.resource.native_bbox[0]
             lat = layer.resource.native_bbox[2]
+            print("________________________________")
             zoom =11
             # Construct WFS GetFeature request
             wfs_url = "http://localhost:8080/geoserver/wfs"
@@ -270,6 +174,7 @@ def project(id):
                 # Parse the response JSON to extract feature data
                 features = response.json()["features"]
                 
+                coordinates_data=[]
                 # Process feature attributes
                 attribute_data = []
                 for feature in features:
@@ -277,8 +182,13 @@ def project(id):
                     feature_data = {}
                     for attribute_name, attribute_value in properties.items():
                         feature_data[attribute_name] = attribute_value
+                        
                     attribute_data.append(feature_data)
-               
+                    geometry = feature["geometry"]
+                    coords = geometry["coordinates"]
+                    coordinates_data.append(coords)
+                    print("attributes", attribute_data)
+                    print("________________________________________________________________")
             if lay.name == "States and District":
                 lon = 78.6569
                 lat = 22.9734
@@ -288,7 +198,7 @@ def project(id):
             lat = "11.941552"
             zoom = 10
        
-        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id,data=attribute_data)
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id,data=attribute_data,coords=coordinates_data)
 
     else:
         abort(403)
@@ -343,68 +253,39 @@ def update(id):
         return render_template('update.html',RegisterForm=RegisterForm, user=name_to_update)
 
 
-@app.route('/delete/<int:id>' , methods=('GET','POST'))
+@app.route('/delete/<int:id>', methods=('GET', 'POST'))
 @login_required
 @admin_required
 def delete(id):
-
-
     user_to_delete = User.query.get_or_404(id)
 
-    print("USER TO DELETE: " , user_to_delete.email , user_to_delete.id)
-
     if user_to_delete:
-
-       
-                
-        # workspace_name = user_to_delete.username
-
-        # # get a reference to the workspace
-        # workspace = cat.get_workspace(workspace_name)
-
-        # # get all the resources in the workspace
-        # resources = cat.get_resources(workspace)
-
-        # # delete each resource
-        # for resource in resources:
-        #     cat.delete(resource)
-
-        # # delete the workspace
-        # cat.delete(workspace, purge=True)
-
-        # w_ = cat.get_workspace(user_to_delete.username)
-        # cat.delete(w_, purge=True)
-
-
-        # cat.delete_workspace(workspace=user_to_delete.username)
-
-
-
+        # Delete associated projects
         projects = Project.query.filter_by(user_id=user_to_delete.id).all()
-        
-        for p in projects:
-            data = Data.query.filter_by(project_id=p.id).all()
-            
-            for data_ in data:
-                db.session.delete(data_)
-
         for project in projects:
+            # Delete associated map_data records
+            MapData.query.filter_by(project_id=project.id).delete()
+            # Delete associated data records
+            Data.query.filter_by(project_id=project.id).delete()
+            # Delete associated drawnpt records
+            Drawnpt.query.filter_by(project_id=project.id).delete()
+            # Delete the project itself
             db.session.delete(project)
 
+        # Commit changes
+        db.session.commit()
 
-
+        # Delete the user
         db.session.delete(user_to_delete)
         db.session.commit()
 
-
-
-        flash("User Deleted ", "info")
+        flash("User and associated data deleted successfully", "info")
         return redirect(url_for('users'))
 
     else:
         flash("User Not Found", "error")
         return redirect(request.referrer)
-            
+          
 
 @app.route('/delete/project/<int:id>', methods=('GET','POST') )
 @login_required
@@ -414,6 +295,10 @@ def delete_project(id):
     project = Project.query.get_or_404(id)
 
     if project:
+        Drawnpt.query.filter_by(project_id=id).delete()
+        MapData.query.filter_by(project_id=id).delete()
+        Data.query.filter_by(project_id=id).delete()
+
         db.session.delete(project)
         db.session.commit()
 

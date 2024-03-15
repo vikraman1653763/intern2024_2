@@ -1,12 +1,9 @@
 function attributestable(data) {
-    // Get the container element where you want to display the table
     var attributeContainer = document.getElementById('attributeContainer');
 
-    // Get the header and rows divs by their class names
     var headerDiv = attributeContainer.querySelector('.attributeHeader');
     var rowsDiv = attributeContainer.querySelector('.attributeRows');
 
-    // Create a table element
     var table = document.createElement('table');
 
     // Create a header row

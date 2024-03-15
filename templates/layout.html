@@ -12,7 +12,7 @@
         <div class='mainbtnBar'>
         <button id="togglelayer" class="myButton mainBtn toolbtn" ><img src="\static\resources\images\layers.svg"alt=""><span class="tooltip">Layers</span></button>
         <button id="metricButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\book.svg" alt=""><span class="tooltip">Metrics</span></button>
-        <button id="toggleButton" onclick="toggleTooly()" class="myButton mainBtn toolbtn"><img src="\static\resources\images\edit.svg" alt=""><span class="tooltip">Tools</span></button>
+        <button id="toggleButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\edit.svg" alt=""><span class="tooltip">Tools</span></button>
         </div>
         <div class="tooly">
             <div class="btnBar">
@@ -145,14 +145,16 @@
                     <p id="pointerLatitudeDisplay"></p>
                 </div>
             </div>
-
         </div>
 <div id="popup"  class="ol-popup">
 
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
 </div> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/ol@6.8.0/dist/ol.js"></script>
 <script src="/static/js/reload.js"></script>
 <script src="/static/resources/ol/ol.js"></script>
 <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
@@ -164,50 +166,27 @@
 <script src="/static/js/deletemetrics.js"></script>
 <script src="/static/js/attributes.js"></script>
 <script src="/static/js/filter.js"></script>
-
+<script src="/static/js/addInteraction.js"></script>
+<script src="/static/js/formatLengthArea.js"></script>
+<script src="/static/js/createToolTip.js"></script>
+<script src="/static/js/toggleSlide.js"></script>
 <style>
     
     
 </style>
-
 <script  type="text/javascript">
+    var dashboardUrl = "{{ url_for('dashboard') }}";
     var projectId={{ id }};
-       var data = JSON.parse('{{ data | tojson | safe }}');
-   
-    //attributestable(data);
-    //filter(data);
-    document.addEventListener("DOMContentLoaded", function() {
-        // Initially show the tooly
-        var metricBar = document.querySelector('.metricbar');
-        var toolyDiv = document.querySelector('.tooly');
-        var togImage = document.querySelector('#toggleButton img');
-        var toggleButton = document.querySelector('#toggleButton');
-        var sidebar = document.getElementById('sidebar');
-        var isVisible = true;
-        toggleButton.addEventListener('click', function() {
-            document.querySelector('.tooly').classList.toggle('hide');
-            this.querySelector('img').classList.toggle('clicked-image-border');
-        });
-        document.getElementById('togglelayer').addEventListener('click', function() {
-            sidebar.classList.toggle('sidebar-visible');
-        });
+    var data = JSON.parse('{{ data | tojson | safe }}');
+    var coords = JSON.parse('{{ coords | tojson | safe }}');
+    var layer_names=[];
+    var helpTooltipElement;
+    var helpTooltip;
+    var measureTooltipElement;
+    var measureTooltip;
+    var draw; // global so we can remove it later
 
-        var toggleButton = document.getElementById('metricButton');
-        toggleButton.addEventListener('click', function() {
-            isVisible = !isVisible; 
-            this.querySelector('img').classList.toggle('clicked-image-border');
-            if (isVisible) {
-                metricBar.classList.remove('hidden'); // Remove hidden class to show metricbar
-            } else {
-                metricBar.classList.add('hidden'); // Add hidden class to hide metricbar
-            }
-        });
-
-        
-    });
-    
-    
-    
+    //filter(data);    
         //mapView             
         var map = mapView(
             JSON.parse('{{ lay | safe }}'),
@@ -216,46 +195,20 @@
             JSON.parse('{{ lon | safe }}'),
             JSON.parse('{{ lat | safe }}'),
             JSON.parse('{{ zoom | safe }}'),
-            projectId
+            projectId,
+            layer_names
         );
-
-        var scaleControl  = new ol.control.ScaleLine({
-            bar: true,
-            text: true
-        });
-
-        map.addControl(scaleControl);
-
+        console.log("layyyyes",layer_names);
 
         var container = document.getElementById('popup');
         var content = document.getElementById('popup-content');
         var closer = document.getElementById('popup-closer');
-
-        var popup = new ol.Overlay({
-            element: container,
-            autoPan: true,
-            autoPanAnimation: {
-                duration: 250,
-            },
-        });
-
-        map.addOverlay(popup);
 
         closer.onclick = function () {
             popup.setPosition(undefined);
             closer.blur();
             return false;
         };
-
-        var dashboardUrl = "{{ url_for('dashboard') }}";
-        
-
-        // home Control
-        
-       
-        
-        
-        createControls();
         /**
         * Message to show when the user is drawing a polygon.
         * @type {string}
@@ -268,7 +221,6 @@
         */
         var continueLineMsg = 'Click to continue line, Double click to complete';
 
-        var draw; // global so we can remove it later
 
         var source = new ol.source.Vector();
         var vector = new ol.layer.Vector({
@@ -292,217 +244,86 @@
 
         map.addLayer(vector);
 
-        function addInteraction(intType) {
-            map.removeInteraction(draw);
-
-            draw = new ol.interaction.Draw({
-                source: source,
-                type: intType,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: 'rgba(200, 200, 200, 0.6)',
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.5)',
-                        lineDash: [1, 20],
-                        width: 2,
-                    }),
-                    image: new ol.style.Circle({
-                        radius: 5,
-                        stroke: new ol.style.Stroke({
-                            color: 'rgba(0, 0, 0, 0.7)',
-                        }),
-                        fill: new ol.style.Fill({
-                            color: 'rgba(255, 255, 255, 0.2)',
-                        }),
-                    }),
-                }),
-            });
-            map.addInteraction(draw);
-
-            createMeasureTooltip();
-            createHelpTooltip();
-            storePolygonAndLine();
-  
-   
-    
-            /**
-            * Currently drawn feature.
-            * @type {import("../src/ol/Feature.js").default}
-            */
-            var sketch;
-
-            /**
-            * Handle pointer move.
-            * @param {import("../src/ol/MapBrowserEvent").default} evt The event.
-            */
-            var pointerMoveHandler = function (evt) {
-                if (evt.dragging) {
-                    return;
-                }
-                /** @type {string} */
-                var helpMsg = 'Click to start drawing';
-
-                if (sketch) {
-                    var geom = sketch.getGeometry();
-                    // if (geom instanceof ol.geom.Polygon) {
-                    //   helpMsg = continuePolygonMsg;
-                    // } else if (geom instanceof ol.geom.LineString) {
-                    //   helpMsg = continueLineMsg;
-                    // }
-                }
-
-                //helpTooltipElement.innerHTML = helpMsg;
-                //helpTooltip.setPosition(evt.coordinate);
-
-                //helpTooltipElement.classList.remove('hidden');
-            };
-
-            map.on('pointermove', pointerMoveHandler);
-
-            // var listener;
-            draw.on('drawstart', function (evt) {
-                // set sketch
-                sketch = evt.feature;
-
-                /** @type {import("../src/ol/coordinate.js").Coordinate|undefined} */
-                var tooltipCoord = evt.coordinate;
-
-                //listener = sketch.getGeometry().on('change', function (evt) {
-                sketch.getGeometry().on('change', function (evt) {
-                    var geom = evt.target;
-                    var output;
-                    if (geom instanceof ol.geom.Polygon) {
-                        output = formatArea(geom);
-                        tooltipCoord = geom.getInteriorPoint().getCoordinates();
-                    } else if (geom instanceof ol.geom.LineString) {
-                        output = formatLength(geom);
-                        tooltipCoord = geom.getLastCoordinate();
-                    }
-                    measureTooltipElement.innerHTML = output;
-                    measureTooltip.setPosition(tooltipCoord);
-                });
-            });
-
-            draw.on('drawend', function () {
-                var feature = event.feature;
-                measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
-                measureTooltip.setOffset([0, -7]);
-                // unset sketch
-                sketch = null;
-                // unset tooltip so that a new one can be created
-                measureTooltipElement = null;
-                createMeasureTooltip();
-                //ol.Observable.unByKey(listener);
-               
-            });
-        }
+       
         
 
-         
-
-        /**
-        * The help tooltip element.
-        * @type {HTMLElement}
-        */
-        var helpTooltipElement;
-
-        /**
-        * Overlay to show the help messages.
-        * @type {Overlay}
-        */
-        var helpTooltip;
-
-        /**
-        * Creates a new help tooltip
-        */
-        function createHelpTooltip() {
-            if (helpTooltipElement) {
-                helpTooltipElement.parentNode.removeChild(helpTooltipElement);
-            }
-            helpTooltipElement = document.createElement('div');
-            helpTooltipElement.className = 'ol-tooltip hidden';
-            helpTooltip = new ol.Overlay({
-                element: helpTooltipElement,
-                offset: [15, 10],
-                positioning: 'center-left',
-            });
-            map.addOverlay(helpTooltip);
-        }
-
-        // map.getViewport().addEventListener('mouseout', function () {
-        //     helpTooltipElement.classList.add('hidden');
-        // });
-
-        /**
-        * The measure tooltip element.
-        * @type {HTMLElement}
-        */
-        var measureTooltipElement;
 
 
-        /**
-        * Overlay to show the measurement.
-        * @type {Overlay}
-        */
-        var measureTooltip;
-
-        /**
-        * Creates a new measure tooltip
-        */
-
-        function createMeasureTooltip() {
-            if (measureTooltipElement) {
-                measureTooltipElement.parentNode.removeChild(measureTooltipElement);
-                console.log("MeasureTooltip", measureTooltipElement);
-            }
-            measureTooltipElement = document.createElement('div');
-            measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
-            measureTooltip = new ol.Overlay({
-                element: measureTooltipElement,
-                offset: [0, -15],
-                positioning: 'bottom-center',
-            });
-            map.addOverlay(measureTooltip);
-        }
-
-
-
-
-
-        /**
-        * Format length output.
-        * @param {LineString} line The line.
-        * @return {string} The formatted length.
-        */
-        var formatLength = function (line) {
-            var length = ol.sphere.getLength(line);
-            var output;
-            if (length > 100) {
-                output = Math.round((length / 1000) * 100) / 100 + ' ' + 'km';
-            } else {
-                output = Math.round(length * 100) / 100 + ' ' + 'm';
-            }
-            return output;
-        };
-
-        /**
-        * Format area output.
-        * @param {Polygon} polygon The polygon.
-        * @return {string} Formatted area.
-        */
-        var formatArea = function (polygon) {
-            var area = ol.sphere.getArea(polygon);
-            var output;
-            if (area > 10000) {
-                output = Math.round((area / 1000000) * 100) / 100 + ' ' + 'km<sup>2</sup>';
-            } else {
-                output = Math.round(area * 100) / 100 + ' ' + 'm<sup>2</sup>';
-            }
-            return output;
-        };
 
        
+       
+          // start : FeatureInfo Control
+
+         var featureInfoButton = document.createElement('button');
+         featureInfoButton.innerHTML = '<img src="/static/resources/images/identify.svg" alt="" style="width:20x;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
+         featureInfoButton.className = 'myButton';
+         featureInfoButton.id = 'featureInfoButton';
+
+         var featureInfoElement = document.createElement('div');
+         featureInfoElement.className = 'featureInfoDiv';
+         featureInfoElement.appendChild(featureInfoButton);
+
+        var featureInfoControl = new ol.control.Control({
+             element: featureInfoElement
+         })
+
+         var featureInfoFlag = false;
+         featureInfoButton.addEventListener("click", () => {
+             featureInfoButton.classList.toggle('clicked');
+             featureInfoFlag = !featureInfoFlag;
+         })
+
+         map.addControl(featureInfoControl);
+         
+         //feature code 
+
+         map.on('singleclick', function (evt) {
+            
+
+             //featureInfoFlag = true; //change this
+
+
+            
+
+                 content.innerHTML = '';
+          
+                 console.log(map.getView().getResolution());
+                var resolution = map.getView().getResolution();
+                      
+                
+                 for(let i =0; i < layer_names.length ; i++){
+
+                     var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(evt.coordinate, resolution, 'EPSG:3857', {
+                         'INFO_FORMAT': 'application/json',
+                         'propertyName': 'layer,gm_type'
+                     });
+                    
+                    
+                     console.log(layer_names[i] , url)
+                    
+                     if (url) {
+                         $.getJSON(url, function (data) {
+                             var feature = data.features[0];
+                             var props = feature.properties;
+                             content.innerHTML = "<h3> State : </h3> <p>" + props.layer.toUpperCase() + "</p> <br> <h3> District : </h3> <p>" +
+                                 props.gm_type.toUpperCase() + "</p>";
+                                 popup.setPosition(evt.coordinate);
+                             })
+                            
+                         } else {
+                             popup.setPosition(undefined);
+                            
+                           
+                        }
+                    }
+                 
+         });
+
+
+
+
+
+
 
         function newaddGeoJsonToMap(url) {
 
@@ -513,9 +334,7 @@
             }
 
             var style = new ol.style.Style({
-                // fill: new ol.style.Fill({
-                //   color: 'rgba(0, 255, 255, 0.7)'
-                // }),
+                
                 stroke: new ol.style.Stroke({
                     color: '#FFFF00',
                     width: 3

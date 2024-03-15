@@ -70,7 +70,6 @@ function createPolygon() {
                 var offsetX = 0;
                 var offsetY = 0;
                 var textCoordinates = [centroid[0] + offsetX, centroid[1] + offsetY];
-
                 // Create text style for the polygon name
                 var textStyle = new ol.style.Text({
                     font: 'bold 14px Lucida Sans,Ebrima,Arial',

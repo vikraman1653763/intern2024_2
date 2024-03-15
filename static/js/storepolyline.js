@@ -43,7 +43,6 @@ function storePolygonAndLine() {
                     document.getElementById('submitName').removeEventListener('click', submitNameHandler);
 
                     // Perform custom reload
-                    customReload();
                 })
                 .catch(error => {
                     console.error('Error saving feature:', error);
