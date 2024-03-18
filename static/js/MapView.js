@@ -76,20 +76,20 @@ function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
         map.addLayer(lyr[lay[i]]);
 
     }
-    console.log(layer_names);
+    
     
     
     map.addControl(mousePosition);
     map.addControl(scaleControl);
-    
     createPoint();
     createPolygon();
     createLine();
     createControls();
     toggleSlide();
-    attributestable(data);
-
+    // attributestable(data);
     
+    
+    featureCode(layer_names,lyr,map);
     return map;
     
 }

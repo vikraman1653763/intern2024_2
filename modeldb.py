@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask,  render_template , request , flash , redirect , url_for , abort, json, jsonify
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from functools import wraps 
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/loginNevar'
@@ -14,7 +14,8 @@ migrate = Migrate(app , db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
+# Enable CORS for all routes
+CORS(app)
 
 @login_manager.user_loader
 def load_user(user_id):
