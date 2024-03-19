@@ -1,4 +1,4 @@
-function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
+function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names,closer) {
     var mapView = new ol.View({
         center: ol.proj.fromLonLat([lon, lat]),
         zoom: 16,
@@ -48,13 +48,19 @@ function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
 
     var popup = new ol.Overlay({
         element: document.getElementById('popup'),
-        autoPan: true,
-        autoPanAnimation: {
-            duration: 250
+        autoPan: {
+            animation: {
+                duration: 1000
+            }
         }
     });
     map.addOverlay(popup);
-
+    var closer =document.getElementById('popup-closer')
+    closer.onclick = function () {
+        popup.setPosition(undefined);
+        closer.blur();
+        return false;
+    };
     
     map.addLayer(osmTile);
     map.addLayer(noneTile);
@@ -76,7 +82,7 @@ function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
                 visible: true
             })
         });
-         lyr[lay[i]].setZIndex(i + 1);
+         
 
         layer_names.push(lay[i]);
         map.addLayer(lyr[lay[i]]);
@@ -93,55 +99,13 @@ function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
     createControls();
     toggleSlide();
     // attributestable(data);
+    onInfoButtonClick(layer_names, lyr, map, popup);
     
-    
-    featureCode(layer_names,lyr,map,popup);
-    return map;
-    
-}
 
-function featureCode(layer_names,lyr, map,popup) {
-    map.on('singleclick', function(evt) {
-        
-        content.innerHTML = '';
-        var coordinate = evt.coordinate;
-        var resolution = map.getView().getResolution();
-        for (let i = 0; i < layer_names.length; i++) {
-            var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(coordinate, resolution, 'EPSG:3857', {
-                'INFO_FORMAT': 'application/json'
-                
-            });
-            console.log(layer_names[i], url);
-            if (url) {
-                // If URL is available, make an AJAX request to fetch feature info
-                $.getJSON(url, function(data) {
-                    var feature = data.features[0];
-                    if (feature) {
-                        var props = feature.properties;
-                        
-                        var table = $('<table>').addClass('custom-table');
-                
-                            // Add table rows with two columns (heading and data)
-                            for (var prop in props) {
-                                var row = $('<tr>');
-                                row.append($('<th>').text(prop)); // Heading
-                                row.append($('<td>').text(props[prop])); // Data
-                                table.append(row);
-                            }
-                            
-                            // Append table to popup content
-                            $('#popup-content').append(table);
-                            
-                            
-                    }
-                });
-                popup.setPosition(coordinate);
-            }
-        }
 
-       
-        
-    });
+// Add event listener to the infoButton
+  
+return map;
 }
 
 var mousePosition = new ol.control.MousePosition({
@@ -200,6 +164,6 @@ function toggleLayer(event) {
         return layer.get('title') === layerName;
     });
     if (layer) {
-        layer.setVisible(checkedStatus);
+        layer.setVisible(checkedStatus); 
     }
 }

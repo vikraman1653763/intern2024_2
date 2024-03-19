@@ -12,23 +12,24 @@
 #sidebar {
   height: clamp(91vh, 91vh, 91vh);
   border-radius: 0px 10px 10px 0px;
-  
-  border: none;
-  box-shadow: inset rgba(0, 0, 0, 0.3) -10px 0px 10px;
-  width: 200px;
+  width: auto !important;
+  overflow: hidden;
+  box-shadow: inset rgba(0, 0, 0, 1) -10px 0px 20px;
   z-index: 1;
   background: rgb(245, 245, 245);
   position: relative;
   flex-direction: column;
   transition: transform .7s ease-in-out; 
 }
+
 .layerNames {
   overflow-y: auto;
   height: clamp(80vh, 91vh, 80vh);
-  background: rgb(245, 245, 245);
+  background:transparent !important;
   border-radius: 10px;
   scrollbar-width: 20px;
   scrollbar-color: #36f1c5fa rgb(245, 245, 245) ;
+  width: clamp(200px,230px,400px);
 }
 
 .layerNames::-webkit-scrollbar {
@@ -39,13 +40,13 @@
 .row {
   background: transparent;
   flex-wrap: nowrap;
-  width: 200px;
   z-index: 5;
-
+  width: clamp(200px,230px,400px);
 }
 .row.hidden-row {
   transform: translateX(-200%);
   z-index: 5;  
+  width: clamp(200px,230px,400px);
 }
 
 
@@ -178,8 +179,8 @@ h2{
     opacity: 1;
   }
   .checkbox-wrapper span {
-    font-size: 16px; /* Adjust the font size of the text if necessary */
-    color: #000; /* Adjust the color of the text if necessary */
+    font-size:clamp(9px,15px,20px); 
+    color: #000;
 }
 
 
@@ -484,22 +485,5 @@ h5 {
 
 #attributeContainer:hover {
   transform: translate(-10px,-5px);
-}
-
-.custom-table {
-  overflow: auto; /* Changed to auto */
-}
-
-.custom-table th,
-.custom-table td {
-  border: 1px solid #5e5c5c;
-  padding: 8px;
-  text-align: left;
-  font-size: 10px;
-}
-
-.custom-table th {
-  background-color: #f2f2f2;
-  width: 20px;
 }
 

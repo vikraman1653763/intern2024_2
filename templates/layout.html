@@ -24,6 +24,10 @@
                 <img src="/static/resources/images/full.svg" alt="" />
                 <span class="tooltip">Fullscreen</span>
             </button>
+            <button id="infoButton" class="myButton toolbtn">
+                <img src="/static/resources/images/info.svg" alt="" />
+                <span class="tooltip">Info</span>
+            </button>   
         </div>
             <div class='btnBar'>
             <!-- Zoom Out Button -->
@@ -86,7 +90,7 @@
                     <div class="checkbox-wrapper">
                         <input class="layer-checkbox" id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
                         <label for="{{ l }}"><div class="tick_mark"></div></label>
-                        <span>{{ l }}</span>
+                        <span >{{ l }}</span>
                     </div>
                     <br>
                 {% endfor %}
@@ -171,6 +175,7 @@
 <script src="/static/js/formatLengthArea.js"></script>
 <script src="/static/js/createToolTip.js"></script>
 <script src="/static/js/toggleSlide.js"></script>
+<script src="/static/js/featureinfo.js"></script>
 
 
 <script  type="text/javascript">
@@ -195,19 +200,13 @@
         JSON.parse('{{ zoom | safe }}'),
         projectId,
         layer_names,
-        console.log("layyyyes",layer_names)
+    
         );
         
         
         var container = document.getElementById('popup');
         var content = document.getElementById('popup-content');
-        var closer = document.getElementById('popup-closer');
-
-        closer.onclick = function () {
-            popup.setPosition(undefined);
-            closer.blur();
-            return false;
-        };
+        
         /**
         * Message to show when the user is drawing a polygon.
         * @type {string}
@@ -242,47 +241,8 @@
         });
 
         map.addLayer(vector);
-
-       
-        
-
-
-
-
-       
-       
-          // start : FeatureInfo Control
-
-         var featureInfoButton = document.createElement('button');
-         featureInfoButton.innerHTML = '<img src="/static/resources/images/identify.svg" alt="" style="width:20x;height:20px;filter:brightness(0) invert(1);vertical-align:middle"></img>';
-         featureInfoButton.className = 'myButton';
-         featureInfoButton.id = 'featureInfoButton';
-
-         var featureInfoElement = document.createElement('div');
-         featureInfoElement.className = 'featureInfoDiv';
-         featureInfoElement.appendChild(featureInfoButton);
-
-        var featureInfoControl = new ol.control.Control({
-             element: featureInfoElement
-         })
-
-         var featureInfoFlag = false;
-         featureInfoButton.addEventListener("click", () => {
-             featureInfoButton.classList.toggle('clicked');
-             featureInfoFlag = !featureInfoFlag;
-         })
-
-         map.addControl(featureInfoControl);
-         
-       
-        
-                    
-                    
-                    
-                    
-                    
-                    
-                    function newaddGeoJsonToMap(url) {
+    
+            function newaddGeoJsonToMap(url) {
 
             if (geojson) {
                 console.log("newaddgeojson",geojson);
