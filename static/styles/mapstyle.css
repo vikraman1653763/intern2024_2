@@ -486,4 +486,20 @@ h5 {
   transform: translate(-10px,-5px);
 }
 
+.custom-table {
+  overflow: auto; /* Changed to auto */
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #5e5c5c;
+  padding: 8px;
+  text-align: left;
+  font-size: 10px;
+}
+
+.custom-table th {
+  background-color: #f2f2f2;
+  width: 20px;
+}
 

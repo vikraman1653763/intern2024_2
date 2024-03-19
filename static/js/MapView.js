@@ -45,16 +45,22 @@ function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
             url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
         })
     });
-    osmTile.setZIndex(0);
-    noneTile.setZIndex(0);
-    googleMaps.setZIndex(0);
-    googleSatellite.setZIndex(0);
+
+    var popup = new ol.Overlay({
+        element: document.getElementById('popup'),
+        autoPan: true,
+        autoPanAnimation: {
+            duration: 250
+        }
+    });
+    map.addOverlay(popup);
+
     
     map.addLayer(osmTile);
     map.addLayer(noneTile);
     map.addLayer(googleMaps);
     map.addLayer(googleSatellite);
-
+    
     layer_names = [];
     
     var lyr = {};
@@ -89,9 +95,53 @@ function mapView(lay, workspace, ngrok_ip, lon, lat,projectId,layer_names) {
     // attributestable(data);
     
     
-    featureCode(layer_names,lyr,map);
+    featureCode(layer_names,lyr,map,popup);
     return map;
     
+}
+
+function featureCode(layer_names,lyr, map,popup) {
+    map.on('singleclick', function(evt) {
+        
+        content.innerHTML = '';
+        var coordinate = evt.coordinate;
+        var resolution = map.getView().getResolution();
+        for (let i = 0; i < layer_names.length; i++) {
+            var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(coordinate, resolution, 'EPSG:3857', {
+                'INFO_FORMAT': 'application/json'
+                
+            });
+            console.log(layer_names[i], url);
+            if (url) {
+                // If URL is available, make an AJAX request to fetch feature info
+                $.getJSON(url, function(data) {
+                    var feature = data.features[0];
+                    if (feature) {
+                        var props = feature.properties;
+                        
+                        var table = $('<table>').addClass('custom-table');
+                
+                            // Add table rows with two columns (heading and data)
+                            for (var prop in props) {
+                                var row = $('<tr>');
+                                row.append($('<th>').text(prop)); // Heading
+                                row.append($('<td>').text(props[prop])); // Data
+                                table.append(row);
+                            }
+                            
+                            // Append table to popup content
+                            $('#popup-content').append(table);
+                            
+                            
+                    }
+                });
+                popup.setPosition(coordinate);
+            }
+        }
+
+       
+        
+    });
 }
 
 var mousePosition = new ol.control.MousePosition({

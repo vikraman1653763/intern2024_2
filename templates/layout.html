@@ -94,7 +94,7 @@
         </div>
     </div>     
         
-        
+        <!--popup for metric-->
         <div id="popupDialog" class="popup">
             <div class="popup-content">
                 <span class="popup-close">&times;</span>
@@ -122,7 +122,8 @@
                 <div id="lineNames" class="metric-list"></div>
             </div>
         </div>
-        
+                <!--popup for Loading-->
+
         <div id="loadingPopup" class="loading-popup">
             <div class="loading-content">
                 <div class="spinner"></div>
@@ -135,7 +136,7 @@
             <div class="attributeRows"></div>
         </div>
         
-
+        <!--popup for Pointer-->
            <div id="pointerDialog" class="pointerup">
             <div class="point-content">
                 <span class="pointer-close">&times;</span>
@@ -147,6 +148,7 @@
             </div>
         </div>
         
+        <!--popup for feature-->
 <div id="popup"  class="ol-popup">
     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
     <div id="popup-content"></div>
@@ -170,10 +172,7 @@
 <script src="/static/js/createToolTip.js"></script>
 <script src="/static/js/toggleSlide.js"></script>
 
-<style>
-    
-    
-</style>
+
 <script  type="text/javascript">
     var dashboardUrl = "{{ url_for('dashboard') }}";
     var projectId={{ id }};
@@ -275,38 +274,7 @@
 
          map.addControl(featureInfoControl);
          
-         function featureCode(layer_names,lyr, map) {
-            map.on('singleclick', function(evt) {
-                
-                content.innerHTML = '';
-                var coordinate = evt.coordinate;
-                var resolution = map.getView().getResolution();
-                for (let i = 0; i < layer_names.length; i++) {
-                    var url = lyr[layer_names[i]].getSource().getFeatureInfoUrl(coordinate, resolution, 'EPSG:3857', {
-                        'INFO_FORMAT': 'application/json'
-                        
-                    });
-                    console.log(layer_names[i], url);
-                    if (url) {
-                        // If URL is available, make an AJAX request to fetch feature info
-                        $.getJSON(url, function(data) {
-                            var feature = data.features[0];
-                            if (feature) {
-                                var props = feature.properties;
-                                console.log(props);
-                                // Display feature info in the content element
-                                for (var prop in props){
-                                content.innerHTML += ""+prop+":" + props[prop]+"";
-                                }
-                            }
-                        });
-                    }
-                }
-        
-               
-                
-            });
-        }
+       
         
                     
                     
