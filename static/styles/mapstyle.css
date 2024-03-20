@@ -28,8 +28,9 @@
   background:transparent !important;
   border-radius: 10px;
   scrollbar-width: 20px;
-  scrollbar-color: #36f1c5fa rgb(245, 245, 245) ;
-  width: clamp(200px,230px,400px);
+  scrollbar-color: hsla(160, 23%, 97%, 0.2) transparent !important;
+  width: clamp(200px,220px,400px);
+  
 }
 
 .layerNames::-webkit-scrollbar {
