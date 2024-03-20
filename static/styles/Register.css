@@ -1,10 +1,9 @@
 body{
  
-    /* background: linear-gradient(160deg, #ADDEFF, #ADDEFF,#FFFFFF); */
-   
+   overflow: hidden;
     width:100%;
     height:100%;
-    font-family: 'Rubik', sans-serif;
+   
 
   }
 
@@ -29,18 +28,19 @@ body{
 
 }
 .logo {
-  /* background: linear-gradient(160deg, #ADDEFF, #ADDEFF); */
-   background: transparent; 
+  background: transparent; 
   border-radius: 40px 10px 40px 10px;
-  min-width: 500px; /* Adjust the width as needed */
-  height: 140px; /* Adjust the height as needed */
+  min-width: 500px;
+  height: 140px; 
   object-fit: cover;
   min-width: auto;
+  transition: filter 0.3s; 
 }
-.logo:hover{
-  box-shadow: 0 0 30px 10px #36f1c5fa; /* Adjust the color and other parameters for the hover effect */
 
+.logo:hover {
+  filter: drop-shadow(0px 0px 3px #4cbdc8);
 }
+
 
 .form {
   display: flex;
@@ -53,10 +53,7 @@ body{
   background-color: #f0eeee;
   color: #fff;
   border: 1px solid rgb(231, 230, 230);
-  box-shadow: 
-  0 5px 15px 1px #c8e0dbfa,
-  0 1px 15px 1px #36f1c5fa,
-  0 1px 15px 1px #a1ebd9fa;
+  
 }
 
 
@@ -68,7 +65,7 @@ body{
   display: flex;
   align-items: center;
   padding-left: 30px;
-  color: #36f1c5fa;
+  color: #4cbdc8;
 }
 
 .title::before {
@@ -90,7 +87,7 @@ body{
   width: 16px;
   border-radius: 50%;
   left: 0px;
-  background: radial-gradient(#15030d, #36f1c5fa, #f6f7f7);
+  background: radial-gradient(#15030d, #4cbdc8, #f6f7f7);
 }
 
 .message, 
@@ -236,3 +233,86 @@ body{
         background-position: 500%;
     }
   }
+
+
+
+    body {
+        background: #4cbdc8;
+      }
+      
+      .circle {
+        position: absolute;
+        border-radius: 50%;
+        background: white;
+        animation: ripple 15s infinite;
+        box-shadow: 0px 0px 1px 0px #508fb9;
+      }
+      
+      .small {
+        width: 200px;
+        height: 200px;
+        left: -100px;
+        bottom: -100px;
+      }
+      
+      .medium {
+        width: 400px;
+        height: 400px;
+        left: -200px;
+        bottom: -200px;
+      }
+      
+      .large {
+        width: 600px;
+        height: 600px;
+        left: -300px;
+        bottom: -300px;
+      }
+      
+      .xlarge {
+        width: 800px;
+        height: 800px;
+        left: -400px;
+        bottom: -400px;
+      }
+      
+      .xxlarge {
+        width: 1000px;
+        height: 1000px;
+        left: -500px;
+        bottom: -500px;
+      }
+      
+      .shade1 {
+        opacity: 0.2;
+      }
+      .shade2 {
+        opacity: 0.5;
+      }
+      
+      .shade3 {
+        opacity: 0.7;
+      }
+      
+      .shade4 {
+        opacity: 0.8;
+      }
+      
+      .shade5 {
+        opacity: 0.9;
+      }
+      
+      @keyframes ripple {
+        0% {
+          transform: scale(0.8);
+        }
+      
+        50% {
+          transform: scale(1.2);
+        }
+      
+        100% {
+          transform: scale(0.8);
+        }
+      }
+      

@@ -10,10 +10,13 @@ function onInfoButtonClick(layer_names, lyr, map, popup) {
             if (infoFlag) {
                 // If infoFlag is true, enable the feature display
                 enableFeatureDisplay(layer_names, lyr, map, popup);
+                document.body.style.cursor = "help";
+
             } else {
                 // If infoFlag is false, disable the feature display
                 disableFeatureDisplay(map,popup);
                 popup.setPosition(undefined);
+                document.body.style.cursor = "auto";
             }
         });
     } else {
