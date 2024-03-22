@@ -10,54 +10,13 @@
         <p class="card-text name ">{{ user.email }}</p>
     </div>
 </div>
+<div class=" bg-light header-buttons">
+  <button id="layerBtn" class="headBtn" onclick="showSection('layerSection')">Add Layer</button>
+  <button id="folderBtn" class="headBtn" onclick="showSection('folderSection')">Add Image</button>
+  <button id="documentBtn" class="headBtn" onclick="showSection('documentSection')">Add Document</button>
 
-<div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
-    <h2 class='title'> Already Exists </h2>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class='title'>Name</th>
-                        <th class='title'>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for record in existing %}
-                    <tr>
-                        <td><div class="name">{{ record.name }}</div></td>
-                        <td>
-                            <a href="{{ url_for('delete_layer', id=record.id) }}" class="btn " data-confirm="Are you sure you want to delete this Layer?">
-  
-                               
-                                    
-                                    <svg height="30px" width="30px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                                        viewBox="0 0 496 496" xml:space="preserve">
-                                    <path style="fill:#CE0909;" d="M496,320.8c0,96.8-78.4,175.2-175.2,175.2H175.2C78.4,496,0,417.6,0,320.8V175.2
-                                        C0,78.4,78.4,0,175.2,0h145.6C417.6,0,496,78.4,496,175.2V320.8z"/>
-                                    <path style="fill:#B70000;" d="M0,175.2C0,78.4,78.4,0,175.2,0h145.6C417.6,0,496,78.4,496,175.2v145.6
-                                        c0,96.8-78.4,175.2-175.2,175.2"/>
-                                    <g>
-                                        <path style="fill:#960000;" d="M320.8,0C417.6,0,496,78.4,496,175.2v145.6c0,96.8-78.4,175.2-175.2,175.2"/>
-                                        <path style="fill:#960000;" d="M264.8,262.4l67.2-67.2c4.8-4.8,4.8-12,0-16.8s-12-4.8-16.8,0L248,245.6l-67.2-67.2
-                                            c-4.8-4.8-12-4.8-16.8,0s-4.8,12,0,16.8l67.2,67.2L164,329.6c-4.8,4.8-4.8,12,0,16.8c2.4,2.4,5.6,3.2,8,3.2s5.6-0.8,8-3.2
-                                            l67.2-67.2l67.2,67.2c2.4,2.4,5.6,3.2,8,3.2s5.6-0.8,8-3.2c4.8-4.8,4.8-12,0-16.8L264.8,262.4z"/>
-                                    </g>
-                                    <path style="fill:#FFFFFF;" d="M264.8,248l67.2-67.2c4.8-4.8,4.8-12,0-16.8s-12-4.8-16.8,0L248,231.2L180.8,164
-                                        c-4.8-4.8-12-4.8-16.8,0s-4.8,12,0,16.8l67.2,67.2L164,315.2c-4.8,4.8-4.8,12,0,16.8c2.4,2.4,5.6,3.2,8,3.2s5.6-0.8,8-3.2l67.2-67.2
-                                        l67.2,67.2c2.4,2.4,5.6,3.2,8,3.2s5.6-0.8,8-3.2c4.8-4.8,4.8-12,0-16.8L264.8,248z"/>
-                                    </svg>
-                            
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
-
+<div id="layerSection" style="display: none;">
 <div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
     <h2 class='title'> Add Layer </h2>
     <div class="card-body">
@@ -80,7 +39,7 @@
                                     <div class="checkmark"></div>
                                   </label>
                                 </div>
-                            </td>
+                            </td> 
                             <td class="name">{{ layer_title }}</td>
                         </tr>
                         {% endfor %}
@@ -88,31 +47,277 @@
                 </table>
                 <button class="Btn">
                     <div class="sign">
-                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                            viewBox="0 0 512 512" xml:space="preserve">
-                        <circle style="fill:#7AB9E8;" cx="256" cy="256" r="256"/>
-                        <path style="fill:#579ADF;" d="M256,0v512c141.385,0,256-114.615,256-256S397.385,0,256,0z"/>
-                        <polygon style="fill:#F2F2F4;" points="384,228.571 283.429,228.571 283.429,128 228.571,128 228.571,228.571 128,228.571 
-                            128,283.429 228.571,283.429 228.571,384 283.429,384 283.429,283.429 384,283.429 "/>
-                        <rect x="283.429" y="228.571" style="fill:#DFDFE1;" width="100.571" height="54.857"/>
-                        </svg>                   
+                      <img src="/static/resources/images/plus.svg" alt="Icon">
+              
                         </div>
                     <div class="text">ADD</div>
-                </button>            </div>
+                </button>            
+              </div>
         </form>
     </div>
 </div>
+<div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
+  <h2 class='title'> Already Exists </h2>
+  <div class="card-body">
+      <div class="table-responsive">
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th class='title'>Name</th>
+                      <th class='title'>Delete</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for record in existing %}
+                  <tr>
+                      <td><div class="name">{{ record.name }}</div></td>
+                      <td>
+                          <a href="{{ url_for('delete_layer', id=record.id) }}" class="btn " data-confirm="Are you sure you want to delete this Layer?">
+                            <img src="/static/resources/images/delete.svg" alt="Icon">
+                             
+                         
+                          </a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>
+</div>
+
+<div id="folderSection" style="">
+<div class="card w-90 bg-light" style="margin:1%; padding: 1%; ; ">
+  <h2 class='title'> Upload Folder </h2>
+  <div class="card-body">
+      <form method="POST" action="" enctype="multipart/form-data">
+          <div class="table-responsive">
+              <label for="folderUploader">Select Folder:</label>
+              <input type="file" id="folderUploader" name="folder_upload" multiple directory webkitdirectory mozdirectory msdirectory odirectory>
+              <button class="Btn" type="submit">
+                  <div class="sign">
+                    <img src="/static/resources/images/plus.svg" alt="Icon">
+                  </div>
+                  <div class="text">Add</div>
+              </button>
+          </div>
+      </form>
+  </div>
+  
+</div>
+
+ 
+<div class="card w-90 bg-light" style="margin:1%; padding: 1%;">
+  <h2 class='title'> Uploaded Images </h2>
+  <div class="card-body">
+    <div class="table-responsive" style='overflow: hidden;'>
+      <table class="table" style="table-layout: fixed; width: 100%;">
+        <thead>
+          <tr>
+            
+            {% if folder_data %}
+            {% if folder_data[0].type == 'image' %}
+            <th class='title' style="width: 33%;">Folder</th>
+            <th class='title'  style="width: 33%;">Name</th>
+            <form method="POST" action="{{ url_for('delete_all_files', project_id=folder_data[0].project_id,type='image') }}" onsubmit="return confirm('Are you sure you want to delete all files in this folder?');">
+                <th class='title deleteall'  style="width: 33%;">Delete
+                  <button type="submit" class="btn">
+                    <img src="/static/resources/images/delete.svg" alt="Delete All Icon">
+                  </th>
+                  </button>
+              </form>
+              {% endif %}              
+              {% endif %}
+          </tr>
+        </thead>
+        <tbody class="imageBox">
+          {% for file in folder_data %}
+          {% if file.type == 'image' %}
+          
+          <tr>
+            <td><div class="name">{{ file.folder_name }}</div></td>
+            <td><div class="name">{{ file.name }}</div></td>
+            <td>      
+                  <a href="{{ url_for('delete_file', id=file.id) }}" class="btn" data-confirm="Are you sure you want to delete '{{ file.name }}'?">
+                      <img src="/static/resources/images/delete.svg" alt="Delete Icon">
+                  </a>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="documentSection" style="display: none;">
+  <div class="card w-90 bg-light" style="margin:1%; padding: 1%;">
+      <h2 class='title'> Upload Document </h2>
+      <div class="card-body">
+          <form method="POST" action="" enctype="multipart/form-data">
+              <div class="table-responsive">
+                  <label for="documentUploader">Select Document:</label>
+                  <input type="file" id="documentUploader" name="document_upload" multiple>
+                  <button class="Btn" type="submit">
+                      <div class="sign">
+                          <img src="/static/resources/images/plus.svg" alt="Icon">
+                      </div>
+                      <div class="text">Add</div>
+                  </button>
+              </div>
+          </form>
+      </div>
+  </div>
+
+  
+<div class="card w-90 bg-light" style="margin:1%; padding: 1%;">
+  <h2 class='title'> Uploaded Documents </h2>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table" style="table-layout: fixed; width: 100%;">
+        <thead>
+          <tr>
+           
+            {% if folder_data %}
+            
+            <th class='title'style="width: 50%;">Name</th>
+            <form method="POST" action="{{ url_for('delete_all_files', project_id=folder_data[0].project_id,type='document') }}" onsubmit="return confirm('Are you sure you want to delete all files in this folder?');">
+                <th class='title deleteall'  style="width: 33%;">Delete
+                  <button type="submit" class="btn">
+                    <img src="/static/resources/images/delete.svg" alt="Delete All Icon">
+                  </th>
+                  </button>
+              </form>
+              
+              {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          
+          {% for file in folder_data %}
+          {% if file.type == 'document' %}
+          <tr>
+            
+            <td><div class="name">{{ file.name }}</div></td>
+            <td>      
+                  <a href="{{ url_for('delete_file', id=file.id) }}" class="btn" data-confirm="Are you sure you want to delete this Folder?">
+                      <img src="/static/resources/images/delete.svg" alt="Delete Icon">
+                  </a>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+
+ // Retrieve the section to display from local storage
+window.onload = function() {
+  var sectionToShow = localStorage.getItem('activeSection');
+  if (sectionToShow) {
+      showSection(sectionToShow);
+  } else {
+      // Default to showing the folder section if no section is stored
+      showSection('folderSection');
+  }
+}
+
+// Function to show the selected section
+function showSection(sectionId) {
+  document.getElementById("layerSection").style.display = "none";
+  document.getElementById("folderSection").style.display = "none";
+  document.getElementById("documentSection").style.display = "none";
+  
+  document.getElementById(sectionId).style.display = "block";
+  
+  // Store the currently active section in local storage
+  localStorage.setItem('activeSection', sectionId);
+}
+
+// Bind the showSection function to the buttons
+document.getElementById("layerBtn").addEventListener("click", function() {
+  showSection('layerSection');
+});
+
+document.getElementById("folderBtn").addEventListener("click", function() {
+  showSection('folderSection');
+});
+
+document.getElementById("documentBtn").addEventListener("click", function() {
+  showSection('documentSection');
+});
+
+</script>
+
 <style>
+  
+  tr{
+    justify-content: space-between;
+
+  }
+  .deleteall {
+   
+    position: relative;
+    top: 20px;
+}
+.deleteall img{
+    overflow:hidden;
+    padding:0px;
+    margin-bottom: 10px;
+  }
+
+  .header-buttons {
+    display: flex;
+    justify-content: space-around;
+    overflow:hidden;
+    border-radius:10px;
+    padding:10px;
+  }
+  
+  .headBtn {
+    overflow:hidden;
+    border: none;
+    background: transparent;
+    width: 50%;
+    font-size:30px;
+    margin:3px;
+
+  }
+  .headBtn:last-child {
+    border-right: none; 
+  }
+ 
+  .headBtn:hover {
+    background:hsla(185, 53%, 54%,.5);
+    border-radius:10px;
+    border:none;
+    letter-spacing: 0.1em;
+  }
+  .headBtn:focus {
+    letter-spacing: 0.1em;
+    background:#4cbdc8;
+    border-radius:10px;
+    border:none;
+  }
+
+  
     .name{
         padding-top:10px;
-        
         font-weight:bold;
         letter-spacing: 0.1em;
         text-shadow: 2px 4px 10px white;
         
     }
     .title{
-        background:#36f1c5fa;
+        background:#4cbdc8;
         border-radius:10px;
         padding:10px;
         

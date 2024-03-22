@@ -15,8 +15,9 @@ from portal import register, verify_otp,success,login,logout,changePassword
 import geopandas as gpd
 
 from waitress import serve
-
-
+from werkzeug.utils import secure_filename
+import os
+import shutil
 # TODO: 
     # - ADD PASSWORD VIEW BUTTON
 
@@ -32,18 +33,35 @@ username = "admin"
 password = "geoserver"
 cat = Catalog(geoserver_url, username=username, password=password)
 
-
-# print("GEOSERVER URL : ", cat.get_info())
-
-
-
 ADMIN = 2
 
+class File(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    folder_name = db.Column(db.String(255), nullable=False)
+    path = db.Column(db.String(255), nullable=False)
+    type=db.Column(db.String(255), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
 
-
-
-
-
+    def __repr__(self):
+        return f"File(id={self.id}, name='{self.name}', path='{self.path}', project_id={self.project_id})"
+    
+def save_folder(folder, project_id):
+    # Define the upload directory
+    upload_dir = os.path.join(app.config['UPLOAD_FOLDER'], f"project_{project_id}")
+    
+    # Create the upload directory if it doesn't exist
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+    
+    # Save the folder contents to the upload directory
+    for file in os.listdir(folder):
+        src = os.path.join(folder, file)
+        dst = os.path.join(upload_dir, file)
+        shutil.move(src, dst)
+    
+    # Return the path to the upload directory
+    return upload_dir
 
 
 @app.route('/')
@@ -87,11 +105,88 @@ def status(id):
     else:
         return render_template("status.html" , user=user , projects=projects , ProjectName=ProjectName)
 
+ALLOWED_IMAGE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
+
+# Define allowed extensions for documents
+ALLOWED_DOCUMENT_EXTENSIONS = {'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'}
+UPLOAD_FOLDER = 'uploads'
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+
+
+def allowed_images(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+def allowed_files(filename):
+    extension = filename.rsplit('.', 1)[1].lower()
+    print("Extension:", extension)
+    print("Is Allowed:", extension in ALLOWED_DOCUMENT_EXTENSIONS)
+    return '.' in filename and extension in ALLOWED_DOCUMENT_EXTENSIONS
+
+def handle_folder_upload(folder, folder_name, pro):
+    if folder:
+        for folder_item in folder:
+            if folder_item and allowed_images(folder_item.filename):
+                original_filename = os.path.basename(folder_item.filename)
+                folder_name = secure_filename(folder_name)
+                # Concatenate folder name with file name to ensure uniqueness
+                filename = secure_filename(original_filename)
+                unique_filename = os.path.join(folder_name, filename)
+                folder_path = os.path.join(app.config['UPLOAD_FOLDER'], pro.name, 'images', folder_name)
+                if os.path.exists(folder_path) and os.path.isdir(folder_path):
+                    file_path = os.path.join(folder_path, filename)
+                    # Check if the file already exists in the database
+                    existing_file = File.query.filter_by(name=filename, folder_name=folder_name, project_id=pro.id).first()
+                    if not existing_file:
+                        folder_item.save(file_path)
+                        file_database_path = os.path.join('uploads', pro.name, 'images', folder_name, filename)
+                        new_file = File(name=filename, path=file_database_path, folder_name=folder_name,
+                                        type='image', project_id=pro.id)
+                        db.session.add(new_file)
+                        db.session.commit()
+                        flash('File uploaded successfully', 'success')
+                else:
+                    os.makedirs(folder_path, exist_ok=True)
+                    file_path = os.path.join(folder_path, filename)
+                    # Check if the file already exists in the database
+                    existing_file = File.query.filter_by(name=filename, folder_name=folder_name, project_id=pro.id).first()
+                    if not existing_file:
+                        folder_item.save(file_path)
+                        file_database_path = os.path.join('uploads', pro.name, 'images', folder_name, filename)
+                        new_file = File(name=filename, path=file_database_path, folder_name=folder_name,
+                                        type='image', project_id=pro.id)
+                        db.session.add(new_file)
+                        db.session.commit()
+                        flash('File uploaded successfully', 'success')
+    return redirect(url_for('add_layer', id=pro.id))
+
+def handle_document_upload(documents, pro):
+    for document in documents:
+        if allowed_files(document.filename):
+            original_filename = secure_filename(document.filename)
+            document_path = os.path.join(app.config['UPLOAD_FOLDER'], pro.name, 'documents', original_filename)
+            os.makedirs(os.path.dirname(document_path), exist_ok=True)
+            document.save(document_path)
+            file_database_path = os.path.join('uploads', pro.name, 'documents', original_filename)
+            new_document = File(name=original_filename, path=file_database_path, folder_name='', type='document',
+                                project_id=pro.id)
+            db.session.add(new_document)
+            db.session.commit()
+            flash(f'Document "{original_filename}" uploaded successfully', 'success')
+        else:
+            flash(f'Error: File "{document.filename}" is not allowed. Please upload a valid document file.', 'error')
+
 @app.route('/status/project/<int:id>', methods=('GET', 'POST'))
 @login_required
 @admin_required
 def add_layer(id):
     pro = Project.query.get_or_404(id)
+    folder_data = File.query.filter_by(project_id=pro.id).all()
+    
     layers = cat.get_layers()
     lay = {}
     already_exists = [i.name for i in pro.data]
@@ -102,16 +197,31 @@ def add_layer(id):
             x_ = layer.name.split(":")[1]
             if x_ not in already_exists:
                 lay[layer.name] = x_
-
     if request.method == 'POST':
         selected_ids = request.form.getlist('checkbox')
         data = [Data(name=item, project_id=pro.id) for item in selected_ids]
         db.session.add_all(data)
         db.session.commit()
         flash("Layer Added to the Project", "success")
-        return redirect(request.referrer)
+        
+        if 'folder_upload' in request.files:
+            folder = request.files.getlist('folder_upload')
+            first_file_path = folder[0].filename
+           
+            folder_name = os.path.dirname(first_file_path)
+            handle_folder_upload(folder, folder_name, pro)
+            return redirect(request.referrer)
+        if 'document_upload' in request.files:
+            documents = request.files.getlist('document_upload')
+            if documents[0].filename:  # Check if at least one document is uploaded
+                handle_document_upload(documents, pro)
+                flash('Documents uploaded successfully', 'success')
+                return redirect(request.referrer)
+            else:
+                flash('No documents were uploaded', 'info')
+                return redirect(request.referrer)
 
-    return render_template("add_layer.html", user=pro.user, lay=lay, existing=pro.data)
+    return render_template("add_layer.html", user=pro.user, lay=lay, existing=pro.data, folder_data=folder_data)
 
 
 @app.route('/dashboard/application/<int:id>')
@@ -124,7 +234,7 @@ def project(id):
         check = []
         for i in lay.data:
             
-            print(i.metadata)
+           
             check.append(i.name)
             layer_name = i.name
 
@@ -132,11 +242,9 @@ def project(id):
 
 
             layer = cat.get_layer(layer_name)
-            print(cat)
-            print("________________________________")
+           
             if layer:
-                # Print layer name
-                print("Layer Name:", layer.name)
+                
                 
                 # Access resource of the layer
                 resource = layer.resource
@@ -144,16 +252,7 @@ def project(id):
                 # Get the directory of attributes and methods for the resource
                 directory = dir(resource)
               
-                # Print each attribute and method in the directory with their index/key
-                print("Attributes and Methods of the Resource:")
-                for item in directory:
-                    value = getattr(resource, item)
-                    print(f"{value}: {item}")
-                    print(value)
-
-            else:
-                print(f"Layer '{layer_name}' not found.")
-            print("________________________________")
+                
             
             lon = layer.resource.native_bbox[0]
             lat = layer.resource.native_bbox[2]
@@ -187,8 +286,7 @@ def project(id):
                     geometry = feature["geometry"]
                     coords = geometry["coordinates"]
                     coordinates_data.append(coords)
-                    print("attributes", attribute_data)
-                    print("________________________________________________________________")
+                    
             if lay.name == "States and District":
                 lon = 78.6569
                 lat = 22.9734
@@ -326,6 +424,43 @@ def delete_layer(id):
     else:
         flash("Layer Not Found" , "info")
         return redirect(request.referrer)
+    
+    
+@app.route('/delete/project/folder/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def delete_file(id):
+    folder = File.query.get_or_404(id)
+
+    if folder:
+        db.session.delete(folder)
+        db.session.commit()
+        flash("Folder Deleted", "error_msg")
+        return redirect(request.referrer)
+    else:
+        flash("Folder Not Found", "info")
+        return redirect(request.referrer)
+    
+@app.route('/delete_all_files/<int:project_id>/<type>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def delete_all_files(project_id,type):
+    # Get all files in the folder
+    files_to_delete = File.query.filter_by(project_id=project_id,type=type).all()
+
+    # Delete each file
+    for file in files_to_delete:
+        try:
+            os.remove(file.path)
+        except FileNotFoundError:
+            # Handle case where file is not found
+            pass
+        db.session.delete(file)
+        db.session.commit()
+
+    flash("All files deleted successfully", "success")
+    return redirect(request.referrer)
+
 
 
 
