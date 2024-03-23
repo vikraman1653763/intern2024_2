@@ -13,7 +13,8 @@
         <button id="togglelayer" class="myButton mainBtn toolbtn" ><img src="\static\resources\images\layers.svg"alt=""><span class=" maintip">Layers</span></button>
         <button id="metricButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\book.svg" alt=""><span class=" maintip">Metrics</span></button>
         <button id="toggleButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\edit.svg" alt=""><span class=" maintip">Tools</span></button>
-            
+        <button id="imageButton" class="myButton mainBtn toolbtn"><img src="/static/resources/images/photo.svg" alt="" /><span class="maintip">Images</span></button>
+        <button id="docsButton" class="myButton mainBtn toolbtn"><img src="/static/resources/images/docs.svg" alt="" /><span class="maintip">Docs</span></button>   
     </div>
         <button id="homeButton" class="myButton toolbtn">
             <img src="/static/resources/images/homebtn.svg" alt="exit" />
@@ -31,14 +32,7 @@
                 <img src="/static/resources/images/info.svg" alt="" />
                 <span class="tooltip">Info</span>
             </button>   
-            <button id="photoButton" class="myButton toolbtn">
-                <img src="/static/resources/images/photo.svg" alt="" />
-                <span class="tooltip">Photo</span>
-            </button>
-            <button id="docsButton" class="myButton toolbtn">
-            <img src="/static/resources/images/docs.svg" alt="" />
-            <span class="tooltip">Docs</span>
-        </button>   
+              
         </div>
             <div class='btnBar'>
             <!-- Zoom Out Button -->
@@ -98,18 +92,25 @@
                 
                 <br>
                 {% for l in layer_list %}
-                    <div class="checkbox-wrapper">
-                        <input class="layer-checkbox" id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
-                        <label for="{{ l }}"><div class="tick_mark"></div></label>
-                        <span >{{ l }}</span>
-                    </div>
-                    <br>
+                <div class="checkbox-wrapper">
+                    <input class="layer-checkbox" id="{{ l }}" type="checkbox" value="{{ l }}" checked onchange="toggleLayer(event)">
+                    <label for="{{ l }}"><div class="tick_mark"></div></label>
+                    <span >{{ l }}</span>
+                </div>
+                <br>
                 {% endfor %}
             </div>
         </div>
     </div>     
-        
-        <!--popup for metric-->
+          
+        <div id="imageContainer"></div>
+<!-- Popup Container -->
+<div id="popupImageContainer" class="popupImageContainer">
+    <span class="close" onclick="closePopup()">&times;</span>
+    <img id="popupImage" src="" alt="Popup Image">
+</div>
+
+    <!--popup for metric-->
         <div id="popupDialog" class="popup">
             <div class="popup-content">
                 <span class="popup-close">&times;</span>
@@ -120,39 +121,39 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    
+    <div class='metricbar'>
+        <div class="metric-section">
+            <h5><img class='metimg' src="\static\resources\images\ptmet.svg" alt="">Points</h5>
+            <div id="pointNames" class="metric-list"></div>
         </div>
-       
-            
-        <div class='metricbar'>
-            <div class="metric-section">
-                <h5><img class='metimg' src="\static\resources\images\ptmet.svg" alt="">Points</h5>
-                <div id="pointNames" class="metric-list"></div>
-            </div>
-            <div class="metric-section">
-                <h5><img class='metimg' src="\static\resources\images\areamet.svg" alt="">Polygon</h5>
-                <div id="polygonNames" class="metric-list"></div>
-            </div>
-            <div class="metric-section">
-                <h5><img class='metimg' src="\static\resources\images\lengthmet.svg" alt="">Line</h5>
-                <div id="lineNames" class="metric-list"></div>
-            </div>
+        <div class="metric-section">
+            <h5><img class='metimg' src="\static\resources\images\areamet.svg" alt="">Polygon</h5>
+            <div id="polygonNames" class="metric-list"></div>
         </div>
-                <!--popup for Loading-->
-
-        <div id="loadingPopup" class="loading-popup">
-            <div class="loading-content">
-                <div class="spinner"></div>
-            
-            </div>
+        <div class="metric-section">
+            <h5><img class='metimg' src="\static\resources\images\lengthmet.svg" alt="">Line</h5>
+            <div id="lineNames" class="metric-list"></div>
         </div>
+    </div>
+    <!--popup for Loading-->
+    
+    <div id="loadingPopup" class="loading-popup">
+        <div class="loading-content">
+            <div class="spinner"></div>
             
+        </div>
+    </div>
+    
         <div id="attributeContainer">
             <div class="attributeHeader"></div>
             <div class="attributeRows"></div>
         </div>
         
         <!--popup for Pointer-->
-           <div id="pointerDialog" class="pointerup">
+        <div id="pointerDialog" class="pointerup">
             <div class="point-content">
                 <span class="pointer-close">&times;</span>
                 <div class="pointer-info">
@@ -164,29 +165,36 @@
         </div>
         
         <!--popup for feature-->
-<div id="popup"  class="ol-popup">
-    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-    <div id="popup-content"></div>
-</div> 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ol@6.8.0/dist/ol.js"></script>
-<script src="/static/js/reload.js"></script>
-<script src="/static/resources/ol/ol.js"></script>
-<script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
-<script src="/static/js/MapView.js"></script>
-<script src="/static/js/controls.js"></script>
-<script src="/static/js/pointer.js"></script>
-<script src="/static/js/showmetric.js"></script>
-<script src="/static/js/storepolyline.js"></script>
-<script src="/static/js/deletemetrics.js"></script>
-<script src="/static/js/attributes.js"></script>
-<script src="/static/js/filter.js"></script>
-<script src="/static/js/addInteraction.js"></script>
-<script src="/static/js/formatLengthArea.js"></script>
-<script src="/static/js/createToolTip.js"></script>
-<script src="/static/js/toggleSlide.js"></script>
-<script src="/static/js/featureinfo.js"></script>
+        <div id="popup"  class="ol-popup">
+            <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+            <div id="popup-content"></div>
+        </div> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/ol@6.8.0/dist/ol.js"></script>
+        <script src="/static/js/reload.js"></script>
+        <script src="/static/resources/ol/ol.js"></script>
+        <script src="/static/resources/layerswitcher/ol-layerswitcher.js"></script>
+        <script src="/static/js/MapView.js"></script>
+        <script src="/static/js/controls.js"></script>
+        <script src="/static/js/pointer.js"></script>
+        <script src="/static/js/showmetric.js"></script>
+        <script src="/static/js/storepolyline.js"></script>
+        <script src="/static/js/deletemetrics.js"></script>
+        <script src="/static/js/attributes.js"></script>
+        <script src="/static/js/filter.js"></script>
+        <script src="/static/js/addInteraction.js"></script>
+        <script src="/static/js/formatLengthArea.js"></script>
+        <script src="/static/js/createToolTip.js"></script>
+        <script src="/static/js/toggleSlide.js"></script>
+        <script src="/static/js/featureinfo.js"></script>
+        <script src="/static/js/imageSlide.js"></script>
+        
+    
+        <script>
+        
+        </script>
+
 
 
 <script  type="text/javascript">
@@ -200,8 +208,8 @@
     var measureTooltipElement;
     var measureTooltip;
     var draw; // global so we can remove it later
-    //filter(data);    
-    //mapView             
+    toggleImageSlide(projectId);    
+    //mapView   
     var map = mapView(
         JSON.parse('{{ lay | safe }}'),
         JSON.parse('{{ workspace | safe }}'),

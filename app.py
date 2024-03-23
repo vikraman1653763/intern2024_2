@@ -109,7 +109,7 @@ ALLOWED_IMAGE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 
 # Define allowed extensions for documents
 ALLOWED_DOCUMENT_EXTENSIONS = {'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'}
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'static/uploads'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -123,8 +123,7 @@ def allowed_images(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 def allowed_files(filename):
     extension = filename.rsplit('.', 1)[1].lower()
-    print("Extension:", extension)
-    print("Is Allowed:", extension in ALLOWED_DOCUMENT_EXTENSIONS)
+    
     return '.' in filename and extension in ALLOWED_DOCUMENT_EXTENSIONS
 
 def handle_folder_upload(folder, folder_name, pro):
@@ -607,6 +606,24 @@ def delete_line(id):
         return jsonify({'message': 'Pointer deleted successfully'}), 200
     else:
         return jsonify({'error': 'Pointer not found'}), 404
+
+
+
+@app.route('/get-images/<int:project_id>', methods=['GET'])
+def get_images(project_id):
+    # Query the database to retrieve image URLs for the specified project_id
+    images = File.query.filter_by(project_id=project_id, type='image').all()
+    
+    # Initialize an empty list to store image paths
+    image_paths = []
+    
+    # Append each image path to the list
+    for image in images:
+        path='/static/'+image.path
+        image_paths.append(path)
+
+    # Return the list of image paths as a JSON response
+    return jsonify({'images': image_paths})
 
 dev = True
 # dev = False
