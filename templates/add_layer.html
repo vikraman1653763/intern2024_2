@@ -117,7 +117,7 @@
           <tr>
             
             {% if folder_data %}
-            {% if folder_data[0].type == 'image' %}
+            
             <th class='title' style="width: 33%;">Folder</th>
             <th class='title'  style="width: 33%;">Name</th>
             <form method="POST" action="{{ url_for('delete_all_files', project_id=folder_data[0].project_id,type='image') }}" onsubmit="return confirm('Are you sure you want to delete all files in this folder?');">
@@ -127,7 +127,7 @@
                   </th>
                   </button>
               </form>
-              {% endif %}              
+                    
               {% endif %}
           </tr>
         </thead>

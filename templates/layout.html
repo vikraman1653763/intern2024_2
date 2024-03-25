@@ -12,7 +12,7 @@
         <div class='mainbtnBar'>
         <button id="togglelayer" class="myButton mainBtn toolbtn" ><img src="\static\resources\images\layers.svg"alt=""><span class=" maintip">Layers</span></button>
         <button id="metricButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\book.svg" alt=""><span class=" maintip">Metrics</span></button>
-        <button id="toggleButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\edit.svg" alt=""><span class=" maintip">Tools</span></button>
+        <button id="toolButton" class="myButton mainBtn toolbtn"><img src="\static\resources\images\edit.svg" alt=""><span class=" maintip">Tools</span></button>
         <button id="imageButton" class="myButton mainBtn toolbtn"><img src="/static/resources/images/photo.svg" alt="" /><span class="maintip">Images</span></button>
         <button id="docsButton" class="myButton mainBtn toolbtn"><img src="/static/resources/images/docs.svg" alt="" /><span class="maintip">Docs</span></button>   
     </div>
@@ -104,6 +104,7 @@
     </div>     
           
         <div id="imageContainer"></div>
+        <div id="documentListContainer"></div>
 <!-- Popup Container -->
 <div id="popupImageContainer" class="popupImageContainer">
     <span class="close" onclick="closePopup()">&times;</span>
@@ -181,18 +182,21 @@
         <script src="/static/js/showmetric.js"></script>
         <script src="/static/js/storepolyline.js"></script>
         <script src="/static/js/deletemetrics.js"></script>
-        <script src="/static/js/attributes.js"></script>
+        
         <script src="/static/js/filter.js"></script>
         <script src="/static/js/addInteraction.js"></script>
         <script src="/static/js/formatLengthArea.js"></script>
         <script src="/static/js/createToolTip.js"></script>
         <script src="/static/js/toggleSlide.js"></script>
         <script src="/static/js/featureinfo.js"></script>
-        <script src="/static/js/imageSlide.js"></script>
+        <script src="/static/js/imageDocSlide.js"></script>
         
-    
         <script>
-        
+            document.querySelectorAll('.myButton').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
         </script>
 
 
@@ -200,15 +204,14 @@
 <script  type="text/javascript">
     var dashboardUrl = "{{ url_for('dashboard') }}";
     var projectId={{ id }};
-    var data = JSON.parse('{{ data | tojson | safe }}');
-    var coords = JSON.parse('{{ coords | tojson | safe }}');
     var layer_names=[];
     var helpTooltipElement;
     var helpTooltip;
     var measureTooltipElement;
     var measureTooltip;
     var draw; // global so we can remove it later
-    toggleImageSlide(projectId);    
+    toggleImageSlide(projectId);  
+    toggleDocSlide(projectId);  
     //mapView   
     var map = mapView(
         JSON.parse('{{ lay | safe }}'),

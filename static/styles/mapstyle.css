@@ -17,7 +17,7 @@
   width: auto !important;
   overflow: hidden;
   /* box-shadow: inset rgba(0, 0, 0, 1) -10px 0px 20px; */
-  z-index: 1;
+  z-index: 0;
   background: rgb(237, 236, 236);
   position: relative;
   flex-direction: column;
@@ -208,25 +208,19 @@ z-index: inherit;
 
   .nav-img {
     box-shadow: none;
-   
-    filter: invert(0%);
-   
-    
+    filter: invert(0%);  
   }
 
 .nav-link{
   color: black;
 }
-#togglelayer img,#toggleButton img,#metricButton img{
-  width: 35px;
-  height: 35px;
-  
-}
+
 .clicked-image-border {
   box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px;
   border-radius: 20px;
   background-image: linear-gradient(43deg, #f2f6f7 0%, #4cbdc8 0%, #06e3f7 10%);
- 
+  background: rgb(230, 229, 229);
+
 }
 
 
@@ -257,27 +251,22 @@ z-index: inherit;
   position: fixed;
   display: flex;
   flex-direction: column;
-  
-  top: 20%; /* Start off-screen at the top */
+  top: 20%; 
   right: 1px;
   width: 40px;
   margin-right:3px ;
   z-index: 3;
-  transform: translateX(10%);
+  transform: translateX(200%);
   transition: transform 0.3s ease-in-out;
   background: rgb(252, 252, 252);
   border-radius: 30px;
 }
 
-/* CSS to show the .tooly div */
-.tooly.show {
-  /* top: 20%; 
-  z-index: 3; */
-  transform: translateX(0%);
-}
+
+
 
 /* CSS to hide the .tooly div */
-.tooly.hide {
+.show {
  transform: translateX(0%);
 }
 
@@ -286,10 +275,10 @@ z-index: inherit;
   /* box-shadow: rgba(113, 113, 113, 0.5) 4px 4px 5px; */
             
   height: 91vh;
-  z-index: 3;
+  z-index: 1;
   background: rgb(230, 229, 229);
-  /* background-color:#ffffff; */
-  border: 1px solid #4cbdc8;
+  
+  
   width: 60px;
   border-top: none repeat;
 }
@@ -445,6 +434,8 @@ z-index: inherit;
 .mainBtn{
   position: relative; 
     padding: 10px;
+  
+    transition: transform 0.3s ease-in-out;
 }
 
 .metimg{
@@ -547,39 +538,39 @@ h5 {
 #imageContainer {
   position: fixed;
   top: 60px;
-  left: -200px;
+  left: -330px;
   display: flex;
   height: 91vh;
   border-radius: 0px 10px 10px 0px;
-  width: clamp(200px,230px,400px); 
-  z-index: 5;
+  width: clamp(200px,330px,400px); 
+  z-index: 0;
   background: rgb(237, 236, 236);
   flex-direction: row;
   transition: transform 0.7s ease-in-out;
-  z-index: 2;
+  border:none;
   flex-wrap: wrap;
   overflow: auto;
 }
 
 .image-visible {
   left: 0px;
-  transform: translateX(247px); 
+  transform: translateX(377px); 
   border: 1px solid black;
  
 }
 
 
 .renderImages {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   border: 2px solid rgb(76, 76, 76);
-  margin: 10px; 
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin: 5px; 
+  
+
 }
 .imageTitle{
- 
-  margin-right: 50px;
+  width: 100%;
+  margin-right: 10px;
 }
 
 .popupImageContainer {
@@ -588,15 +579,16 @@ h5 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: auto; /* Set width to adjust according to content */
-  max-height: 80%; /* Set max-height to cover 50% of the screen */
-  background-color: rgba(0, 0, 0, 0.7);
+  width: auto; 
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.3);
   padding: 10px;
-  border: 1px solid #0bebc6;
+  border: 1px solid #feffff;
   border-radius: 20px;
   display: none;
   justify-content: center;
   align-items: center;
+
 }
 
 .close {
@@ -614,10 +606,65 @@ h5 {
 }
 
 .popupImageContainer img {
-  width: auto !important;
-  height: auto !important;
-  max-width: 90%; /* Adjust the maximum width as needed */
-  max-height: 90%; /* Adjust the maximum height as needed */
+  width: 90%;
+  height:90%;
+ /* Adjust the maximum height as needed */
   object-fit: scale-down;
   border-radius: 0;
+  border-radius: 10px;
+}
+
+
+#documentListContainer {
+  position: fixed;
+  top: 60px;
+  left: -300px;
+  display: flex;
+  height: 91vh;
+  border-radius: 0px 10px 10px 0px;
+  width: clamp(210px,300px,400px); 
+  z-index:0;
+  background: rgb(237, 236, 236);
+  flex-direction: row;
+  transition: transform 0.7s ease-in-out;
+  border: none ;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+.docs-visible {
+  left: 0px;
+  transform: translateX(347px); 
+  border: 1px solid black;
+ 
+}
+
+.docs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-row {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 8px; 
+  margin-left: 5px;
+}
+.mainBtn.active {
+  transform: translateZ(-100px);
+}
+.myButton {
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+
+.myButton.active {
+  box-shadow: 0px 0px 1px rgb(150, 218, 255) inset,
+  0px 0px 2px rgb(150, 255, 194) inset,
+  0px 0px 10px rgb(150, 255, 194) inset,
+  0px 0px 40px rgb(150, 255, 194),
+  0px 0px 100px rgb(150, 255, 194),
+  0px 0px 5px rgb(150, 255, 194);
+  border-radius: 100px;
+  background-color: rgb(136, 219, 150);
 }

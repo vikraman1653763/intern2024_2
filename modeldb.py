@@ -5,7 +5,7 @@ from flask import Flask,  render_template , request , flash , redirect , url_for
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from functools import wraps 
 from flask_cors import CORS
-
+  
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1234@localhost/loginNevar'
 app.config['SECRET_KEY'] = "SECRET KEY"

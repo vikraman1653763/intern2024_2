@@ -1,4 +1,4 @@
-from flask import Flask,  render_template , request , flash , redirect , url_for , abort, json, jsonify
+from flask import Flask,  render_template , request , flash , redirect , url_for , abort, json, jsonify,send_file
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -295,7 +295,7 @@ def project(id):
             lat = "11.941552"
             zoom = 10
        
-        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id,data=attribute_data,coords=coordinates_data)
+        return render_template("layout.html" , lay = json.dumps(check) , workspace=json.dumps(workspace) , ngrok_ip=json.dumps(ngrok_ip), layer_list=check , lon=json.dumps(lon) , lat=json.dumps(lat) , zoom=json.dumps(zoom),id=id)
 
     else:
         abort(403)
@@ -625,6 +625,41 @@ def get_images(project_id):
     # Return the list of image paths as a JSON response
     return jsonify({'images': image_paths})
 
+
+@app.route('/get-docs/<int:project_id>', methods=['GET'])
+def get_docs(project_id):
+    # Query the database to retrieve document names and paths for the specified project_id
+    docs = File.query.filter_by(project_id=project_id, type='document').all()
+    
+    # Initialize an empty list to store document details
+    docs_info = []
+    
+    # Append each document details to the list
+    for doc in docs:
+        doc_info = {
+            'id': doc.id,
+            'name': doc.name,
+            'path': '/static/' + doc.path  # Assuming documents are stored in the static folder
+        }
+        docs_info.append(doc_info)
+        
+    # Return the list of document details as a JSON response
+    return jsonify({'docs': docs_info})
+
+
+from flask import send_file
+
+@app.route('/download/<int:id>', methods=['GET'])
+def download_document(id):
+    print(id)
+    doc = File.query.get_or_404(id)
+    document_path = os.path.join('static', doc.path) 
+    print(document_path)
+    filename = doc.name  # You can use the file name instead of the filename extracted from the path
+    
+    # Return the document file for download
+    return send_file(document_path, as_attachment=True)
+   
 dev = True
 # dev = False
 

@@ -3,6 +3,7 @@ var deleteBtn ='<img class="metricDelete" src="/static/resources/images/deleteme
 
 
 function createPoint() {
+    
     fetch(`/get-pointers?project_id=${projectId}`)
         .then(response => response.json())
         .then(data => {
@@ -189,7 +190,7 @@ function createLine() {
                 map.addLayer(vectorLayer);
 
                 var lineNamesDiv = document.getElementById('lineNames');
-                var deleteButton = `<button class='delmetric' onclick="deletePolygon(${linestring.id})">${deleteBtn}</button>`;
+                var deleteButton = `<button class='delmetric' onclick="deleteLine(${linestring.id})">${deleteBtn}</button>`;
                 lineNamesDiv.innerHTML += `<div>${deleteButton}&nbsp;${linestring.name}</div>`;
             });
         })
