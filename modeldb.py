@@ -66,6 +66,16 @@ class MapData(db.Model):
     metrics = db.Column(db.String)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
+class File(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    folder_name = db.Column(db.String(255), nullable=False)
+    path = db.Column(db.String(255), nullable=False)
+    type=db.Column(db.String(255), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+
+    def __repr__(self):
+        return f"File(id={self.id}, name='{self.name}', path='{self.path}', project_id={self.project_id})"
 
 def admin_required(func):
     @wraps(func)

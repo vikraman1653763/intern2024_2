@@ -148,10 +148,7 @@
         </div>
     </div>
     
-        <div id="attributeContainer">
-            <div class="attributeHeader"></div>
-            <div class="attributeRows"></div>
-        </div>
+       
         
         <!--popup for Pointer-->
         <div id="pointerDialog" class="pointerup">
@@ -192,16 +189,13 @@
         <script src="/static/js/imageDocSlide.js"></script>
         
         <script>
-            document.querySelectorAll('.myButton').forEach(button => {
-                button.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                });
-            });
+         
         </script>
 
 
 
 <script  type="text/javascript">
+    
     var dashboardUrl = "{{ url_for('dashboard') }}";
     var projectId={{ id }};
     var layer_names=[];

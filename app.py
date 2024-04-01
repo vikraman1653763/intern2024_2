@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from webforms import loginForm, registerForm, projectName, changeUserPassword, searchForm
 from functools import wraps 
 import requests
-from modeldb import User, admin_required,Project,Data,Drawnpt,MapData,db,login_manager,app
+from modeldb import User, admin_required,Project,Data,Drawnpt,MapData,db,login_manager,app,File
 from geoserver.catalog import Catalog
 import folium
 # from folium import plugins
@@ -35,16 +35,7 @@ cat = Catalog(geoserver_url, username=username, password=password)
 
 ADMIN = 2
 
-class File(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    folder_name = db.Column(db.String(255), nullable=False)
-    path = db.Column(db.String(255), nullable=False)
-    type=db.Column(db.String(255), nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
 
-    def __repr__(self):
-        return f"File(id={self.id}, name='{self.name}', path='{self.path}', project_id={self.project_id})"
     
 def save_folder(folder, project_id):
     # Define the upload directory
@@ -384,27 +375,26 @@ def delete(id):
         return redirect(request.referrer)
           
 
-@app.route('/delete/project/<int:id>', methods=('GET','POST') )
+@app.route('/delete/project/<int:id>', methods=('GET','POST'))
 @login_required
 @admin_required
 def delete_project(id):
-
     project = Project.query.get_or_404(id)
 
     if project:
         Drawnpt.query.filter_by(project_id=id).delete()
         MapData.query.filter_by(project_id=id).delete()
         Data.query.filter_by(project_id=id).delete()
-
+        File.query.filter_by(project_id=id).delete()  # Delete related files
         db.session.delete(project)
         db.session.commit()
 
-        flash("Project Deleted" , "error")
+        flash("Project Deleted", "error")
         return redirect(request.referrer)
-    
     else:
-        flash("Project Not Found" , "info")
+        flash("Project Not Found", "info")
         return redirect(request.referrer)
+
 
 @app.route('/delete/project/layer/<int:id>', methods=('GET','POST') )
 @login_required
@@ -424,42 +414,53 @@ def delete_layer(id):
         flash("Layer Not Found" , "info")
         return redirect(request.referrer)
     
-    
+
+
 @app.route('/delete/project/folder/<int:id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def delete_file(id):
-    folder = File.query.get_or_404(id)
+    file = File.query.get_or_404(id)
 
-    if folder:
-        db.session.delete(folder)
+    if file:
+        try:
+            # Delete the file from the directory
+            os.remove(os.path.join('static', file.path))
+
+        except FileNotFoundError:
+            # Handle case where file is not found
+            pass
+
+        db.session.delete(file)
         db.session.commit()
-        flash("Folder Deleted", "error_msg")
+        flash("File Deleted", "error_msg")
         return redirect(request.referrer)
     else:
-        flash("Folder Not Found", "info")
+        flash("File Not Found", "info")
         return redirect(request.referrer)
     
 @app.route('/delete_all_files/<int:project_id>/<type>', methods=['GET', 'POST'])
 @login_required
 @admin_required
-def delete_all_files(project_id,type):
+def delete_all_files(project_id, type):
     # Get all files in the folder
-    files_to_delete = File.query.filter_by(project_id=project_id,type=type).all()
+    files_to_delete = File.query.filter_by(project_id=project_id, type=type).all()
 
-    # Delete each file
+    # Delete each file and remove from directory
     for file in files_to_delete:
         try:
-            os.remove(file.path)
+            # Delete the file from the directory
+            os.remove(os.path.join('static', file.path))
         except FileNotFoundError:
             # Handle case where file is not found
             pass
         db.session.delete(file)
-        db.session.commit()
+
+    # Commit changes after deleting all files
+    db.session.commit()
 
     flash("All files deleted successfully", "success")
     return redirect(request.referrer)
-
 
 
 

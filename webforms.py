@@ -29,3 +29,4 @@ class projectName(FlaskForm):
 class searchForm(FlaskForm):
     searched = StringField("Search", [validators.DataRequired()], render_kw={"autocomplete": "on"})
     submit = SubmitField("Submit")
+    
