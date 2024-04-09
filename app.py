@@ -210,7 +210,7 @@ def add_layer(id):
             else:
                 flash('No documents were uploaded', 'info')
                 return redirect(request.referrer)
-
+        return redirect(request.referrer)
     return render_template("add_layer.html", user=pro.user, lay=lay, existing=pro.data, folder_data=folder_data)
 
 
@@ -238,44 +238,19 @@ def project(id):
                 
                 # Access resource of the layer
                 resource = layer.resource
-                
+                print("________________________________________________________________")
+                print(resource.name)
                 # Get the directory of attributes and methods for the resource
                 directory = dir(resource)
-              
+                print(directory)
                 
             
-            lon = layer.resource.native_bbox[0]
-            lat = layer.resource.native_bbox[2]
+            lon = layer.resource.latlon_bbox[0]
+            lat = layer.resource.latlon_bbox[2]
+            print("lattttiy",lon,lat)
             print("________________________________")
             zoom =11
-            # Construct WFS GetFeature request
-            wfs_url = "http://localhost:8080/geoserver/wfs"
-            params = {
-                "service": "WFS",
-                "version": "1.1.0",
-                "request": "GetFeature",
-                "typeName": f"{workspace_name}:{layer_name}",
-                "outputFormat": "json",
-            }
-            response = requests.get(wfs_url, params=params)
-            # Check if the request was successful
-            if response.status_code == 200:
-                # Parse the response JSON to extract feature data
-                features = response.json()["features"]
-                
-                coordinates_data=[]
-                # Process feature attributes
-                attribute_data = []
-                for feature in features:
-                    properties = feature["properties"]
-                    feature_data = {}
-                    for attribute_name, attribute_value in properties.items():
-                        feature_data[attribute_name] = attribute_value
-                        
-                    attribute_data.append(feature_data)
-                    geometry = feature["geometry"]
-                    coords = geometry["coordinates"]
-                    coordinates_data.append(coords)
+           
                     
             if lay.name == "States and District":
                 lon = 78.6569

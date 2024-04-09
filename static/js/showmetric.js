@@ -22,9 +22,14 @@ function createPoint() {
                     text: new ol.style.Text({
                         text: pointer.name,
                         offsetY: -25,
-                        font: '14px Arial',
+                        font: 'bold 14px Lucida Sans,Ebrima,Arial',
                         fill: new ol.style.Fill({
-                            color: 'white'
+                            color: 'black',
+                        
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'white', 
+                            width: 10 
                         })
                     })
                 });
@@ -79,7 +84,7 @@ function createPolygon() {
                     }),
                     stroke: new ol.style.Stroke({
                         color: 'white', // Border color
-                        width: 3 // Border width
+                        width: 10 // Border width
                     }),
                     text: polygon.name, // Set the text to the name of the polygon
                     offsetX: 0,
@@ -120,12 +125,13 @@ function createPolygon() {
                     source: vectorSource,
                     style: new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: 'rgba(11, 238, 254, 0.2)'
+                            color: 'rgba(11, 238, 254, 0.1)'
                         }),
                         stroke: new ol.style.Stroke({
-                            color: 'grey',
-                            width: 3,
-                            lineDash: [3, 10]
+                            color: 'white',
+                            
+                            width: 2,
+                            lineDash: [100, 10]
                         })
                     })
                 });
@@ -164,7 +170,7 @@ function createLine() {
                     }),
                     stroke: new ol.style.Stroke({
                         color: 'white',
-                        width: 2
+                        width: 10
                     }),
                     offsetX: 0,
                     offsetY: -10,
@@ -181,7 +187,7 @@ function createLine() {
                         stroke: new ol.style.Stroke({
                             color: "white",
                             width: 2,
-                            lineDash: [1, 3]
+                            lineDash: [10, 5]
                         }),
                         text: textStyle
                     })

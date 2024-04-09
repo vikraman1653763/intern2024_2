@@ -12,12 +12,13 @@
 }
 #sidebar {
   height: clamp(91vh, 91vh, 91vh);
-  border-radius: 0px 10px 10px 0px;
+
   width: 300px;
   overflow: hidden;
   /* box-shadow: inset rgba(0, 0, 0, 1) -10px 0px 20px; */
   z-index: 0;
-  background: #E9F1FA;
+  background-color: rgba(255, 255, 255, 1); 
+  /* backdrop-filter: blur(10px); */
   position: relative;
   flex-direction: column;
   transition: transform .7s ease-in-out; 
@@ -60,9 +61,8 @@
     
     
 h2{
-  
     font-weight: bold;
-    color:rgb(72, 71, 71);
+    color:rgb(0, 0, 0);
 }
 
 /* check box */
@@ -86,7 +86,9 @@ h2{
     height: var(--size);
     margin: 0 auto;
     background-color: #4158D0;
-    background-image: linear-gradient(43deg, #f2f6f7 0%, #4cbdc8 0%, #06e3f7 10%);
+    /* background-image: linear-gradient(43deg, #f2f6f7 0%, #4cbdc8 0%, #06e3f7 10%); */
+      background-image: linear-gradient(45deg, #c7c6c6,#81f7fd, #f4f4f4);
+
     border-radius: 50%;
     box-shadow: 0 var(--shadow) #ffbeb8;
     cursor: pointer;
@@ -181,7 +183,7 @@ h2{
     opacity: 1;
   }
   .checkbox-wrapper span {
-    font-size:clamp(9px,15px,20px); 
+    font-size:14px;
     color: #000;
 }
 
@@ -195,24 +197,25 @@ h2{
   transition: left 0.3s ease;
 }
 
-img{
-height:25px;
-border-radius: 10px;
-width:25px;
-/* box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px; */
-left: 0%;
-z-index: inherit;
 
+nav{
+  background-color: #00d0ff ;
+  backdrop-filter: blur(10px);
 }
 
+.nav-link {
+  font-size: large;
+  color: #000000;
+  font-weight: bold;
+}
   .nav-img {
     box-shadow: none;
-    filter: invert(0%);  
-  }
+    filter: invert(0%) ;
 
-.nav-link{
-  color: black;
-}
+  }
+ 
+
+
 
 .clicked-image-border {
   box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px;
@@ -250,35 +253,55 @@ z-index: inherit;
   position: fixed;
   display: flex;
   flex-direction: column;
-  top: 20%; 
+  top: 10%; 
   right: 1px;
   width: 40px;
   margin-right:3px ;
   z-index: 3;
-  transform: translateX(200%);
+  transform: translateX(0%);
   transition: transform 0.3s ease-in-out;
-  background: rgb(252, 252, 252);
+
   border-radius: 30px;
+ 
 }
 
-
-
-
-/* CSS to hide the .tooly div */
 .show {
- transform: translateX(0%);
+ transform: translateX(200%);
 }
 
+.btnBar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:  rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 5px;
+  margin: 5px  4px;
+
+}
+
+.toolBtnImg{
+  height:25px;
+  border-radius: 5px;
+  width:25px;
+  padding: 2px;
+  /* box-shadow: rgba(0, 0, 0, 0.3) 10px 1px 38px, rgba(0, 0, 0, 0.22) -5px 5px 5px; */
+  left: 0%;
+  z-index: inherit;
+  background-color: #00d0ff;
+
+}
 
 .allButtonBar {
   /* box-shadow: rgba(113, 113, 113, 0.5) 4px 4px 5px; */
             
   height: 91vh;
   z-index: 1;
-  background: #3bba9c;
+  background: #ffffff;
   
-  
-  width: 60px;
+
+  width: 70px;
   border-top: none repeat;
 }
 
@@ -291,58 +314,30 @@ z-index: inherit;
   opacity: 0;
   pointer-events: none;
   transition: all 2s cubic-bezier(0.23, 1, 0.32, 1);
-  background: rgba(161, 242, 248, 0.7); 
+  background: hsla(191, 100%, 50%, 0.733); 
   border-radius: 8px;
   font-size: 14px;
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-  
+  color: white;
 }
 
 
-.mainBtn .maintip {
-  position: absolute;
-  top: 90%;
-  width: auto;
-  left: 50%;
-  transform: translateX(-50%) translateY(-55%);
-  opacity: 0; 
-  font-size: 14px;
- 
-  
-}
-
-.mainBtn:hover .maintip {
-  padding: 0.3em ;
-  opacity: 1;
-  pointer-events: auto;
-}
 
 .myButton:hover .tooltip {
   opacity: 1;
   pointer-events: auto;
 }
-.toolbtn {
-  position: relative; 
-}
+
   
 .toolbtn:hover .tooltip {
   opacity: 1;
   pointer-events: auto;
 }
 
-.btnBar{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #4cbdc8;
-  border-radius: 30px;
-  padding: 5px;
-  margin: 5px  4px;
 
-}
 
 .toolbtn{
+  position: relative; 
   margin: 0px 5px 0px 5px;
     padding: 5px;
 
@@ -359,33 +354,61 @@ z-index: inherit;
   margin-left:10px ;
   
 }
+.mainBtn img {
+  height:30px;
+border-radius: 10px;
+width:30px;
+}
 .mainBtn{
   position: relative; 
-    padding: 30px;
+    margin: 30px;
   
     transition: transform 0.3s ease-in-out;
+  }
+  .mainBtn:hover{
+    transform: scale(1.2);
+    transition: transform 0.3s ease-in-out;
+    border-radius: 20px;
+      /* background-color: #f654c8; */
 }
+
+.mainBtn .maintip {
+  position: absolute;
+  top: 120%;
+  width: auto;
+  left: 50%;
+  transform: translateX(-50%) translateY(-55%);
+  opacity: 0; 
+  font-size: 14px;
+ 
+  
+}
+
+.mainBtn:hover .maintip {
+  padding: 0.3em ;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 
 
 .metricbar {
   position: fixed;
-  top: 100px;
-  right: 0; 
+  top: 60px;
+  height: 91vh;
   width: auto; 
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out; /* Smooth transition for transform property */
+  width: clamp(210px,300px,400px); 
+  transform: translateX(-300px);
+  transition: transform 0.7s ease-in-out;
   max-height: 100%; /* Setting maximum height to make it scrollable */
   overflow-y: auto; /* Making it scrollable */
   padding: 10px;
-  
-
+  background: rgb(255, 255, 255);
+ 
 }
-
-.metricbar.hidden {
-  transform: translateX(0%); 
-  background-color: rgba(255, 255, 255, 0.5); 
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); 
+  
+.metricbar-visible{
+  transform: translateX(57px); 
 }
 
 
@@ -432,9 +455,12 @@ z-index: inherit;
   margin-right: auto;
 }
 
-.delmetric {
+.delmetric ,.metricDelete{
   border: none;
   background-color: transparent !important;
+  height:20px;
+  border-radius: 10px;
+  width:20px;
 }
 
 
@@ -443,7 +469,8 @@ z-index: inherit;
 
 
 .metimg{
-  
+  height: 20px;
+  width: 20px;
   border: none;
   border-radius: 0px;
   box-shadow: none;
@@ -455,22 +482,7 @@ z-index: inherit;
 
 
 
-.metricbar {
-  position: fixed;
-  top: 100px;
-  right: 0; 
-  width: auto; 
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out; /* Smooth transition for transform property */
-  max-height: 100%; /* Setting maximum height to make it scrollable */
-  overflow-y: auto; /* Making it scrollable */
-  padding: 10px;
-  border-radius: 10px 0px 0px 10px;
-  box-shadow: inset rgba(0, 0, 0, 0.3) 10px 0px 10px;
-  background: rgb(245, 245, 245);
-  /* background-color:#4cbdc8; */
 
-}
 
 
 
@@ -522,13 +534,14 @@ h5 {
 #imageContainer {
   position: fixed;
   top: 60px;
-  left: -330px;
+  left: -320px;
   display: flex;
   height: 91vh;
   border-radius: 0px 10px 10px 0px;
   width: clamp(200px,330px,400px); 
   z-index: 0;
-  background: rgb(237, 236, 236);
+  background-color: rgba(255, 255, 255, 1); 
+  /* backdrop-filter: blur(10px); */
   flex-direction: row;
   transition: transform 0.7s ease-in-out;
   border:none;
@@ -548,13 +561,14 @@ h5 {
   width: 80px;
   height: 80px;
   border: 2px solid rgb(76, 76, 76);
-  margin: 5px; 
+  margin: 15px; 
   
 
 }
 .imageTitle{
   width: 100%;
-  margin-right: 10px;
+  padding-left: 20px;
+  margin-right:10px;
 }
 
 .popupImageContainer {
@@ -603,13 +617,14 @@ h5 {
 #documentListContainer {
   position: fixed;
   top: 60px;
-  left: -300px;
+  left: -290px;
   display: flex;
   height: 91vh;
-  border-radius: 0px 10px 10px 0px;
   width: clamp(210px,300px,400px); 
+  border-radius: 0px 10px 10px 0px;
   z-index:0;
-  background: rgb(237, 236, 236);
+  background-color: rgba(255, 255, 255, 1); 
+  /* backdrop-filter: blur(10px); */
   flex-direction: row;
   transition: transform 0.7s ease-in-out;
   border: none ;
@@ -635,3 +650,4 @@ h5 {
   margin-bottom: 8px; 
   margin-left: 5px;
 }
+

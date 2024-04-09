@@ -6,8 +6,9 @@ function toggleSlide() {
         var togImage = document.querySelector('#toggleButton img');
         var imageContainer = document.getElementById('imageContainer');
         var docsContainer = document.getElementById('documentListContainer'); 
+        var metrciContainer =document.getElementById('metricbar');
         var isVisibleSidebar = true;
-        var isVisibleMetricBar = true;
+        var isVisibleMetricBar = false;
         var isVisibleImageContainer = false;
         var isVisibleDocsContainer = false;
         document.getElementById('toolButton').addEventListener('click', function() {
@@ -26,18 +27,29 @@ function toggleSlide() {
                 docsContainer.classList.toggle('docs-visible'); 
                 isVisibleDocsContainer=false;
             };
+            if(isVisibleMetricBar){
+                metricBar.classList.toggle('metricbar-visible'); 
+                isVisibleMetricBar=false;
+            };
 });
 
         // Toggle metric bar visibility
         var toggleMetricButton = document.getElementById('metricButton');
         toggleMetricButton.addEventListener('click', function() {
             isVisibleMetricBar = !isVisibleMetricBar; 
-            // this.querySelector('img').classList.toggle('clicked-image-border');
-            if (isVisibleMetricBar) {
-                metricBar.classList.remove('hidden'); // Remove hidden class to show metricbar
-            } else {
-                metricBar.classList.add('hidden'); // Add hidden class to hide metricbar
+            metricBar.classList.toggle('metricbar-visible');  
+            if (isVisibleSidebar) {
+                sidebar.classList.toggle('sidebar-visible');
+                isVisibleSidebar=false; 
             }
+            if (isVisibleImageContainer) {
+                imageContainer.classList.toggle('image-visible');
+                isVisibleImageContainer=false;
+            }
+            if(isVisibleDocsContainer){
+                docsContainer.classList.toggle('docs-visible'); 
+                isVisibleDocsContainer=false;
+            };
         });
 
         // Toggle image container visibility
@@ -52,8 +64,11 @@ function toggleSlide() {
             if(isVisibleDocsContainer){
                 docsContainer.classList.toggle('docs-visible');
                 isVisibleDocsContainer=false;
-
             }
+            if(isVisibleMetricBar){
+                metricBar.classList.toggle('metricbar-visible'); 
+                isVisibleMetricBar=false;
+            };
         });
 
         var toggleDocsButton = document.getElementById('docsButton');
@@ -69,8 +84,11 @@ function toggleSlide() {
             if(isVisibleImageContainer){
                 imageContainer.classList.toggle('image-visible'); 
                 isVisibleImageContainer=false;
-
             }
+            if(isVisibleMetricBar){
+                metricBar.classList.toggle('metricbar-visible'); 
+                isVisibleMetricBar=false;
+            };
         });
     });
 }
